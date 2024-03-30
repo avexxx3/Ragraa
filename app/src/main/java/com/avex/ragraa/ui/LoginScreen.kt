@@ -1,6 +1,5 @@
 package com.avex.ragraa.ui
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -50,7 +49,7 @@ fun LoginScreen(
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
 
-        //Spacer(modifier = Modifier.weight(0.3f))
+        Spacer(modifier = Modifier.weight(0.3f))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
@@ -65,7 +64,7 @@ fun LoginScreen(
             )
         }
 
-        //Spacer(modifier = Modifier.weight(0.2f))
+        Spacer(modifier = Modifier.weight(0.2f))
 
         val focusManager = LocalFocusManager.current
 
@@ -109,11 +108,13 @@ fun LoginScreen(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
                 .fillMaxWidth(),
-            onClick = {}
+            onClick = { viewModel.sendRequest() }
         ) {
             Text("Login", style = MaterialTheme.typography.bodyLarge)
         }
 
-        //Spacer(modifier = Modifier.weight(0.5f))
+        Text(uiState.value.result, color = Color.White)
+
+        Spacer(modifier = Modifier.weight(0.5f))
     }
 }

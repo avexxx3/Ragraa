@@ -54,6 +54,7 @@ dependencies {
     //TEMP, DELETE THIS
     implementation(libs.converter.scalars)
     implementation(libs.converter.gson)
+    implementation(libs.okhttp.v4120)
     implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.compose.recyclerview)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
