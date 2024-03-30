@@ -1,4 +1,4 @@
-# ![app icon](./.github/readme-images/app-icon.png | width=48) Ragraa
+# <img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/app-icon.png" width="48"> Ragraa
 Ragraa is a frontend client for [Flex](https://flexstudent.nu.edu.pk/Login)
 
 ![screenshots of app](./.github/readme-images/screens.gif)
