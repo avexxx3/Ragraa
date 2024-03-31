@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    //TEMP, DELETE THIS
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.converter.scalars)
     implementation(libs.converter.gson)
     implementation(libs.okhttp.v4120)
@@ -81,3 +81,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
