@@ -1,4 +1,4 @@
-package com.avex.ragraa.ui
+package com.avex.ragraa.viewmodels
 
 data class LoginUiState(
     val username: String = "",

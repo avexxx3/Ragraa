@@ -1,17 +1,10 @@
 package com.avex.ragraa.ui
 
-import android.webkit.ConsoleMessage
-import android.webkit.CookieManager
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -49,9 +42,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.avex.ragraa.R
+import com.avex.ragraa.viewmodels.LoginViewModel
 
 @Composable
 fun LoginScreen(
@@ -67,6 +60,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.weight(0.3f))
 
+        //Logo
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.mipmap.ic_launcher_foreground),
@@ -84,6 +78,7 @@ fun LoginScreen(
 
         val focusManager = LocalFocusManager.current
 
+        //Username text field
         OutlinedTextField(
             value = uiState.value.username,
             onValueChange = { viewModel.updateUsername(it) },
@@ -103,12 +98,12 @@ fun LoginScreen(
                 textColor = Color.White,
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
-                focusedLabelColor = Color.LightGray
             )
         )
 
         var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
+        //Password text field
         OutlinedTextField(
             value = uiState.value.password,
             onValueChange = { viewModel.updatePassword(it) },
@@ -122,7 +117,7 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             keyboardActions = KeyboardActions {
                 focusManager.clearFocus()
-                viewModel.sendRequest()
+                viewModel.loginFlex()
             },
             leadingIcon = { Icon(imageVector = Icons.Filled.VpnKey, contentDescription = null) },
             trailingIcon = {
@@ -139,35 +134,23 @@ fun LoginScreen(
                 textColor = Color.White,
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
-                focusedLabelColor = Color.LightGray
             )
         )
 
-        if (uiState.value.loading) CircularProgressIndicator(
-            modifier = Modifier.padding(
-                bottom = dimensionResource(
-                    id = R.dimen.padding_medium
-                )
-            )
-        )
-        else Button(
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
-                .fillMaxWidth(),
-            onClick = { navController.navigate("web") }
-        ) {
-            Text("Login", style = MaterialTheme.typography.bodyLarge)
-        }
+        //Displays loading bar when logging in, otherwise button
+        LoginButton(loading = uiState.value.loading) { navController.navigate("web") }
 
+        //For debugging purposes.
         Text(uiState.value.result, color = Color.White, textAlign = TextAlign.Center)
 
+        //Send request to fetch semid=20241 details
         Button(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
                 .fillMaxWidth(),
-            onClick = { viewModel.getData() }
+            onClick = { viewModel.sendRequest() }
         ) {
-            Text("Sem", style = MaterialTheme.typography.bodyLarge)
+            Text("Send request", style = MaterialTheme.typography.bodyLarge)
         }
 
         Spacer(modifier = Modifier.weight(0.5f))
@@ -175,85 +158,23 @@ fun LoginScreen(
 }
 
 @Composable
-fun WebViewScreen(
-    viewModel: LoginViewModel,
-    navController: NavHostController,
-) {
-    BackHandler {
-        navController.navigate("home")
-    }
-
-    val webViewClient: CustomWebViewClient = CustomWebViewClient()
-    val webChromeClient: CustomWebChromeClient =
-        CustomWebChromeClient(returnHome = { navController.navigate("home") },
-            updateToken = { viewModel.updateToken(it) },
-            startLogin = { viewModel.sendRequest() })
-
-    val url = "Temp"
-    val cookieString = ""
-    CookieManager.getInstance().setCookie(url, cookieString)
-
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
-            WebView(context).apply {
-                this.webViewClient = webViewClient
-                this.webChromeClient = webChromeClient
-                settings.javaScriptEnabled = true
-                settings.setSupportZoom(true)
-
-            }
+fun LoginButton(loading: Boolean, onClick: () -> Unit) {
+    if (loading) {
+        CircularProgressIndicator(
+            modifier = Modifier.padding(
+                bottom = dimensionResource(
+                    id = R.dimen.padding_medium
+                )
+            )
+        )
+    } else {
+        Button(
+            modifier = Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
+                .fillMaxWidth(),
+            onClick = onClick
+        ) {
+            Text("Login", style = MaterialTheme.typography.bodyLarge)
         }
-    ) { webView ->
-        webView.loadUrl("https://flexstudent.nu.edu.pk/Login")
-    }
-}
-
-var loaded = false
-
-class CustomWebViewClient : WebViewClient() {
-    override fun onPageFinished(view: WebView?, url: String?) {
-        super.onPageFinished(view, url)
-        val otherURL = "<html>\n" +
-                "    <head>\n" +
-                "        <script src=\"https://www.google.com/recaptcha/api.js?onload=onloadCallback\"></script>\n" +
-                "    </head>\n" +
-                "    <body>\n" +
-                "    <div id=\"captcha\" style=\"display:flex;justify-content:center;align-items:center;overflow:hidden;padding:20px;\"> </div>\n" +
-                "    </body>\n" +
-                "    <script type=\"text/javascript\">\n" +
-                "        function onloadCallback()\n" +
-                "        {\n" +
-                "            grecaptcha.render(\"captcha\", {\n" +
-                "                \"sitekey\" : \"6LeMxrMZAAAAAJEK1UwUc0C-ScFUyJy07f8YN70S\",\n" +
-                "                \"callback\" : function(response) {\n" +
-                "                    console.log(\"koubilgicaptchatoken:\"+response)\n" +
-                "                }\n" +
-                "            })\n" +
-                "        }\n" +
-                "    </script>\n" +
-                "</html>"
-
-        if (!loaded) view?.loadDataWithBaseURL(url, otherURL, "text/html", "UTF-8", null);
-        loaded = true
-    }
-}
-
-class CustomWebChromeClient(
-    val returnHome: () -> Unit,
-    val updateToken: (String) -> Unit,
-    val startLogin: () -> Unit
-) : WebChromeClient() {
-    override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
-        val message = consoleMessage?.message()
-        if (message?.startsWith("koubilgicaptchatoken:") == true) {
-            returnHome()
-            val token = message.substring(21);
-            updateToken(token)
-            loaded = false
-            startLogin()
-        }
-
-        return super.onConsoleMessage(consoleMessage)
     }
 }
