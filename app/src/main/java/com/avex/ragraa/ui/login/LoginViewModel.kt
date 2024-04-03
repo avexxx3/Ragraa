@@ -1,29 +1,28 @@
-package com.avex.ragraa.viewmodels
+package com.avex.ragraa.ui.login
 
 import androidx.lifecycle.ViewModel
+import com.avex.ragraa.data.LoginRequest
 import com.avex.ragraa.network.RagraaApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+val fileName = "studentMarks.html"
 
 class LoginViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    var username = "23L-0655"
-        private set
-
-    var password = "5161682922"
-        private set
-
-    var gCaptchaResponse = ""
-        private set
+    private val loginRequest = LoginRequest("23L-0655", "5161682922", "")
 
     private var isError = false
 
-    private val ragraaApi = RagraaApi(this)
+    private val ragraaApi = RagraaApi(loginRequest) { updateUI() }
+
+    init {
+        updateUI()
+    }
 
     //Login to flex and save the session ID
     fun loginFlex() {
@@ -35,30 +34,36 @@ class LoginViewModel : ViewModel() {
         ragraaApi.sendRequest()
     }
 
+
+    private fun writeData() {
+
+    }
+
     fun updateUsername(newUsername: String) {
         usernameOperations(newUsername)
         updateUI()
     }
 
     fun updatePassword(newPassword: String) {
-        password = newPassword
+        loginRequest.password = newPassword
         updateUI()
     }
 
     //Used to update the token retrieved from CustomChromeWebClient
     fun updateToken(newToken: String) {
-        gCaptchaResponse = newToken
+        loginRequest.g_recaptcha_response = newToken
     }
 
     //Update ui with updated state
-    fun updateUI() {
+    private fun updateUI() {
         _uiState.update {
             it.copy(
-                username = username,
-                password = password,
+                username = loginRequest.username,
+                password = loginRequest.password,
                 isError = isError,
                 result = ragraaApi.result,
-                loading = ragraaApi.loading
+                loading = ragraaApi.loading,
+                isLoggedIn = ragraaApi.isLoggedIn,
             )
         }
     }
@@ -81,20 +86,21 @@ class LoginViewModel : ViewModel() {
         }
 
         //Only updates when follows the format 00L-0000, or when deleting
-        if (validateUsername(updatedUsername) || updatedUsername.length < username.length) {
-            username = updatedUsername
+        if (validateUsername(updatedUsername) || updatedUsername.length < loginRequest.username.length) {
+            loginRequest.username = updatedUsername
             isError = false
         } else isError = true
 
         //Capitalize the third letter
-        if (username.length == 3) {
-            username = setIndex(username, 2, username[2].uppercaseChar())
+        if (loginRequest.username.length == 3) {
+            loginRequest.username =
+                setIndex(loginRequest.username, 2, loginRequest.username[2].uppercaseChar())
         }
 
         //Remove the dash when erasing characters
-        if (username.length > updatedUsername.length && updatedUsername.length == 4) {
+        if (loginRequest.username.length > updatedUsername.length && updatedUsername.length == 4) {
             updatedUsername.trim('-')
-            username = updatedUsername
+            loginRequest.username = updatedUsername
         }
     }
 

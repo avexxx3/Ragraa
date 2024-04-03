@@ -1,7 +1,7 @@
 package com.avex.ragraa.network
 
 import android.util.Log
-import com.avex.ragraa.viewmodels.LoginViewModel
+import com.avex.ragraa.data.LoginRequest
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Cookie
@@ -14,9 +14,10 @@ import okhttp3.Response
 import okio.IOException
 import java.util.concurrent.TimeUnit
 
-class RagraaApi(val viewModel: LoginViewModel) {
+class RagraaApi(private val loginRequest: LoginRequest, private val updateUI: () -> Unit) {
     var result = ""
     var loading = false
+    var isLoggedIn = false
     private var sessionID = ""
 
     fun loginFlex() {
@@ -25,14 +26,14 @@ class RagraaApi(val viewModel: LoginViewModel) {
 
         result = ""
         loading = true
-        viewModel.updateUI()
+        updateUI()
 
         val url = "https://flexstudent.nu.edu.pk/Login/Login"
 
         val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
-            .addFormDataPart("username", viewModel.username)
-            .addFormDataPart("password", viewModel.password)
-            .addFormDataPart("g-recaptcha-response", viewModel.gCaptchaResponse)
+            .addFormDataPart("username", loginRequest.username)
+            .addFormDataPart("password", loginRequest.password)
+            .addFormDataPart("g-recaptcha-response", loginRequest.g_recaptcha_response)
             .build()
 
         val request = Request.Builder()
@@ -51,16 +52,24 @@ class RagraaApi(val viewModel: LoginViewModel) {
             override fun onFailure(call: Call, e: java.io.IOException) {
                 result = "Response timed out"
                 loading = false
-                viewModel.updateUI()
+                updateUI()
                 e.printStackTrace()
             }
 
             override fun onResponse(call: Call, response: Response) {
-                result = response.body?.string().toString()
-                sessionID = response.header("set-cookie").toString().substring(18, 42)
+                result = if (response.body?.string().toString()
+                        .contains("\"status\":\"done\"")
+                ) "Success" else "Failed"
+
+                if (response.isSuccessful) {
+                    if (response.header("set-cookie")!!.length > 42)
+                        sessionID = response.header("set-cookie").toString().substring(18, 42)
+                }
+                isLoggedIn = sessionID.isNotEmpty()
+
                 println(sessionID)
                 loading = false
-                viewModel.updateUI()
+                updateUI()
             }
         }
         )

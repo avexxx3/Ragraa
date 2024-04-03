@@ -1,4 +1,4 @@
-package com.avex.ragraa.ui
+package com.avex.ragraa.ui.login
 
 import android.annotation.SuppressLint
 import android.webkit.WebView
@@ -10,7 +10,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.avex.ragraa.network.CustomWebChromeClient
 import com.avex.ragraa.network.CustomWebViewClient
-import com.avex.ragraa.viewmodels.LoginViewModel
+import com.avex.ragraa.network.captchaLoaded
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -43,5 +43,6 @@ fun WebViewScreen(
         }
     ) { webView ->
         webView.loadUrl("https://flexstudent.nu.edu.pk/Login")
+        captchaLoaded = false
     }
 }

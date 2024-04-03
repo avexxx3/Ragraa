@@ -1,4 +1,4 @@
-package com.avex.ragraa.ui
+package com.avex.ragraa.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.avex.ragraa.R
-import com.avex.ragraa.viewmodels.LoginViewModel
 
 @Composable
 fun LoginScreen(
@@ -138,10 +137,20 @@ fun LoginScreen(
         )
 
         //Displays loading bar when logging in, otherwise button
-        LoginButton(loading = uiState.value.loading) { navController.navigate("web") }
+        Text(
+            uiState.value.result,
+            color = if (uiState.value.isLoggedIn) Color.Green else Color.Red,
+            textAlign = TextAlign.Center
+        )
+
+        if (!uiState.value.isLoggedIn) LoginButton(loading = uiState.value.loading) {
+            navController.navigate(
+                "web"
+            )
+        }
 
         //For debugging purposes.
-        Text(uiState.value.result, color = Color.White, textAlign = TextAlign.Center)
+
 
         //Send request to fetch semid=20241 details
         Button(
