@@ -3,6 +3,7 @@ agp = "8.3.1"
 compose_recyclerview = "1.0.3"
 converterScalars = "2.9.0"
 coreSplashscreen = "1.0.1"
+jsoupVersion = "1.14.3"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -28,6 +29,7 @@ androidx-material = { module = "androidx.compose.material:material", version.ref
 compose_recyclerview = { module = "com.canopas:compose_recyclerview", version.ref = "compose_recyclerview" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterScalars" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterScalars" }
+jsoup-jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

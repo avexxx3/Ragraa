@@ -38,7 +38,7 @@ val Typography = Typography(
         fontFamily = monteserratFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 45.sp,
-        lineHeight = 64.sp,
+        lineHeight = 38.sp,
         letterSpacing = 0.5.sp
     ),
 
@@ -46,7 +46,7 @@ val Typography = Typography(
         fontFamily = monteserratFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 38.sp,
-        lineHeight = 64.sp,
+        lineHeight = 32.sp,
         letterSpacing = 0.5.sp
     ),
 

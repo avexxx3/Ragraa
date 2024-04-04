@@ -52,6 +52,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.jsoup.jsoup)
     implementation(libs.converter.scalars)
     implementation(libs.converter.gson)
     implementation(libs.okhttp.v4120)

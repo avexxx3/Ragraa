@@ -1,6 +1,8 @@
 package com.avex.ragraa.network
 
+import android.annotation.SuppressLint
 import android.util.Log
+import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.LoginRequest
 import okhttp3.Call
 import okhttp3.Callback
@@ -14,17 +16,29 @@ import okhttp3.Response
 import okio.IOException
 import java.util.concurrent.TimeUnit
 
-class RagraaApi(private val loginRequest: LoginRequest, private val updateUI: () -> Unit) {
-    var result = ""
+@SuppressLint("StaticFieldLeak")
+object RagraaApi {
+
+    var loginRequest: LoginRequest = LoginRequest()
+    var afterParse: () -> Unit = {}
+    var viewModelSendRequest: () -> Unit = {}
+    var updateUI: () -> Unit = {}
     var loading = false
+    var result: String = ""
     var isLoggedIn = false
+
     private var sessionID = ""
+
+    var flexResponse: String = ""
 
     fun loginFlex() {
         if (loading)
             return
 
-        result = ""
+        println("Logging in flex")
+
+        result = "Logging in..."
+        isLoggedIn = false
         loading = true
         updateUI()
 
@@ -50,32 +64,25 @@ class RagraaApi(private val loginRequest: LoginRequest, private val updateUI: ()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: java.io.IOException) {
-                result = "Response timed out"
                 loading = false
+                result = "Response to Flex servers timed out."
+                Log.d("Network", "Response to Flex servers timed out.")
+
                 updateUI()
                 e.printStackTrace()
             }
 
             override fun onResponse(call: Call, response: Response) {
-                result = if (response.body?.string().toString()
-                        .contains("\"status\":\"done\"")
-                ) "Success" else "Failed"
-
-                if (response.isSuccessful) {
-                    if (response.header("set-cookie")!!.length > 42)
-                        sessionID = response.header("set-cookie").toString().substring(18, 42)
-                }
-                isLoggedIn = sessionID.isNotEmpty()
-
-                println(sessionID)
-                loading = false
-                updateUI()
+                onLoginResponse(response)
             }
         }
         )
     }
 
     fun sendRequest() {
+        Log.d("Network", "Sending request...")
+        loading = true
+
         val url = "https://flexstudent.nu.edu.pk/Student/StudentMarks?semid=20241"
 
         val request = Request.Builder()
@@ -96,17 +103,14 @@ class RagraaApi(private val loginRequest: LoginRequest, private val updateUI: ()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
+                isLoggedIn = false
+                result = "There was an error in fetching the data. Please try again"
+                Log.d("Network", "Error in connecting to Flex")
+                loading = false
             }
 
             override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-                    Log.d("Network", "Response from Flex successful")
-
-                    println(response.body!!.string())
-                }
+                onMarksResponse(response)
             }
         })
     }
@@ -120,4 +124,47 @@ class RagraaApi(private val loginRequest: LoginRequest, private val updateUI: ()
             .httpOnly()
             .build()
     }
+
+    private fun onLoginResponse(response: Response) {
+
+
+        if (!response.body?.string().toString().contains("\"status\":\"done\"")) {
+            result = "Invalid username/password."
+            Log.d("Network", "Logged in with invalid credentials")
+            isLoggedIn = false
+            loading = false
+            updateUI()
+            return
+        }
+
+        isLoggedIn = true
+        sessionID = response.header("set-cookie").toString().substring(18, 42)
+        result = "Successfully logged in.\nFetching data from servers..."
+        updateUI()
+        viewModelSendRequest()
+        Log.d("Network", "Fetching data from Flex")
+    }
+
+    private fun onMarksResponse(response: Response) {
+        response.use {
+            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            Datasource.flexResponse = response.body?.string().toString()
+
+            if (Datasource.flexResponse.contains("recaptcha")) {
+                result = "There was an error logging in. Please log-in again."
+                isLoggedIn = false
+                loading = false
+                updateUI()
+            }
+            result = "Request to flex successful.\nParsing HTML Data..."
+            Log.d("Network", "Request to flex successful")
+            updateUI()
+            Datasource.parseHTML()
+            loading = false
+            afterParse()
+        }
+
+    }
+
+
 }

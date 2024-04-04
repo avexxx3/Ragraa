@@ -1,5 +1,6 @@
 package com.avex.ragraa.ui.login
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,13 +38,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.avex.ragraa.R
+import com.avex.ragraa.network.RagraaApi
 
 @Composable
 fun LoginScreen(
@@ -51,6 +55,10 @@ fun LoginScreen(
     navController: NavHostController
 ) {
     val uiState = viewModel.uiState.collectAsState()
+
+    BackHandler {
+
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,7 +77,9 @@ fun LoginScreen(
                 text = "agraa",
                 color = Color(0xFFAEF18C),
                 style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.offset(x = (-37).dp)
+                fontSize = 40.sp,
+                modifier = Modifier.offset(x = (-37).dp, y = 7.dp),
+                fontWeight = FontWeight.W900
             )
         }
 
@@ -136,32 +146,21 @@ fun LoginScreen(
             )
         )
 
-        //Displays loading bar when logging in, otherwise button
-        Text(
+        if (uiState.value.result.isNotEmpty()) Text(
             uiState.value.result,
-            color = if (uiState.value.isLoggedIn) Color.Green else Color.Red,
-            textAlign = TextAlign.Center
+            modifier = Modifier.padding(bottom = 20.dp),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            color = if (RagraaApi.isLoggedIn) Color.Green else if (RagraaApi.loading) Color.Yellow else Color.Red
         )
 
-        if (!uiState.value.isLoggedIn) LoginButton(loading = uiState.value.loading) {
+        LoginButton(loading = uiState.value.loading) {
             navController.navigate(
                 "web"
             )
         }
 
         //For debugging purposes.
-
-
-        //Send request to fetch semid=20241 details
-        Button(
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
-                .fillMaxWidth(),
-            onClick = { viewModel.sendRequest() }
-        ) {
-            Text("Send request", style = MaterialTheme.typography.bodyLarge)
-        }
-
         Spacer(modifier = Modifier.weight(0.5f))
     }
 }
@@ -176,7 +175,7 @@ fun LoginButton(loading: Boolean, onClick: () -> Unit) {
                 )
             )
         )
-    } else {
+    } else if (!RagraaApi.isLoggedIn) {
         Button(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_large))

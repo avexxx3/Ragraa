@@ -1,6 +1,7 @@
 package com.avex.ragraa.ui.login
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
 import com.avex.ragraa.data.LoginRequest
 import com.avex.ragraa.network.RagraaApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,27 +14,39 @@ val fileName = "studentMarks.html"
 class LoginViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+    lateinit var navController: NavHostController
 
     private val loginRequest = LoginRequest("23L-0655", "5161682922", "")
 
     private var isError = false
 
-    private val ragraaApi = RagraaApi(loginRequest) { updateUI() }
+    private var parseComplete = false
 
     init {
         updateUI()
+        RagraaApi.loginRequest = loginRequest
+        RagraaApi.updateUI = { updateUI() }
+        RagraaApi.viewModelSendRequest = { sendRequest() }
+        RagraaApi.afterParse = { afterParse() }
     }
 
     //Login to flex and save the session ID
     fun loginFlex() {
-        ragraaApi.loginFlex()
+        RagraaApi.loginFlex()
+        updateUI()
     }
 
     //Fetch data for semid=20241
-    fun sendRequest() {
-        ragraaApi.sendRequest()
+    private fun sendRequest() {
+        RagraaApi.sendRequest()
+        updateUI()
     }
 
+    private fun afterParse() {
+        println("Parse complete")
+        parseComplete = true
+        updateUI()
+    }
 
     private fun writeData() {
 
@@ -45,7 +58,8 @@ class LoginViewModel : ViewModel() {
     }
 
     fun updatePassword(newPassword: String) {
-        loginRequest.password = newPassword
+        if (validatePassword(newPassword))
+            loginRequest.password = newPassword
         updateUI()
     }
 
@@ -61,9 +75,10 @@ class LoginViewModel : ViewModel() {
                 username = loginRequest.username,
                 password = loginRequest.password,
                 isError = isError,
-                result = ragraaApi.result,
-                loading = ragraaApi.loading,
-                isLoggedIn = ragraaApi.isLoggedIn,
+                result = RagraaApi.result,
+                loading = RagraaApi.loading,
+                isLoggedIn = RagraaApi.isLoggedIn,
+                parseComplete = parseComplete
             )
         }
     }
@@ -114,6 +129,10 @@ class LoginViewModel : ViewModel() {
             if (!username[1].isDigit()) return false
         } else return true
 
+        if (username.length > 2) {
+            if (!username[2].isLetter()) return false
+        } else return true
+
         if (username.length > 3) {
             if (username[3] != '-') return false
         } else return true
@@ -137,6 +156,11 @@ class LoginViewModel : ViewModel() {
         if (username.length > 8) return false
 
         return true
+    }
+
+    //Only for disallowing spaces in password
+    private fun validatePassword(password: String): Boolean {
+        return !password.contains(' ')
     }
 
     //Replace the index of a string with a character

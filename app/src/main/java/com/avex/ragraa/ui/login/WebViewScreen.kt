@@ -19,13 +19,13 @@ fun WebViewScreen(
     navController: NavHostController,
 ) {
     BackHandler {
-        navController.navigate("home")
+        navController.popBackStack()
     }
 
     val webViewClient = CustomWebViewClient()
     val webChromeClient =
         CustomWebChromeClient(
-            returnHome = { navController.navigate("home") },
+            returnHome = { navController.navigate("login") },
             updateToken = { viewModel.updateToken(it) },
             startLogin = { viewModel.loginFlex() }
         )
