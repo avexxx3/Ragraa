@@ -11,13 +11,16 @@ Ragraa is a frontend third-party client for [Flex](https://flexstudent.nu.edu.pk
 *  View previously saved data incase of no connection, or simply not wanting to update \[TO-DO\]
 *  Convey the marks and attendance through clean and user-friendly UI \[TO-DO\]
 
+
 ## Features I'd like to implement
+
 Using this as a notepad incase I happen to forget:
 *  Access to pastpapers through a database \[i dont even know where to start with this one\]
 *  Show currently happening events (Email -> Database -> App)
 
 
 ## Open-source libraries
+
 - [Kotlin](https://kotlinlang.org/) based,
 - [Compose](https://developer.android.com/develop/ui/compose): a modern UI framework for Kotlin.
 - [OkHttp](https://github.com/square/okhttp/): HTTP client to scrape data
@@ -28,14 +31,15 @@ Using this as a notepad incase I happen to forget:
 
 
 ## Releases
-    
-    TBD
+
+Nah
 
 
 ## License
 
     I've yet to apply for my learner's permit
 
+
 ## Disclaimer
 
-The developer of this application does not have any affiliation with the content providers available.
+    The developer of this application does not have any affiliation with the content providers available.
