@@ -18,30 +18,10 @@ import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
 object RagraaApi {
+    var sessionID = ""
+    var updateStatus:(String) -> Unit = {}
 
-    var loginRequest: LoginRequest = LoginRequest()
-    var afterParse: () -> Unit = {}
-    var viewModelSendRequest: () -> Unit = {}
-    var updateUI: () -> Unit = {}
-    var loading = false
-    var result: String = ""
-    var isLoggedIn = false
-
-    private var sessionID = ""
-
-    var flexResponse: String = ""
-
-    fun loginFlex() {
-        if (loading)
-            return
-
-        println("Logging in flex")
-
-        result = "Logging in..."
-        isLoggedIn = false
-        loading = true
-        updateUI()
-
+    fun loginFlex(loginRequest: LoginRequest) {
         val url = "https://flexstudent.nu.edu.pk/Login/Login"
 
         val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
@@ -64,24 +44,26 @@ object RagraaApi {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: java.io.IOException) {
-                loading = false
-                result = "Response to Flex servers timed out."
-                Log.d("Network", "Response to Flex servers timed out.")
-
-                updateUI()
+                updateStatus("Response to Flex servers timed out.")
                 e.printStackTrace()
             }
 
             override fun onResponse(call: Call, response: Response) {
-                onLoginResponse(response)
+                if (!response.body?.string().toString().contains("\"status\":\"done\"")) {
+                    updateStatus("Invalid credentials or recaptcha. Please login again")
+                    return
+                }
+                updateStatus("Logged in successfully")
+                sessionID = response.header("set-cookie").toString().substring(18, 42)
+                fetchMarks()
+                // TODO fetchAttendance()
             }
         }
         )
     }
 
-    fun sendRequest() {
-        Log.d("Network", "Sending request...")
-        loading = true
+    private fun fetchMarks() {
+        updateStatus("Sending request to /Student/StudentMarks...")
 
         val url = "https://flexstudent.nu.edu.pk/Student/StudentMarks?semid=20241"
 
@@ -96,6 +78,7 @@ object RagraaApi {
                     return listOf(createNonPersistentCookie())
                 }
             })
+
             .connectTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(5, TimeUnit.MINUTES)
             .readTimeout(5, TimeUnit.MINUTES)
@@ -103,14 +86,63 @@ object RagraaApi {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                isLoggedIn = false
-                result = "There was an error in fetching the data. Please try again"
-                Log.d("Network", "Error in connecting to Flex")
-                loading = false
+                updateStatus("Error in connecting to flex")
             }
 
             override fun onResponse(call: Call, response: Response) {
-                onMarksResponse(response)
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+
+                Datasource.marksResponse = response.body?.string().toString()
+
+                if (Datasource.marksResponse.contains("recaptcha")) {
+                    updateStatus("Error logging in")
+                }
+
+                Datasource.parseMarks()
+                updateStatus("Fetched marks successfully")
+            }
+        })
+    }
+
+    private fun fetchAttendance() {
+        updateStatus("Sending request to /Student/StudentAttendance...")
+
+        val url = "https://flexstudent.nu.edu.pk/Student/StudentAttendance?semid=20241"
+
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        val client = OkHttpClient().newBuilder()
+            .cookieJar(object : CookieJar {
+                override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
+                override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                    return listOf(createNonPersistentCookie())
+                }
+            })
+
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                updateStatus("Error in connecting to flex")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+
+                Datasource.attendanceResponse = response.body?.string().toString()
+
+                //TODO Run if-check directly on the response and move assignment down
+
+                if (Datasource.marksResponse.contains("recaptcha")) {
+                    updateStatus("Error logging in")
+                }
+                Datasource.parseAttendance()
+                updateStatus("Fetched marks successfully")
             }
         })
     }
@@ -124,47 +156,4 @@ object RagraaApi {
             .httpOnly()
             .build()
     }
-
-    private fun onLoginResponse(response: Response) {
-
-
-        if (!response.body?.string().toString().contains("\"status\":\"done\"")) {
-            result = "Invalid username/password."
-            Log.d("Network", "Logged in with invalid credentials")
-            isLoggedIn = false
-            loading = false
-            updateUI()
-            return
-        }
-
-        isLoggedIn = true
-        sessionID = response.header("set-cookie").toString().substring(18, 42)
-        result = "Successfully logged in.\nFetching data from servers..."
-        updateUI()
-        viewModelSendRequest()
-        Log.d("Network", "Fetching data from Flex")
-    }
-
-    private fun onMarksResponse(response: Response) {
-        response.use {
-            if (!response.isSuccessful) throw IOException("Unexpected code $response")
-            Datasource.flexResponse = response.body?.string().toString()
-
-            if (Datasource.flexResponse.contains("recaptcha")) {
-                result = "There was an error logging in. Please log-in again."
-                isLoggedIn = false
-                loading = false
-                updateUI()
-            }
-            result = "Request to flex successful.\nParsing HTML Data..."
-            Log.d("Network", "Request to flex successful")
-            updateUI()
-            Datasource.parseHTML()
-            loading = false
-            afterParse()
-        }
-
-    }
-
-
 }

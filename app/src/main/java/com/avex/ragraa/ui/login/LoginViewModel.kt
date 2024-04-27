@@ -1,55 +1,67 @@
 package com.avex.ragraa.ui.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.LoginRequest
 import com.avex.ragraa.network.RagraaApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-val fileName = "studentMarks.html"
-
 class LoginViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+
     lateinit var navController: NavHostController
 
     private val loginRequest = LoginRequest("23L-0655", "5161682922", "")
 
-    private var isError = false
-
-    private var parseComplete = false
+    private var isError:Boolean = false
+    private var status:String = ""
 
     init {
+        Datasource.updateUI = {updateUI()}
+        RagraaApi.updateStatus = {updateStatus(it)}
         updateUI()
-        RagraaApi.loginRequest = loginRequest
-        RagraaApi.updateUI = { updateUI() }
-        RagraaApi.viewModelSendRequest = { sendRequest() }
-        RagraaApi.afterParse = { afterParse() }
     }
 
-    //Login to flex and save the session ID
+    //Login to flex and save the session ID.
+    //Send request to fetch marks and attendance
     fun loginFlex() {
-        RagraaApi.loginFlex()
+        Log.d("Dev", "Are you fr")
+        RagraaApi.loginFlex(loginRequest)
+    }
+
+    private fun updateStatus(newStatus:String) {
+        status = newStatus
+        Log.d("Dev", status)
         updateUI()
     }
 
-    //Fetch data for semid=20241
-    private fun sendRequest() {
-        RagraaApi.sendRequest()
-        updateUI()
+    //Used to update the token retrieved from CustomChromeWebClient
+    //Navigates back to home screen after fetching it successfully
+    fun updateCaptcha(newToken: String) {
+        loginRequest.g_recaptcha_response = newToken
+        navController.navigate("login")
+        loginFlex()
     }
 
-    private fun afterParse() {
-        println("Parse complete")
-        parseComplete = true
-        updateUI()
-    }
-
-    private fun writeData() {
-
+    //Update ui with updated state
+    private fun updateUI() {
+        _uiState.update {
+            it.copy(
+                username = loginRequest.username,
+                password = loginRequest.password,
+                isError = isError,
+                status = status
+                //loading = RagraaApi.loading,
+                //isLoggedIn = RagraaApi.isLoggedIn,
+            )
+        }
     }
 
     fun updateUsername(newUsername: String) {
@@ -61,26 +73,6 @@ class LoginViewModel : ViewModel() {
         if (validatePassword(newPassword))
             loginRequest.password = newPassword
         updateUI()
-    }
-
-    //Used to update the token retrieved from CustomChromeWebClient
-    fun updateToken(newToken: String) {
-        loginRequest.g_recaptcha_response = newToken
-    }
-
-    //Update ui with updated state
-    private fun updateUI() {
-        _uiState.update {
-            it.copy(
-                username = loginRequest.username,
-                password = loginRequest.password,
-                isError = isError,
-                result = RagraaApi.result,
-                loading = RagraaApi.loading,
-                isLoggedIn = RagraaApi.isLoggedIn,
-                parseComplete = parseComplete
-            )
-        }
     }
 
     //A bit vague but there's a whole lot going on in the usernames

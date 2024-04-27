@@ -42,12 +42,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.avex.ragraa.R
-import com.avex.ragraa.network.RagraaApi
 
 @Composable
 fun LoginScreen(
@@ -57,7 +55,7 @@ fun LoginScreen(
     val uiState = viewModel.uiState.collectAsState()
 
     BackHandler {
-
+        navController.navigate("home")
     }
 
     Column(
@@ -146,43 +144,29 @@ fun LoginScreen(
             )
         )
 
-        if (uiState.value.result.isNotEmpty()) Text(
-            uiState.value.result,
-            modifier = Modifier.padding(bottom = 20.dp),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-            color = if (RagraaApi.isLoggedIn) Color.Green else if (RagraaApi.loading) Color.Yellow else Color.Red
-        )
+        Text(uiState.value.status, color = Color.White)
 
-        LoginButton(loading = uiState.value.loading) {
-            navController.navigate(
-                "web"
-            )
-        }
+        if(uiState.value.status == "Fetched marks successfully")
+            navController.navigate("marks")
 
-        //For debugging purposes.
-        Spacer(modifier = Modifier.weight(0.5f))
-    }
-}
-
-@Composable
-fun LoginButton(loading: Boolean, onClick: () -> Unit) {
-    if (loading) {
-        CircularProgressIndicator(
-            modifier = Modifier.padding(
-                bottom = dimensionResource(
-                    id = R.dimen.padding_medium
-                )
-            )
-        )
-    } else if (!RagraaApi.isLoggedIn) {
         Button(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
                 .fillMaxWidth(),
-            onClick = onClick
+            onClick = { navController.navigate("web") }
         ) {
             Text("Login", style = MaterialTheme.typography.bodyLarge)
         }
+
+        Button(
+            modifier = Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
+                .fillMaxWidth(),
+            onClick = { navController.navigate("marks") }
+        ) {
+            Text("Marks", style = MaterialTheme.typography.bodyLarge)
+        }
+
+        Spacer(Modifier.weight(0.5f))
     }
 }

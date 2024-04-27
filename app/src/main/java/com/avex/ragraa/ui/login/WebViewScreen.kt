@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavHostController
 import com.avex.ragraa.network.CustomWebChromeClient
 import com.avex.ragraa.network.CustomWebViewClient
 import com.avex.ragraa.network.captchaLoaded
@@ -15,20 +14,15 @@ import com.avex.ragraa.network.captchaLoaded
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun WebViewScreen(
-    viewModel: LoginViewModel,
-    navController: NavHostController,
+    updateCaptcha: (String) -> Unit,
 ) {
-    BackHandler {
-        navController.popBackStack()
-    }
+    BackHandler {}
 
     val webViewClient = CustomWebViewClient()
-    val webChromeClient =
-        CustomWebChromeClient(
-            returnHome = { navController.navigate("login") },
-            updateToken = { viewModel.updateToken(it) },
-            startLogin = { viewModel.loginFlex() }
-        )
+
+    val webChromeClient = CustomWebChromeClient{
+        updateCaptcha(it)
+    }
 
     AndroidView(
         modifier = Modifier.fillMaxSize(),
@@ -38,7 +32,6 @@ fun WebViewScreen(
                 this.webChromeClient = webChromeClient
                 settings.javaScriptEnabled = true
                 settings.setSupportZoom(true)
-
             }
         }
     ) { webView ->

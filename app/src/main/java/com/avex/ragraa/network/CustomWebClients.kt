@@ -30,23 +30,19 @@ class CustomWebViewClient : WebViewClient() {
                 "    </script>\n" +
                 "</html>"
 
-        if (!captchaLoaded) view?.loadDataWithBaseURL(url, otherURL, "text/html", "UTF-8", null);
+        if (!captchaLoaded) view?.loadDataWithBaseURL(url, otherURL, "text/html", "UTF-8", null)
         captchaLoaded = true
     }
 }
 
-class CustomWebChromeClient(
-    val returnHome: () -> Unit,
-    val updateToken: (String) -> Unit,
-    val startLogin: () -> Unit
-) : WebChromeClient() {
+class CustomWebChromeClient (val updateCaptcha:(String) -> Unit)
+    : WebChromeClient() {
     override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+
         val message = consoleMessage?.message()
         if (message?.startsWith("koubilgicaptchatoken:") == true) {
-            updateToken(message.substring(21))
-            captchaLoaded = false
-            returnHome()
-            startLogin()
+            val captchaToken = message.substring(21)
+            updateCaptcha(captchaToken)
         }
 
         return super.onConsoleMessage(consoleMessage)

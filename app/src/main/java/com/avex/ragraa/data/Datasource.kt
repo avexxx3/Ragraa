@@ -1,5 +1,6 @@
 package com.avex.ragraa.data
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import org.jsoup.Jsoup
 
@@ -18,14 +19,26 @@ data class Section(val name: String, val listOfMarks: List<Marks>)
 data class Course(val courseName: String, val courseMarks: List<Section>)
 
 object Datasource {
-    var flexResponse = ""
+    var marksResponse = ""
+    var attendanceResponse = ""
+
     val Database: MutableList<Course> = mutableListOf()
 
-    fun parseHTML() {
-        val htmlFile = Jsoup.parse(flexResponse).body()
+    var updateUI:() -> Unit = {}
+    var navMarks:() -> Unit = {}
+
+    fun parseMarks() {
+        if(marksResponse.isEmpty()) {
+            Log.d("Dev", "Flex data has not been fetched yet")
+        }
+
+        val htmlFile = Jsoup.parse(marksResponse).body()
+
+        //Divide into courses
         val totalCourses = htmlFile.getElementsByAttributeValue("id", "accordion")
 
         for (course in totalCourses) {
+
             val listOfItems: MutableList<Section> = mutableListOf()
 
             for ((i, courseWork) in course.getElementsByClass("mb-0").withIndex()) {
@@ -37,6 +50,7 @@ object Datasource {
                     "calculationrow"
                 )) {
                     val temp: MutableList<Float> = mutableListOf()
+
                     for ((v, individualItem) in courseWorkMerit.getElementsByClass("text-center")
                         .withIndex()) {
                         if (v == 0) continue
@@ -48,6 +62,7 @@ object Datasource {
 
                         temp.add(thing)
                     }
+
                     listOfMarks.add(
                         Marks(
                             temp[0],
@@ -64,11 +79,12 @@ object Datasource {
                         )
                     )
                 }
-
                 listOfItems.add(Section(courseWork.text(), listOfMarks))
             }
-
             Database.add(Course(course.getElementsByTag("h5")[0].text(), listOfItems))
         }
+        navMarks()
     }
+
+    fun parseAttendance() {}
 }

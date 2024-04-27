@@ -56,7 +56,7 @@ dependencies {
     implementation(libs.converter.scalars)
     implementation(libs.converter.gson)
     implementation(libs.okhttp.v4120)
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.compose.recyclerview)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material)
