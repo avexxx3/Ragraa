@@ -83,7 +83,7 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun FlexTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -92,7 +92,7 @@ fun FlexTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColors
+        darkTheme -> LightColors
         else -> LightColors
     }
     val view = LocalView.current

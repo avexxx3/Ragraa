@@ -1,6 +1,9 @@
 package com.avex.ragraa.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,6 +14,7 @@ import com.avex.ragraa.ui.marks.MarksScreen
 import com.avex.ragraa.ui.login.LoginScreen
 import com.avex.ragraa.ui.login.LoginViewModel
 import com.avex.ragraa.ui.login.WebViewScreen
+import io.objectbox.Box
 
 @Composable
 fun FlexApp(
@@ -19,24 +23,25 @@ fun FlexApp(
 ) {
     loginViewModel.navController = navController
 
+
     NavHost(
         navController,
-        "login"
+        "home"
     ) {
         composable("home") {
-            HomeScreen()
-        }
-
-        composable("login") {
-            LoginScreen(loginViewModel, navController)
-        }
-
-        composable("web") {
-            WebViewScreen {loginViewModel.updateCaptcha(it)}
+            HomeScreen(navController)
         }
 
         composable("marks") {
-            MarksScreen()
+            MarksScreen(navController)
+        }
+
+        composable("login") {
+            LoginScreen(loginViewModel)
+        }
+
+        composable("web") {
+            WebViewScreen({loginViewModel.updateCaptcha(it)}, {navController.navigate("login")})
         }
     }
 }

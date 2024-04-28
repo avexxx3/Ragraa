@@ -1,9 +1,16 @@
 package com.avex.ragraa.network
 
-import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Environment
 import android.util.Log
+import com.avex.ragraa.context
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.LoginRequest
+import com.avex.ragraa.data.MyObjectBox
+import com.avex.ragraa.data.imageByteArray
+import com.avex.ragraa.data.imageByteArray_
+import io.objectbox.kotlin.boxFor
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Cookie
@@ -14,9 +21,12 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 
-@SuppressLint("StaticFieldLeak")
+
 object RagraaApi {
     var sessionID = ""
     var updateStatus:(String) -> Unit = {}
@@ -55,6 +65,11 @@ object RagraaApi {
                 }
                 updateStatus("Logged in successfully")
                 sessionID = response.header("set-cookie").toString().substring(18, 42)
+
+                if(MyObjectBox.builder().androidContext(context).build().boxFor<imageByteArray>().query(imageByteArray_.rollNo.equal(loginRequest.username)).build().find().isEmpty())
+                    fetchImage(loginRequest.username)
+
+                fetchAttendance()
                 fetchMarks()
                 // TODO fetchAttendance()
             }
@@ -142,7 +157,49 @@ object RagraaApi {
                     updateStatus("Error logging in")
                 }
                 Datasource.parseAttendance()
-                updateStatus("Fetched marks successfully")
+                updateStatus("Fetched attendance successfully")
+            }
+        })
+    }
+
+    private fun fetchImage(rollNo: String) {
+        updateStatus("Fetching profile picture")
+        val request = Request.Builder()
+            .url("https://flexstudent.nu.edu.pk/Login/GetImage")
+            .build()
+
+        val client = OkHttpClient().newBuilder()
+            .cookieJar(object : CookieJar {
+                override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
+                override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                    return listOf(createNonPersistentCookie())
+                }
+            })
+
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                updateStatus("Error connecting to flex")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                updateStatus("Fetched profile picture successfully")
+
+                val box = MyObjectBox.builder().androidContext(context).build().boxFor<imageByteArray>()
+
+                    val inputStream = response.body?.byteStream()
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    globalBitmap = bitmap
+                    val bos = ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                    val bArray = bos.toByteArray();
+                    box.put(imageByteArray(bArray, rollNo, 0))
+                    Log.d("Dev", "Creating user")
             }
         })
     }
@@ -156,4 +213,7 @@ object RagraaApi {
             .httpOnly()
             .build()
     }
+
 }
+
+var globalBitmap:Bitmap? = null

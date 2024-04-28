@@ -15,8 +15,11 @@ import com.avex.ragraa.network.captchaLoaded
 @Composable
 fun WebViewScreen(
     updateCaptcha: (String) -> Unit,
+    navLogin: () -> Unit
 ) {
-    BackHandler {}
+    BackHandler {
+        navLogin()
+    }
 
     val webViewClient = CustomWebViewClient()
 

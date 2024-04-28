@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("io.objectbox")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
 }
 
@@ -51,6 +52,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.jsoup.jsoup)
     implementation(libs.converter.scalars)

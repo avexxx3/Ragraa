@@ -22,6 +22,7 @@ class LoginViewModel : ViewModel() {
 
     private var isError:Boolean = false
     private var status:String = ""
+    private var isOnCredential:Boolean = true
 
     init {
         Datasource.updateUI = {updateUI()}
@@ -32,10 +33,12 @@ class LoginViewModel : ViewModel() {
     //Login to flex and save the session ID.
     //Send request to fetch marks and attendance
     fun loginFlex() {
-        Log.d("Dev", "Are you fr")
+        status = ""
         RagraaApi.loginFlex(loginRequest)
+        updateUI()
     }
 
+    //This will only move to the next screen (i.e isCompleted = true) if it has fetched all three requests
     private fun updateStatus(newStatus:String) {
         status = newStatus
         Log.d("Dev", status)
@@ -57,9 +60,8 @@ class LoginViewModel : ViewModel() {
                 username = loginRequest.username,
                 password = loginRequest.password,
                 isError = isError,
-                status = status
-                //loading = RagraaApi.loading,
-                //isLoggedIn = RagraaApi.isLoggedIn,
+                status = status,
+                isOnCredential = isOnCredential,
             )
         }
     }

@@ -1,6 +1,9 @@
 package com.avex.ragraa.ui.login
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +16,7 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -33,6 +37,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -42,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -49,13 +55,15 @@ import com.avex.ragraa.R
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
-    navController: NavHostController
+    viewModel: LoginViewModel
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
+    if(uiState.value.status == "Fetched marks successfully")
+        viewModel.navController.navigate("home")
+
     BackHandler {
-        navController.navigate("home")
+        viewModel.navController.navigate("home")
     }
 
     Column(
@@ -77,7 +85,7 @@ fun LoginScreen(
                 style = MaterialTheme.typography.headlineLarge,
                 fontSize = 40.sp,
                 modifier = Modifier.offset(x = (-37).dp, y = 7.dp),
-                fontWeight = FontWeight.W900
+                fontWeight = FontWeight.W900,
             )
         }
 
@@ -102,7 +110,6 @@ fun LoginScreen(
             label = { Text(text = "Username") },
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = Color.White,
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
             )
@@ -138,34 +145,22 @@ fun LoginScreen(
             },
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = Color.White,
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
             )
         )
 
-        Text(uiState.value.status, color = Color.White)
+        Text(uiState.value.status)
 
-        if(uiState.value.status == "Fetched marks successfully")
-            navController.navigate("marks")
-
-        Button(
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
-                .fillMaxWidth(),
-            onClick = { navController.navigate("web") }
-        ) {
-            Text("Login", style = MaterialTheme.typography.bodyLarge)
-        }
-
-        Button(
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
-                .fillMaxWidth(),
-            onClick = { navController.navigate("marks") }
-        ) {
-            Text("Marks", style = MaterialTheme.typography.bodyLarge)
-        }
+        if(uiState.value.status.isEmpty() || uiState.value.status.contains("Invalid credentials"))
+            OutlinedButton(
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
+                    .fillMaxWidth(0.5f),
+                onClick = { viewModel.navController.navigate("web") }
+            ) {
+                Text("Login", style = MaterialTheme.typography.bodyLarge)
+            }
 
         Spacer(Modifier.weight(0.5f))
     }
