@@ -1,8 +1,23 @@
 package com.avex.ragraa.data
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import com.avex.ragraa.sharedPreferences
+import com.avex.ragraa.store
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
+import io.objectbox.kotlin.boxFor
+import okhttp3.Response
 import org.jsoup.Jsoup
+import java.io.ByteArrayOutputStream
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 data class Marks(
     val weightage: Float,
@@ -11,28 +26,111 @@ data class Marks(
     val average: Float,
     val minimum: Float,
     val maximum: Float,
-    val color: Color
+    var new: Boolean = false
 )
 
-data class Section(val name: String, val listOfMarks: List<Marks>)
+data class Section(
+    val name: String,
+    val listOfMarks: List<Marks>,
+    val obtained: Float,
+    val total: Float,
+    var new: Boolean = false,
+    var id: Long = 0
+)
 
-data class Course(val courseName: String, val courseMarks: List<Section>)
+data class Course(
+    val courseName: String,
+    val courseMarks: List<Section>,
+    var new: Boolean = false,
+    var id: Long = 0
+)
+
+data class Attendance(val date:String, val present:Boolean)
+
+data class courseAttendance(val courseName: String, val percentage:Float, val attendance: List<Attendance>)
+
+@Entity
+data class marksHTML(val html: String = "", @Id var id: Long = 0)
+
+@Entity
+data class attendanceHTML(val html: String = "", @Id var id: Long = 0)
 
 object Datasource {
     var marksResponse = ""
     var attendanceResponse = ""
 
-    val Database: MutableList<Course> = mutableListOf()
+    var rollNo: String = ""
+    var password: String = ""
+    var showImage:Boolean = true
 
-    var updateUI:() -> Unit = {}
-    var navMarks:() -> Unit = {}
+    var bitmap: ImageBitmap? = null
+    var marksDatabase: MutableList<Course> = mutableListOf()
+    var attendanceDatabase:MutableList<courseAttendance> = mutableListOf()
+
+    var updateLoginUI: () -> Unit = {}
+    var updateHomeUI: () -> Unit = {}
+
+    var temp: Boolean = true
+
+    fun cacheData() {
+        val marksBox = store.boxFor<marksHTML>().all
+        if (marksBox.isNotEmpty()) {
+            marksResponse = marksBox[0].html
+            parseMarks()
+        } else Log.d("Dev", "Marks is empty")
+
+        val attendanceBox = store.boxFor<attendanceHTML>().all
+        if (attendanceResponse.isNotEmpty()) {
+            attendanceResponse = attendanceBox[0].html
+            parseAttendance()
+        } else Log.d("Dev", "Attendance is empty")
+
+        rollNo = sharedPreferences.getString("rollNo", "").toString()
+        if (rollNo.isNotEmpty()) {
+            rollNo = rollNo.decrypt()
+        }
+
+        password = sharedPreferences.getString("password", "").toString()
+        if (password.isNotEmpty()) {
+            password = password.decrypt()
+        }
+
+        showImage = sharedPreferences.getBoolean("showImage", true)
+
+        if (rollNo.isEmpty()) return
+
+        val bitmapBox = store.boxFor<imageByteArray>().all
+
+        if (bitmapBox.isNotEmpty()) {
+            bitmap = BitmapFactory.decodeByteArray(
+                bitmapBox[0].byteArray,
+                0,
+                bitmapBox[0].byteArray.size
+            ).asImageBitmap()
+        } else {
+            bitmap = null; Log.d("Dev", "Query is empty")
+        }
+
+        updateHomeUI()
+    }
+
+    fun saveLogin() {
+        val editor = sharedPreferences.edit()
+        editor.putString("rollNo", rollNo.encrypt())
+        editor.putString("password", password.encrypt())
+        editor.apply()
+    }
 
     fun parseMarks() {
-        if(marksResponse.isEmpty()) {
+        if (marksResponse.isEmpty()) {
             Log.d("Dev", "Flex data has not been fetched yet")
         }
 
+        //Log.d("Dev", attendanceResponse)
+
         val htmlFile = Jsoup.parse(marksResponse).body()
+
+        val newDatabase: MutableList<Course> = mutableListOf()
 
         //Divide into courses
         val totalCourses = htmlFile.getElementsByAttributeValue("id", "accordion")
@@ -63,6 +161,7 @@ object Datasource {
                         temp.add(thing)
                     }
 
+
                     listOfMarks.add(
                         Marks(
                             temp[0],
@@ -71,20 +170,165 @@ object Datasource {
                             temp[3],
                             temp[5],
                             temp[6],
-                            if (temp[2].toInt() <= 0 || temp[1].toInt() <= 0) Color.White else Color.hsl(
-                                ((100.8 * temp[1] / temp[2]).toFloat()),
-                                0.78F,
-                                0.75F
-                            )
                         )
                     )
                 }
-                listOfItems.add(Section(courseWork.text(), listOfMarks))
+
+                val obtained =
+                    course.getElementsByClass("text-center totalColObtMarks")[i].text().toFloat()
+                val total =
+                    course.getElementsByClass("text-center totalColweightage")[i].text().toFloat()
+
+                if(temp) {
+                    listOfMarks.removeAt(1)
+                    temp = false
+                }
+
+                listOfItems.add(Section(courseWork.text(), listOfMarks, obtained, total))
             }
-            Database.add(Course(course.getElementsByTag("h5")[0].text(), listOfItems))
+
+            newDatabase.add(Course(course.getElementsByTag("h5")[0].text(), listOfItems))
         }
-        navMarks()
+        checkAdditions(newDatabase)
+        marksDatabase = newDatabase
+
+        val box = store.boxFor<marksHTML>()
+        box.removeAll()
+        box.put(marksHTML(marksResponse))
+
+        updateHomeUI()
     }
 
-    fun parseAttendance() {}
+    //This is the greatest piece of code i've ever written
+    private fun checkAdditions(newDatabase: MutableList<Course>) {
+        if (marksDatabase.isEmpty()) {
+            Log.d("Dev", "Database.isEmpty()")
+            return
+        }
+
+        val databaseCourseNames = marksDatabase.map { it.courseName }
+
+        for (course in newDatabase) {
+            val index: Int = databaseCourseNames.indexOf(course.courseName)
+
+            if (index == -1) {
+                course.new = true
+                for (section in course.courseMarks) {
+                    section.new = true
+                    for (marks in section.listOfMarks)
+                        marks.new = true
+                }
+                Log.d("Dev", "Index == -1")
+                continue
+            }
+
+            val databaseCourseMarks = marksDatabase[index].courseMarks.map { it.name }
+            for(section in course.courseMarks) {
+                val index2: Int = databaseCourseMarks.indexOf(section.name)
+
+                if (index2 == -1) {
+                    course.new = true
+                    section.new = true
+                    for (marks in section.listOfMarks) {
+                        marks.new = true
+                    }
+                    Log.d("Dev", "Index2 == -1")
+                    continue
+                }
+
+                for (marks in section.listOfMarks) {
+                    if (!marksDatabase[index].courseMarks[index2].listOfMarks.contains(marks)) {
+                        course.new = true
+                        section.new = true
+                        marks.new = true
+                        Log.d(
+                            "Dev",
+                            "NEW ADDITIONS IN ${course.courseName}: ${section.name}"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun saveImage(response: Response, rollNo: String) {
+        val box = store.boxFor<imageByteArray>()
+        box.removeAll()
+        val inputStream = response.body?.byteStream()
+        bitmap = BitmapFactory.decodeStream(inputStream).asImageBitmap()
+        val bos = ByteArrayOutputStream();
+        bitmap?.asAndroidBitmap()?.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        val bArray = bos.toByteArray();
+
+        updateHomeUI()
+
+        box.put(imageByteArray(bArray, rollNo, 0))
+        Log.d("Dev", "Creating user")
+    }
+
+    fun parseAttendance() {
+        val htmlFile = Jsoup.parse(marksResponse).body()
+
+        val courses = htmlFile.getElementsByClass("tab-pane")
+
+        for(course in courses) {
+            val courseName = course.getElementsByClass("col-md-6")[0].text()
+            val percentage = course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text().substring(0,  course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text().length - 2).toFloat()
+            val listAttendance: MutableList<Attendance> = mutableListOf()
+
+            val courseDetails = course.getElementsByClass("table table-bordered table-responsive m-table m-table--border-info m-table--head-bg-info")[0].getElementsByClass("text-center")
+
+            var date:String? = null
+            var presence:Boolean? = null
+
+            for(textCenter in courseDetails) {
+                if(textCenter.text().contains('-')) date = textCenter.text()
+                if(textCenter.text().contains('P') || textCenter.text().contains('A')) presence = textCenter.text().contains('P')
+                if(date != null && presence != null) {
+                    listAttendance.add(Attendance(date, presence))
+                    date = null
+                    presence = null
+                }
+            }
+
+            attendanceDatabase.add(courseAttendance(courseName, percentage, listAttendance))
+        }
+
+        val box = store.boxFor<attendanceHTML>()
+        box.removeAll()
+        box.put(attendanceHTML(attendanceResponse))
+    }
+}
+
+fun String.encrypt(password: String = "tK5UTui+DPh8lIlB"): String {
+    val secretKeySpec = SecretKeySpec(password.toByteArray(), "AES")
+    val iv = ByteArray(16)
+    val charArray = password.toCharArray()
+    for (i in 0 until 16) {
+        iv[i] = charArray[i].code.toByte()
+    }
+
+    val ivParameterSpec = IvParameterSpec(iv)
+
+    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+    cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec)
+
+    val encryptedValue = cipher.doFinal(this.toByteArray())
+    return Base64.encodeToString(encryptedValue, Base64.DEFAULT)
+}
+
+fun String.decrypt(password: String = "tK5UTui+DPh8lIlB"): String {
+    val secretKeySpec = SecretKeySpec(password.toByteArray(), "AES")
+    val iv = ByteArray(16)
+    val charArray = password.toCharArray()
+    for (i in 0 until 16) {
+        iv[i] = charArray[i].code.toByte()
+    }
+    val ivParameterSpec = IvParameterSpec(iv)
+
+    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+    cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec)
+
+    val decryptedByteValue = cipher.doFinal(Base64.decode(this, Base64.DEFAULT))
+    return String(decryptedByteValue)
 }

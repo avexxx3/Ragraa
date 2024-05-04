@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.LoginRequest
 import com.avex.ragraa.network.RagraaApi
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,30 +17,54 @@ class LoginViewModel : ViewModel() {
 
     lateinit var navController: NavHostController
 
-    private val loginRequest = LoginRequest("23L-0655", "5161682922", "")
-
+    private val loginRequest = LoginRequest()
     private var isError:Boolean = false
     private var status:String = ""
     private var isOnCredential:Boolean = true
+    private var response:Int = 0
+    private var isCompleted:Boolean = false
+    private var rememberLogin:Boolean = true
 
     init {
-        Datasource.updateUI = {updateUI()}
+        loginRequest.rollNo = Datasource.rollNo
+        loginRequest.password = Datasource.password
+
+        Datasource.updateLoginUI = {updateUI()}
         RagraaApi.updateStatus = {updateStatus(it)}
         updateUI()
+    }
+
+    fun resetData() {
+        status = ""
+        response = 0
+        isCompleted = false
     }
 
     //Login to flex and save the session ID.
     //Send request to fetch marks and attendance
     fun loginFlex() {
-        status = ""
         RagraaApi.loginFlex(loginRequest)
         updateUI()
     }
 
-    //This will only move to the next screen (i.e isCompleted = true) if it has fetched all three requests
-    private fun updateStatus(newStatus:String) {
+    fun updatePreference() {
+        rememberLogin = !rememberLogin
+        updateUI()
+    }
+
+    //This will only move to the next screen if status fetches marks successfully
+    fun updateStatus(newStatus:String) {
         status = newStatus
-        Log.d("Dev", status)
+        Log.d("Dev", "Status: $status")
+        if(status.contains("Fetched marks successfully") || status.contains("Fetched attendance successfully"))
+            response++
+
+        if(response == 2) {
+            isCompleted = true
+            if(rememberLogin)
+                Datasource.saveLogin()
+        }
+
         updateUI()
     }
 
@@ -57,17 +80,19 @@ class LoginViewModel : ViewModel() {
     private fun updateUI() {
         _uiState.update {
             it.copy(
-                username = loginRequest.username,
+                rollNo = loginRequest.rollNo,
                 password = loginRequest.password,
                 isError = isError,
                 status = status,
                 isOnCredential = isOnCredential,
+                isCompleted = isCompleted,
+                rememberLogin = rememberLogin
             )
         }
     }
 
-    fun updateUsername(newUsername: String) {
-        usernameOperations(newUsername)
+    fun updateRollNo(newRollNo: String) {
+        rollNoOperations(newRollNo)
         updateUI()
     }
 
@@ -78,76 +103,76 @@ class LoginViewModel : ViewModel() {
     }
 
     //A bit vague but there's a whole lot going on in the usernames
-    private fun usernameOperations(newUsername: String) {
-        var updatedUsername: String = newUsername
+    private fun rollNoOperations(newRollNo: String) {
+        var updatedRollNo: String = newRollNo
 
         //Replaces the first row of letters with their corresponding number, for convenience
-        if (updatedUsername.isNotEmpty())
-            updatedUsername = setIndex(
-                updatedUsername,
-                updatedUsername.length - 1,
-                convertChar(updatedUsername.last())
+        if (updatedRollNo.isNotEmpty())
+            updatedRollNo = setIndex(
+                updatedRollNo,
+                updatedRollNo.length - 1,
+                convertChar(updatedRollNo.last())
             )
 
         //Adds a '-' as the 4th letter regardless of what was inputted
-        if (updatedUsername.length == 4 && !updatedUsername.contains('-')) {
-            updatedUsername = setIndex(updatedUsername, 3, '-')
+        if (updatedRollNo.length == 4 && !updatedRollNo.contains('-')) {
+            updatedRollNo = setIndex(updatedRollNo, 3, '-')
         }
 
         //Only updates when follows the format 00L-0000, or when deleting
-        if (validateUsername(updatedUsername) || updatedUsername.length < loginRequest.username.length) {
-            loginRequest.username = updatedUsername
+        if (validateRollNo(updatedRollNo) || updatedRollNo.length < loginRequest.rollNo.length) {
+            loginRequest.rollNo = updatedRollNo
             isError = false
         } else isError = true
 
         //Capitalize the third letter
-        if (loginRequest.username.length == 3) {
-            loginRequest.username =
-                setIndex(loginRequest.username, 2, loginRequest.username[2].uppercaseChar())
+        if (loginRequest.rollNo.length == 3) {
+            loginRequest.rollNo =
+                setIndex(loginRequest.rollNo, 2, loginRequest.rollNo[2].uppercaseChar())
         }
 
         //Remove the dash when erasing characters
-        if (loginRequest.username.length > updatedUsername.length && updatedUsername.length == 4) {
-            updatedUsername.trim('-')
-            loginRequest.username = updatedUsername
+        if (loginRequest.rollNo.length > updatedRollNo.length && updatedRollNo.length == 4) {
+            updatedRollNo.trim('-')
+            loginRequest.rollNo = updatedRollNo
         }
     }
 
     //Only lets user update username while inputting values that follow the format ##@-####
-    private fun validateUsername(username: String): Boolean {
-        if (username.isNotEmpty()) {
-            if (!username[0].isDigit()) return false
+    private fun validateRollNo(rollNo: String): Boolean {
+        if (rollNo.isNotEmpty()) {
+            if (!rollNo[0].isDigit()) return false
         } else return true
 
-        if (username.length > 1) {
-            if (!username[1].isDigit()) return false
+        if (rollNo.length > 1) {
+            if (!rollNo[1].isDigit()) return false
         } else return true
 
-        if (username.length > 2) {
-            if (!username[2].isLetter()) return false
+        if (rollNo.length > 2) {
+            if (!rollNo[2].isLetter()) return false
         } else return true
 
-        if (username.length > 3) {
-            if (username[3] != '-') return false
+        if (rollNo.length > 3) {
+            if (rollNo[3] != '-') return false
         } else return true
 
-        if (username.length > 4) {
-            if (!username[4].isDigit()) return false
+        if (rollNo.length > 4) {
+            if (!rollNo[4].isDigit()) return false
         } else return true
 
-        if (username.length > 5) {
-            if (!username[5].isDigit()) return false
+        if (rollNo.length > 5) {
+            if (!rollNo[5].isDigit()) return false
         } else return true
 
-        if (username.length > 6) {
-            if (!username[6].isDigit()) return false
+        if (rollNo.length > 6) {
+            if (!rollNo[6].isDigit()) return false
         } else return true
 
-        if (username.length > 7) {
-            if (!username[7].isDigit()) return false
+        if (rollNo.length > 7) {
+            if (!rollNo[7].isDigit()) return false
         } else return true
 
-        if (username.length > 8) return false
+        if (rollNo.length > 8) return false
 
         return true
     }
@@ -179,5 +204,11 @@ class LoginViewModel : ViewModel() {
             'p' -> return '0'
         }
         return letter
+    }
+
+    fun init() {
+        loginRequest.rollNo = Datasource.rollNo
+        loginRequest.password = Datasource.password
+        updateUI()
     }
 }

@@ -4,22 +4,133 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "2:814101919547570296",
-      "lastPropertyId": "3:2935298906722818567",
+      "id": "3:4456606264211751886",
+      "lastPropertyId": "5:8056982195992505251",
+      "name": "LoginRequest",
+      "properties": [
+        {
+          "id": "2:9192250676087019008",
+          "name": "password",
+          "type": 9
+        },
+        {
+          "id": "3:727580162249775900",
+          "name": "g_recaptcha_response",
+          "type": 9
+        },
+        {
+          "id": "4:6287557589234221341",
+          "name": "Id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "5:8056982195992505251",
+          "name": "rollNo",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:4309065131473353740",
+      "lastPropertyId": "8:6605691564277456306",
+      "name": "Marks",
+      "properties": [
+        {
+          "id": "1:6295285212515879332",
+          "name": "weightage",
+          "type": 7
+        },
+        {
+          "id": "2:8435405864701580821",
+          "name": "obtained",
+          "type": 7
+        },
+        {
+          "id": "3:5996789139190497733",
+          "name": "total",
+          "type": 7
+        },
+        {
+          "id": "4:5287199980010931908",
+          "name": "average",
+          "type": 7
+        },
+        {
+          "id": "5:609460109181435226",
+          "name": "minimum",
+          "type": 7
+        },
+        {
+          "id": "6:759638881617395339",
+          "name": "maximum",
+          "type": 7
+        },
+        {
+          "id": "8:6605691564277456306",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:5247605640197897183",
+      "lastPropertyId": "2:7909890569517254498",
+      "name": "attendanceHTML",
+      "properties": [
+        {
+          "id": "1:8658078990878131263",
+          "name": "html",
+          "type": 9
+        },
+        {
+          "id": "2:7909890569517254498",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "6:7849204971607700588",
+      "lastPropertyId": "2:2897984971834846098",
+      "name": "marksHTML",
+      "properties": [
+        {
+          "id": "1:7620459995106172302",
+          "name": "html",
+          "type": 9
+        },
+        {
+          "id": "2:2897984971834846098",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "8:3270394091996620569",
+      "lastPropertyId": "3:6702253124948743831",
       "name": "imageByteArray",
       "properties": [
         {
-          "id": "1:35717203648763250",
+          "id": "1:4729299136174711053",
           "name": "byteArray",
           "type": 23
         },
         {
-          "id": "2:4947472907379135743",
+          "id": "2:4037463217176786549",
           "name": "rollNo",
           "type": 9
         },
         {
-          "id": "3:2935298906722818567",
+          "id": "3:6702253124948743831",
           "name": "id",
           "type": 6,
           "flags": 1
@@ -28,18 +139,28 @@
       "relations": []
     }
   ],
-  "lastEntityId": "2:814101919547570296",
+  "lastEntityId": "8:3270394091996620569",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [
-    8946352110972189510
+    8946352110972189510,
+    814101919547570296,
+    6982177783709456582
   ],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
-    5000975835187941100
+    5000975835187941100,
+    6311875732395190058,
+    9040787270059433783,
+    35717203648763250,
+    4947472907379135743,
+    2935298906722818567,
+    257709811341822559,
+    3184286970268801245,
+    2264971937738011218
   ],
   "retiredRelationUids": [],
   "version": 1

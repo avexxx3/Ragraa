@@ -17,15 +17,11 @@ fun WebViewScreen(
     updateCaptcha: (String) -> Unit,
     navLogin: () -> Unit
 ) {
-    BackHandler {
-        navLogin()
-    }
+    BackHandler {navLogin()}
 
     val webViewClient = CustomWebViewClient()
 
-    val webChromeClient = CustomWebChromeClient{
-        updateCaptcha(it)
-    }
+    val webChromeClient = CustomWebChromeClient{updateCaptcha(it)}
 
     AndroidView(
         modifier = Modifier.fillMaxSize(),

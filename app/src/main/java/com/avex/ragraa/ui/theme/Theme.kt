@@ -92,7 +92,7 @@ fun FlexTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> LightColors
+        darkTheme -> DarkColors
         else -> LightColors
     }
     val view = LocalView.current

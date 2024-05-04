@@ -1,10 +1,9 @@
 package com.avex.ragraa.ui.login
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.animateValue
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Checkbox
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -25,11 +24,14 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.VpnKey
-import androidx.compose.material3.Button
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +39,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -47,22 +48,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.avex.ragraa.R
+import com.avex.ragraa.data.Datasource
+import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState().value
 
-    if(uiState.value.status == "Fetched marks successfully")
-        viewModel.navController.navigate("home")
+         BackHandler {
+        if(Datasource.rollNo.isNotEmpty())
+            viewModel.navController.navigate("home")
+        }
 
-    BackHandler {
+    if(uiState.isCompleted) {
+        viewModel.updateStatus("")
+        viewModel.resetData()
         viewModel.navController.navigate("home")
     }
 
@@ -74,20 +79,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.weight(0.3f))
 
         //Logo
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = R.mipmap.ic_launcher_foreground),
-                contentDescription = null
-            )
-            Text(
-                text = "agraa",
-                color = Color(0xFFAEF18C),
-                style = MaterialTheme.typography.headlineLarge,
-                fontSize = 40.sp,
-                modifier = Modifier.offset(x = (-37).dp, y = 7.dp),
-                fontWeight = FontWeight.W900,
-            )
-        }
+        Logo()
 
         Spacer(modifier = Modifier.weight(0.2f))
 
@@ -95,11 +87,11 @@ fun LoginScreen(
 
         //Username text field
         OutlinedTextField(
-            value = uiState.value.username,
-            onValueChange = { viewModel.updateUsername(it) },
+            value = uiState.rollNo,
+            onValueChange = { viewModel.updateRollNo(it) },
             singleLine = true,
             leadingIcon = { Icon(imageVector = Icons.Filled.Person, contentDescription = null) },
-            isError = uiState.value.isError,
+            isError = uiState.isError,
             textStyle = MaterialTheme.typography.bodyLarge,
             keyboardActions = KeyboardActions {
                 focusManager.moveFocus(FocusDirection.Next)
@@ -107,11 +99,12 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_large)),
-            label = { Text(text = "Username") },
+            label = { Text(text = "Roll Number") },
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
+                textColor = if(isSystemInDarkTheme()) Color.White else Color.Black
             )
         )
 
@@ -119,19 +112,24 @@ fun LoginScreen(
 
         //Password text field
         OutlinedTextField(
-            value = uiState.value.password,
+            value = uiState.password,
             onValueChange = { viewModel.updatePassword(it) },
             textStyle = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.padding_large)),
+                .padding(
+                    top = dimensionResource(id = R.dimen.padding_large),
+                    start = dimensionResource(id = R.dimen.padding_large),
+                    end = dimensionResource(id = R.dimen.padding_large),
+                    bottom = dimensionResource(id = R.dimen.padding_small)
+                ),
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             label = { Text(text = "Password") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             keyboardActions = KeyboardActions {
                 focusManager.clearFocus()
-                viewModel.loginFlex()
+                viewModel.navController.navigate("web")
             },
             leadingIcon = { Icon(imageVector = Icons.Filled.VpnKey, contentDescription = null) },
             trailingIcon = {
@@ -147,21 +145,68 @@ fun LoginScreen(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
+                textColor = if(isSystemInDarkTheme()) Color.White else Color.Black
             )
         )
+        if((uiState.status.isEmpty() || uiState.status.contains("Error") ) && !uiState.isCompleted)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.padding(start = 11.dp)
+            ) {
+                CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
+                    Checkbox(
+                        checked = uiState.rememberLogin,
+                        onCheckedChange = { viewModel.updatePreference() })
+                }
 
-        Text(uiState.value.status)
+                Text(
+                    "Remember login info",
+                    color = if(isSystemInDarkTheme()) Color.White else Color.Black,
+                    modifier = Modifier.clickable { viewModel.updatePreference() }
+                )
 
-        if(uiState.value.status.isEmpty() || uiState.value.status.contains("Invalid credentials"))
+                Spacer(Modifier.weight(1f))
+            }
+
+        if(uiState.status.isNotEmpty()) Text(text = uiState.status, color = if(isSystemInDarkTheme()) Color.White else Color.Black, modifier = Modifier.padding(10.dp))
+
+        if((uiState.status.isEmpty() || uiState.status.contains("Error") ) && !uiState.isCompleted)
             OutlinedButton(
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
-                    .fillMaxWidth(0.5f),
+                    .fillMaxWidth(),
                 onClick = { viewModel.navController.navigate("web") }
             ) {
-                Text("Login", style = MaterialTheme.typography.bodyLarge)
+                Text("Login", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 6.dp))
             }
 
         Spacer(Modifier.weight(0.5f))
     }
+}
+
+@Composable
+fun Logo(){
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+            contentDescription = null
+        )
+        Text(
+            text = "agraa",
+            color = sweetie_pie,
+            style = MaterialTheme.typography.headlineLarge,
+            fontSize = 40.sp,
+            modifier = Modifier.offset(x = (-37).dp, y = 7.dp),
+            fontWeight = FontWeight.W900,
+        )
+    }
+}
+
+private object NoRippleTheme : RippleTheme {
+    @Composable
+    override fun defaultColor() = Color.Unspecified
+
+    @Composable
+    override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0f,0.0f,0.0f,0.0f)
 }
