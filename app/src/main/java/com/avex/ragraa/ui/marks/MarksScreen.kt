@@ -71,7 +71,7 @@ import java.text.NumberFormat
 @Composable
 fun MarksScreen(
     navController: NavHostController,
-    marksViewModel: MarksViewModel = viewModel(),
+    marksViewModel: DataViewModel = viewModel(),
     newNavController: NavHostController = rememberNavController()
 ) {
     BackHandler {
@@ -94,7 +94,7 @@ fun MarksScreen(
         }
 
         composable("course") {
-            CourseDetails(course = uiState.currentCourse!!)
+            CourseDetails(course = uiState.currentMarksCourse!!)
         }
     }
 }

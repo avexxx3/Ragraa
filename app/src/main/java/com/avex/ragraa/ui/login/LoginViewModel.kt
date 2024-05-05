@@ -26,6 +26,8 @@ class LoginViewModel : ViewModel() {
     private var rememberLogin:Boolean = true
 
     init {
+        Datasource.cacheData()
+
         loginRequest.rollNo = Datasource.rollNo
         loginRequest.password = Datasource.password
 
@@ -204,11 +206,5 @@ class LoginViewModel : ViewModel() {
             'p' -> return '0'
         }
         return letter
-    }
-
-    fun init() {
-        loginRequest.rollNo = Datasource.rollNo
-        loginRequest.password = Datasource.password
-        updateUI()
     }
 }

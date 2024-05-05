@@ -65,7 +65,6 @@ object RagraaApi {
                 fetchImage(loginRequest.rollNo)
                 fetchAttendance()
                 fetchMarks()
-                // TODO fetchAttendance()
             }
         }
         )

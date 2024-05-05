@@ -47,7 +47,7 @@ data class Course(
 
 data class Attendance(val date:String, val present:Boolean)
 
-data class courseAttendance(val courseName: String, val percentage:Float, val attendance: List<Attendance>)
+data class courseAttendance(val courseName: String, var percentage:Float, val attendance: List<Attendance>)
 
 @Entity
 data class marksHTML(val html: String = "", @Id var id: Long = 0)
@@ -73,17 +73,17 @@ object Datasource {
     var temp: Boolean = true
 
     fun cacheData() {
+        val attendanceBox = store.boxFor<attendanceHTML>().all
+        if (attendanceBox.isNotEmpty()) {
+            attendanceResponse = attendanceBox[0].html
+            parseAttendance()
+        } else Log.d("Dev", "Attendance is empty")
+
         val marksBox = store.boxFor<marksHTML>().all
         if (marksBox.isNotEmpty()) {
             marksResponse = marksBox[0].html
             parseMarks()
         } else Log.d("Dev", "Marks is empty")
-
-        val attendanceBox = store.boxFor<attendanceHTML>().all
-        if (attendanceResponse.isNotEmpty()) {
-            attendanceResponse = attendanceBox[0].html
-            parseAttendance()
-        } else Log.d("Dev", "Attendance is empty")
 
         rollNo = sharedPreferences.getString("rollNo", "").toString()
         if (rollNo.isNotEmpty()) {
@@ -125,8 +125,6 @@ object Datasource {
         if (marksResponse.isEmpty()) {
             Log.d("Dev", "Flex data has not been fetched yet")
         }
-
-        //Log.d("Dev", attendanceResponse)
 
         val htmlFile = Jsoup.parse(marksResponse).body()
 
@@ -218,7 +216,6 @@ object Datasource {
                     for (marks in section.listOfMarks)
                         marks.new = true
                 }
-                Log.d("Dev", "Index == -1")
                 continue
             }
 
@@ -232,7 +229,6 @@ object Datasource {
                     for (marks in section.listOfMarks) {
                         marks.new = true
                     }
-                    Log.d("Dev", "Index2 == -1")
                     continue
                 }
 
@@ -241,10 +237,6 @@ object Datasource {
                         course.new = true
                         section.new = true
                         marks.new = true
-                        Log.d(
-                            "Dev",
-                            "NEW ADDITIONS IN ${course.courseName}: ${section.name}"
-                        )
                     }
                 }
             }
@@ -267,11 +259,14 @@ object Datasource {
     }
 
     fun parseAttendance() {
-        val htmlFile = Jsoup.parse(marksResponse).body()
+        val htmlFile = Jsoup.parse(attendanceResponse).body()
 
-        val courses = htmlFile.getElementsByClass("tab-pane")
+        val courses = htmlFile.getElementsByAttributeValue("role", "tabpanel")
+        Log.d("Dev", "courses size: ${courses.size}")
 
         for(course in courses) {
+            Log.d("Dev", course.getElementsByClass("col-md-6").html())
+
             val courseName = course.getElementsByClass("col-md-6")[0].text()
             val percentage = course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text().substring(0,  course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text().length - 2).toFloat()
             val listAttendance: MutableList<Attendance> = mutableListOf()

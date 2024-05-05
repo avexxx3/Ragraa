@@ -56,11 +56,12 @@ import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
+    navBar: @Composable () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
-         BackHandler {
+    BackHandler {
         if(Datasource.rollNo.isNotEmpty())
             viewModel.navController.navigate("home")
         }
@@ -75,6 +76,11 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
+        if(Datasource.rollNo.isNotEmpty() && (uiState.status.isEmpty() || uiState.status.contains("Error"))) {
+            Row(verticalAlignment = Alignment.CenterVertically){navBar();androidx.compose.material3.Text(
+                "Login", style = MaterialTheme.typography.displaySmall, fontSize = 24.sp, modifier = Modifier.padding(top = 4.dp, start = 12.dp));Spacer(Modifier.weight(1f))
+            }
+        }
 
         Spacer(modifier = Modifier.weight(0.3f))
 
@@ -186,8 +192,10 @@ fun LoginScreen(
 }
 
 @Composable
-fun Logo(){
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun Logo(
+    modifier:Modifier = Modifier
+){
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Image(
             painter = painterResource(id = R.mipmap.ic_launcher_foreground),
             contentDescription = null

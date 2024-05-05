@@ -15,51 +15,61 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class HomeViewModel:ViewModel() {
+class HomeViewModel : ViewModel() {
     lateinit var navController: NavHostController
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    var updated:Boolean = false
-    var showSettings:Boolean = false
-    var showImage:Boolean = true
-    var vibrate:Boolean = false
+    var updated: Boolean = false
+    var showSettings: Boolean = false
+    var showImage: Boolean = true
+    var vibrate: Boolean = false
+    var danger: Boolean = false
 
-    init{
-        Datasource.updateHomeUI = {updateUI()}
+    init {
+        showImage = Datasource.showImage
+        Datasource.updateHomeUI = { updateUI() }
+        updateUI()
     }
 
     fun refresh() {
-        if(Datasource.rollNo.isEmpty() || Datasource.password.isEmpty()) {
-           navController.navigate("login")
-        }
-        else {
-           navController.navigate("web")
+        if (Datasource.rollNo.isEmpty() || Datasource.password.isEmpty()) {
+            navController.navigate("login")
+        } else {
+            navController.navigate("web")
         }
 
     }
 
     private fun updateUI() {
-        Log.d("Dev", "UpdateHomeUI()")
-        Log.d("Dev", "RollNo: ${Datasource.rollNo}")
-
-        updated = false
-        for(course in Datasource.marksDatabase) {
-            if(course.new) {
-                updated = true;
-                break
+        if(!updated) {
+            for (course in Datasource.marksDatabase) {
+                if (course.new) {
+                    updated = true;
+                    break
+                }
             }
         }
 
-        _uiState.update{
+        if(!danger) {
+            for (course in Datasource.attendanceDatabase) {
+                if (course.percentage <= 80) {
+                    danger = true
+                    break
+                }
+            }
+        }
+
+        _uiState.update {
             it.copy(
                 rollNo = Datasource.rollNo,
                 image = Datasource.bitmap,
                 updated = updated,
                 showSettings = showSettings,
                 showImage = showImage,
-                vibrate = vibrate
+                vibrate = vibrate,
+                danger = danger
             )
         }
     }
@@ -75,10 +85,6 @@ class HomeViewModel:ViewModel() {
         updateUI()
     }
 
-    fun init() {
-        showImage = Datasource.showImage
-        updateUI()
-    }
 
     fun vibrate() {
         val v: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
