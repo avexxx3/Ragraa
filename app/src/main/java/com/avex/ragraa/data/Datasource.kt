@@ -190,8 +190,6 @@ object Datasource {
                 for (item in listOfMarks) {
                     average += item.average / item.total * item.weightage
                 }
-
-
                 val obtained =
                     course.getElementsByClass("text-center totalColObtMarks")[i].text().toFloat()
                 val total =

@@ -106,8 +106,12 @@ class CalculatorViewModel : ViewModel() {
     private fun calculateGrade() {
         val grade:String
 
-        if((editingCourse?.mca!!.isEmpty() && editingCourse?.isRelative == true) || editingCourse?.obtained!!.isEmpty())
+        if((editingCourse?.mca!!.isEmpty() && editingCourse?.isRelative == true) || editingCourse?.obtained!!.isEmpty()) {
+            editingCourse = editingCourse?.copy(
+                grade = "", gpa = 0f
+            )
             return
+        }
 
         if (editingCourse?.isRelative == true) {
             grade = mcaLookup(round(editingCourse?.mca!!.toFloat()).toInt(), round(editingCourse?.obtained!!.toFloat()).toInt())
