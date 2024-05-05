@@ -9,5 +9,6 @@ data class HomeUiState(
     val showSettings: Boolean = false,
     val showImage: Boolean = true,
     val vibrate: Boolean = false,
-    val danger: Boolean = false
+    val danger: Boolean = false,
+    val date: String = ""
 )

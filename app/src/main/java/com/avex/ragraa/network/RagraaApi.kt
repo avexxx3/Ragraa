@@ -1,8 +1,5 @@
 package com.avex.ragraa.network
 
-import android.util.Log
-import android.widget.Toast
-import com.avex.ragraa.context
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.Datasource.saveImage
 import com.avex.ragraa.data.LoginRequest
@@ -21,7 +18,7 @@ import java.util.concurrent.TimeUnit
 
 object RagraaApi {
     var sessionID = ""
-    var updateStatus:(String) -> Unit = {}
+    var updateStatus: (String) -> Unit = {}
 
     fun loginFlex(loginRequest: LoginRequest) {
         updateStatus("Logging in")
@@ -31,20 +28,12 @@ object RagraaApi {
         val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
             .addFormDataPart("username", loginRequest.rollNo.ifEmpty { Datasource.rollNo })
             .addFormDataPart("password", loginRequest.password.ifEmpty { Datasource.password })
-            .addFormDataPart("g-recaptcha-response", loginRequest.g_recaptcha_response)
-            .build()
+            .addFormDataPart("g-recaptcha-response", loginRequest.g_recaptcha_response).build()
 
-        val request = Request.Builder()
-            .url(url)
-            .post(requestBody)
-            .build()
+        val request = Request.Builder().url(url).post(requestBody).build()
 
-        val client = OkHttpClient()
-            .newBuilder()
-            .connectTimeout(1, TimeUnit.MINUTES)
-            .writeTimeout(5, TimeUnit.MINUTES)
-            .readTimeout(5, TimeUnit.MINUTES)
-            .build()
+        val client = OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(5, TimeUnit.MINUTES).readTimeout(5, TimeUnit.MINUTES).build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: java.io.IOException) {
@@ -66,31 +55,25 @@ object RagraaApi {
                 fetchAttendance()
                 fetchMarks()
             }
-        }
-        )
+        })
     }
 
     private fun fetchMarks() {
-        updateStatus("Sending request to /Student/StudentMarks...")
+        updateStatus("Fetching marks")
 
-        val url = "https://flexstudent.nu.edu.pk/Student/StudentMarks?semid=20241"
+        val url = "https://flexstudent.nu.edu.pk/Student/StudentMarks?semid=20${Datasource.semId}"
 
-        val request = Request.Builder()
-            .url(url)
-            .build()
+        val request = Request.Builder().url(url).build()
 
-        val client = OkHttpClient().newBuilder()
-            .cookieJar(object : CookieJar {
-                override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
-                override fun loadForRequest(url: HttpUrl): List<Cookie> {
-                    return listOf(createNonPersistentCookie())
-                }
-            })
+        val client = OkHttpClient().newBuilder().cookieJar(object : CookieJar {
+            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
+            override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                return listOf(createNonPersistentCookie())
+            }
+        })
 
-            .connectTimeout(1, TimeUnit.MINUTES)
-            .writeTimeout(5, TimeUnit.MINUTES)
-            .readTimeout(5, TimeUnit.MINUTES)
-            .build()
+            .connectTimeout(1, TimeUnit.MINUTES).writeTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES).build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -114,26 +97,22 @@ object RagraaApi {
     }
 
     private fun fetchAttendance() {
-        updateStatus("Sending request to /Student/StudentAttendance...")
+        updateStatus("Fetching attendance")
 
-        val url = "https://flexstudent.nu.edu.pk/Student/StudentAttendance?semid=20241"
+        val url =
+            "https://flexstudent.nu.edu.pk/Student/StudentAttendance?semid=20${Datasource.semId}"
 
-        val request = Request.Builder()
-            .url(url)
-            .build()
+        val request = Request.Builder().url(url).build()
 
-        val client = OkHttpClient().newBuilder()
-            .cookieJar(object : CookieJar {
-                override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
-                override fun loadForRequest(url: HttpUrl): List<Cookie> {
-                    return listOf(createNonPersistentCookie())
-                }
-            })
+        val client = OkHttpClient().newBuilder().cookieJar(object : CookieJar {
+            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
+            override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                return listOf(createNonPersistentCookie())
+            }
+        })
 
-            .connectTimeout(1, TimeUnit.MINUTES)
-            .writeTimeout(5, TimeUnit.MINUTES)
-            .readTimeout(5, TimeUnit.MINUTES)
-            .build()
+            .connectTimeout(1, TimeUnit.MINUTES).writeTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES).build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -152,29 +131,24 @@ object RagraaApi {
                 }
 
                 Datasource.parseAttendance()
-                updateStatus("Fetched attendance successfully")
+                updateStatus("Fetched attendance successfully, fetching marks")
             }
         })
     }
 
     private fun fetchImage(rollNo: String) {
         updateStatus("Fetching profile picture")
-        val request = Request.Builder()
-            .url("https://flexstudent.nu.edu.pk/Login/GetImage")
-            .build()
+        val request = Request.Builder().url("https://flexstudent.nu.edu.pk/Login/GetImage").build()
 
-        val client = OkHttpClient().newBuilder()
-            .cookieJar(object : CookieJar {
-                override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
-                override fun loadForRequest(url: HttpUrl): List<Cookie> {
-                    return listOf(createNonPersistentCookie())
-                }
-            })
+        val client = OkHttpClient().newBuilder().cookieJar(object : CookieJar {
+            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
+            override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                return listOf(createNonPersistentCookie())
+            }
+        })
 
-            .connectTimeout(1, TimeUnit.MINUTES)
-            .writeTimeout(5, TimeUnit.MINUTES)
-            .readTimeout(5, TimeUnit.MINUTES)
-            .build()
+            .connectTimeout(1, TimeUnit.MINUTES).writeTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES).build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -183,20 +157,15 @@ object RagraaApi {
 
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                updateStatus("Fetched profile picture successfully")
+                updateStatus("Fetched profile picture successfully, Fetching attendance")
                 saveImage(response, rollNo)
             }
         })
     }
 
     private fun createNonPersistentCookie(): Cookie {
-        return Cookie.Builder()
-            .domain("flexstudent.nu.edu.pk")
-            .path("/")
-            .name("ASP.NET_SessionId")
-            .value(sessionID)
-            .httpOnly()
-            .build()
+        return Cookie.Builder().domain("flexstudent.nu.edu.pk").path("/").name("ASP.NET_SessionId")
+            .value(sessionID).httpOnly().build()
     }
 
 }

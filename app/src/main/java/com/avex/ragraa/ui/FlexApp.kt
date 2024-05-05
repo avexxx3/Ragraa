@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -57,7 +56,6 @@ import com.avex.ragraa.ui.marks.AttendanceScreen
 import com.avex.ragraa.ui.theme.sweetie_pie
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlexApp(
     loginViewModel: LoginViewModel = viewModel(),
@@ -67,6 +65,7 @@ fun FlexApp(
 ) {
     loginViewModel.navController = navController
     homeViewModel.navController = navController
+    calculatorViewModel.navController = navController
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -126,17 +125,17 @@ fun FlexApp(
                     selected = currentScreen == "attendance",
                     onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("attendance") }
                 )
-//                NavigationDrawerItem(
-//                    label = { Text(text = "Calculator") },
-//                    icon = {
-//                        Icon(
-//                            imageVector = Icons.Filled.Grade,
-//                            contentDescription = null
-//                        )
-//                    },
-//                    selected = currentScreen == "calculator",
-//                    onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("calculator") }
-//                )
+                NavigationDrawerItem(
+                    label = { Text(text = "Calculator") },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Grade,
+                            contentDescription = null
+                        )
+                    },
+                    selected = currentScreen == "calculator",
+                    onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("calculator") }
+                )
             }
 
         }
@@ -190,13 +189,10 @@ fun FlexApp(
                 AttendanceScreen(navBar = navBar)
             }
 
-//            composable("calculator") {
-//                currentScreen = "calculator"
-//                Column {
-//                    Row(verticalAlignment = Alignment.CenterVertically){navBar();Text("Marks", style = MaterialTheme.typography.displaySmall, fontSize = 24.sp, modifier = Modifier.padding(top = 4.dp, start = 12.dp))}
-//                    CalculatorScreen(navController)
-//                }
-//            }
+            composable("calculator") {
+                currentScreen = "calculator"
+                CalculatorScreen(calculatorViewModel, navBar = navBar)
+            }
         }
     }
 }

@@ -15,6 +15,9 @@ import io.objectbox.kotlin.boxFor
 import okhttp3.Response
 import org.jsoup.Jsoup
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -34,20 +37,21 @@ data class Section(
     val listOfMarks: List<Marks>,
     val obtained: Float,
     val total: Float,
+    val average: Float,
     var new: Boolean = false,
-    var id: Long = 0
 )
 
 data class Course(
     val courseName: String,
     val courseMarks: List<Section>,
     var new: Boolean = false,
-    var id: Long = 0
 )
 
-data class Attendance(val date:String, val present:Boolean)
+data class Attendance(val date: String, val present: Boolean)
 
-data class courseAttendance(val courseName: String, var percentage:Float, val attendance: List<Attendance>)
+data class CourseAttendance(
+    val courseName: String, var percentage: Float, val attendance: List<Attendance>
+)
 
 @Entity
 data class marksHTML(val html: String = "", @Id var id: Long = 0)
@@ -61,16 +65,16 @@ object Datasource {
 
     var rollNo: String = ""
     var password: String = ""
-    var showImage:Boolean = true
+    var showImage: Boolean = true
+    var date: String = ""
 
     var bitmap: ImageBitmap? = null
     var marksDatabase: MutableList<Course> = mutableListOf()
-    var attendanceDatabase:MutableList<courseAttendance> = mutableListOf()
+    var attendanceDatabase: MutableList<CourseAttendance> = mutableListOf()
+    var semId: String = ""
 
     var updateLoginUI: () -> Unit = {}
     var updateHomeUI: () -> Unit = {}
-
-    var temp: Boolean = true
 
     fun cacheData() {
         val attendanceBox = store.boxFor<attendanceHTML>().all
@@ -95,7 +99,11 @@ object Datasource {
             password = password.decrypt()
         }
 
+        date = sharedPreferences.getString("date", "").toString()
+
         showImage = sharedPreferences.getBoolean("showImage", true)
+
+        semId = sharedPreferences.getString("semId", "241").toString()
 
         if (rollNo.isEmpty()) return
 
@@ -103,9 +111,7 @@ object Datasource {
 
         if (bitmapBox.isNotEmpty()) {
             bitmap = BitmapFactory.decodeByteArray(
-                bitmapBox[0].byteArray,
-                0,
-                bitmapBox[0].byteArray.size
+                bitmapBox[0].byteArray, 0, bitmapBox[0].byteArray.size
             ).asImageBitmap()
         } else {
             bitmap = null; Log.d("Dev", "Query is empty")
@@ -115,9 +121,14 @@ object Datasource {
     }
 
     fun saveLogin() {
+        date = SimpleDateFormat(
+            "dd MMM, HH:mm", Locale.getDefault()
+        ).format(Calendar.getInstance().time)
+
         val editor = sharedPreferences.edit()
         editor.putString("rollNo", rollNo.encrypt())
         editor.putString("password", password.encrypt())
+        editor.putString("date", date)
         editor.apply()
     }
 
@@ -136,6 +147,7 @@ object Datasource {
         for (course in totalCourses) {
 
             val listOfItems: MutableList<Section> = mutableListOf()
+            var totalWeightage = 0f
 
             for ((i, courseWork) in course.getElementsByClass("mb-0").withIndex()) {
                 if (i == course.getElementsByClass("mb-0").size - 1) continue
@@ -159,6 +171,7 @@ object Datasource {
                         temp.add(thing)
                     }
 
+                    totalWeightage += temp[0]
 
                     listOfMarks.add(
                         Marks(
@@ -172,17 +185,19 @@ object Datasource {
                     )
                 }
 
+                var average = 0f
+
+                for (item in listOfMarks) {
+                    average += item.average / item.total * item.weightage
+                }
+
+
                 val obtained =
                     course.getElementsByClass("text-center totalColObtMarks")[i].text().toFloat()
                 val total =
                     course.getElementsByClass("text-center totalColweightage")[i].text().toFloat()
 
-                if(temp) {
-                    listOfMarks.removeAt(1)
-                    temp = false
-                }
-
-                listOfItems.add(Section(courseWork.text(), listOfMarks, obtained, total))
+                listOfItems.add(Section(courseWork.text(), listOfMarks, obtained, total, average))
             }
 
             newDatabase.add(Course(course.getElementsByTag("h5")[0].text(), listOfItems))
@@ -194,13 +209,13 @@ object Datasource {
         box.removeAll()
         box.put(marksHTML(marksResponse))
 
+
         updateHomeUI()
     }
 
     //This is the greatest piece of code i've ever written
     private fun checkAdditions(newDatabase: MutableList<Course>) {
         if (marksDatabase.isEmpty()) {
-            Log.d("Dev", "Database.isEmpty()")
             return
         }
 
@@ -213,14 +228,13 @@ object Datasource {
                 course.new = true
                 for (section in course.courseMarks) {
                     section.new = true
-                    for (marks in section.listOfMarks)
-                        marks.new = true
+                    for (marks in section.listOfMarks) marks.new = true
                 }
                 continue
             }
 
             val databaseCourseMarks = marksDatabase[index].courseMarks.map { it.name }
-            for(section in course.courseMarks) {
+            for (section in course.courseMarks) {
                 val index2: Int = databaseCourseMarks.indexOf(section.name)
 
                 if (index2 == -1) {
@@ -248,9 +262,9 @@ object Datasource {
         box.removeAll()
         val inputStream = response.body?.byteStream()
         bitmap = BitmapFactory.decodeStream(inputStream).asImageBitmap()
-        val bos = ByteArrayOutputStream();
-        bitmap?.asAndroidBitmap()?.compress(Bitmap.CompressFormat.PNG, 100, bos);
-        val bArray = bos.toByteArray();
+        val bos = ByteArrayOutputStream()
+        bitmap?.asAndroidBitmap()?.compress(Bitmap.CompressFormat.PNG, 100, bos)
+        val bArray = bos.toByteArray()
 
         updateHomeUI()
 
@@ -262,31 +276,37 @@ object Datasource {
         val htmlFile = Jsoup.parse(attendanceResponse).body()
 
         val courses = htmlFile.getElementsByAttributeValue("role", "tabpanel")
-        Log.d("Dev", "courses size: ${courses.size}")
 
-        for(course in courses) {
-            Log.d("Dev", course.getElementsByClass("col-md-6").html())
-
+        for (course in courses) {
             val courseName = course.getElementsByClass("col-md-6")[0].text()
-            val percentage = course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text().substring(0,  course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text().length - 2).toFloat()
+            val percentage =
+                course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text()
+                    .substring(
+                        0,
+                        course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text().length - 2
+                    ).toFloat()
             val listAttendance: MutableList<Attendance> = mutableListOf()
 
-            val courseDetails = course.getElementsByClass("table table-bordered table-responsive m-table m-table--border-info m-table--head-bg-info")[0].getElementsByClass("text-center")
+            val courseDetails =
+                course.getElementsByClass("table table-bordered table-responsive m-table m-table--border-info m-table--head-bg-info")[0].getElementsByClass(
+                    "text-center"
+                )
 
-            var date:String? = null
-            var presence:Boolean? = null
+            var date: String? = null
+            var presence: Boolean? = null
 
-            for(textCenter in courseDetails) {
-                if(textCenter.text().contains('-')) date = textCenter.text()
-                if(textCenter.text().contains('P') || textCenter.text().contains('A')) presence = textCenter.text().contains('P')
-                if(date != null && presence != null) {
+            for (textCenter in courseDetails) {
+                if (textCenter.text().contains('-')) date = textCenter.text()
+                if (textCenter.text().contains('P') || textCenter.text().contains('A')) presence =
+                    textCenter.text().contains('P')
+                if (date != null && presence != null) {
                     listAttendance.add(Attendance(date, presence))
                     date = null
                     presence = null
                 }
             }
 
-            attendanceDatabase.add(courseAttendance(courseName, percentage, listAttendance))
+            attendanceDatabase.add(CourseAttendance(courseName, percentage, listAttendance))
         }
 
         val box = store.boxFor<attendanceHTML>()

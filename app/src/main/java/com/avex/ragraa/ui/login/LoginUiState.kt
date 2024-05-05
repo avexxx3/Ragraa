@@ -7,6 +7,6 @@ data class LoginUiState(
     val status: String = "",
     val isOnCredential:Boolean = true,
     val isCompleted:Boolean = false,
-    val rememberLogin:Boolean = true
-    ) {
-}
+    val rememberLogin:Boolean = true,
+    val expanded:Boolean = false
+    )

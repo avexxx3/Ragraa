@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.avex.ragraa.context
@@ -21,11 +20,11 @@ class HomeViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    var updated: Boolean = false
-    var showSettings: Boolean = false
-    var showImage: Boolean = true
-    var vibrate: Boolean = false
-    var danger: Boolean = false
+    private var updated: Boolean = false
+    private var showSettings: Boolean = false
+    private var showImage: Boolean = true
+    private var vibrate: Boolean = false
+    private var danger: Boolean = false
 
     init {
         showImage = Datasource.showImage
@@ -43,16 +42,16 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun updateUI() {
-        if(!updated) {
+        if (!updated) {
             for (course in Datasource.marksDatabase) {
                 if (course.new) {
-                    updated = true;
+                    updated = true
                     break
                 }
             }
         }
 
-        if(!danger) {
+        if (!danger) {
             for (course in Datasource.attendanceDatabase) {
                 if (course.percentage <= 80) {
                     danger = true
@@ -69,7 +68,8 @@ class HomeViewModel : ViewModel() {
                 showSettings = showSettings,
                 showImage = showImage,
                 vibrate = vibrate,
-                danger = danger
+                danger = danger,
+                date = Datasource.date
             )
         }
     }
@@ -89,9 +89,9 @@ class HomeViewModel : ViewModel() {
     fun vibrate() {
         val v: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
-            v.vibrate(500);
+            v.vibrate(500)
         }
         vibrate = true
         updateUI()

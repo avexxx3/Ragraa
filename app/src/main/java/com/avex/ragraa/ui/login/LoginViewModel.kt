@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.LoginRequest
 import com.avex.ragraa.network.RagraaApi
+import com.avex.ragraa.sharedPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,12 +19,13 @@ class LoginViewModel : ViewModel() {
     lateinit var navController: NavHostController
 
     private val loginRequest = LoginRequest()
-    private var isError:Boolean = false
-    private var status:String = ""
-    private var isOnCredential:Boolean = true
-    private var response:Int = 0
-    private var isCompleted:Boolean = false
-    private var rememberLogin:Boolean = true
+    private var isError: Boolean = false
+    private var status: String = ""
+    private var isOnCredential: Boolean = true
+    private var response: Int = 0
+    private var isCompleted: Boolean = false
+    private var rememberLogin: Boolean = true
+    private var expanded: Boolean = false
 
     init {
         Datasource.cacheData()
@@ -31,8 +33,8 @@ class LoginViewModel : ViewModel() {
         loginRequest.rollNo = Datasource.rollNo
         loginRequest.password = Datasource.password
 
-        Datasource.updateLoginUI = {updateUI()}
-        RagraaApi.updateStatus = {updateStatus(it)}
+        Datasource.updateLoginUI = { updateUI() }
+        RagraaApi.updateStatus = { updateStatus(it) }
         updateUI()
     }
 
@@ -44,7 +46,7 @@ class LoginViewModel : ViewModel() {
 
     //Login to flex and save the session ID.
     //Send request to fetch marks and attendance
-    fun loginFlex() {
+    private fun loginFlex() {
         RagraaApi.loginFlex(loginRequest)
         updateUI()
     }
@@ -55,16 +57,14 @@ class LoginViewModel : ViewModel() {
     }
 
     //This will only move to the next screen if status fetches marks successfully
-    fun updateStatus(newStatus:String) {
+    fun updateStatus(newStatus: String) {
         status = newStatus
         Log.d("Dev", "Status: $status")
-        if(status.contains("Fetched marks successfully") || status.contains("Fetched attendance successfully"))
-            response++
+        if (status.contains("Fetched marks successfully") || status.contains("Fetched attendance successfully")) response++
 
-        if(response == 2) {
+        if (response == 2) {
             isCompleted = true
-            if(rememberLogin)
-                Datasource.saveLogin()
+            if (rememberLogin) Datasource.saveLogin()
         }
 
         updateUI()
@@ -88,7 +88,8 @@ class LoginViewModel : ViewModel() {
                 status = status,
                 isOnCredential = isOnCredential,
                 isCompleted = isCompleted,
-                rememberLogin = rememberLogin
+                rememberLogin = rememberLogin,
+                expanded = expanded
             )
         }
     }
@@ -99,8 +100,7 @@ class LoginViewModel : ViewModel() {
     }
 
     fun updatePassword(newPassword: String) {
-        if (validatePassword(newPassword))
-            loginRequest.password = newPassword
+        if (validatePassword(newPassword)) loginRequest.password = newPassword
         updateUI()
     }
 
@@ -109,12 +109,9 @@ class LoginViewModel : ViewModel() {
         var updatedRollNo: String = newRollNo
 
         //Replaces the first row of letters with their corresponding number, for convenience
-        if (updatedRollNo.isNotEmpty())
-            updatedRollNo = setIndex(
-                updatedRollNo,
-                updatedRollNo.length - 1,
-                convertChar(updatedRollNo.last())
-            )
+        if (updatedRollNo.isNotEmpty()) updatedRollNo = setIndex(
+            updatedRollNo, updatedRollNo.length - 1, convertChar(updatedRollNo.last())
+        )
 
         //Adds a '-' as the 4th letter regardless of what was inputted
         if (updatedRollNo.length == 4 && !updatedRollNo.contains('-')) {
@@ -206,5 +203,17 @@ class LoginViewModel : ViewModel() {
             'p' -> return '0'
         }
         return letter
+    }
+
+    fun showMenu(expandedNew: Boolean = !expanded) {
+        expanded = expandedNew
+        Log.d("Dev", "Expanded: $expanded")
+        updateUI()
+    }
+
+    fun select(semId: String) {
+        Datasource.semId = semId
+        sharedPreferences.edit().putString("semId", semId).apply()
+        showMenu(false)
     }
 }

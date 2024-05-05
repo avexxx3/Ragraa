@@ -1,6 +1,5 @@
 package com.avex.ragraa.ui.marks
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +18,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,22 +29,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.avex.ragraa.R
-import com.avex.ragraa.context
 import com.avex.ragraa.data.Attendance
+import com.avex.ragraa.data.CourseAttendance
 import com.avex.ragraa.data.Datasource
-import com.avex.ragraa.data.courseAttendance
 import com.avex.ragraa.ui.home.drawRainbowBorder
 import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun AttendanceScreen(
-    attendanceViewModel: DataViewModel = viewModel(),
-    navBar: @Composable () -> Unit
+    attendanceViewModel: DataViewModel = viewModel(), navBar: @Composable () -> Unit
 ) {
     val uiState = attendanceViewModel.uiState.collectAsState().value
     Column {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 8.dp)){navBar();Text("Attendance", style = MaterialTheme.typography.displaySmall, fontSize = 24.sp,  modifier = Modifier.padding(top = 4.dp, start = 12.dp))}
-        LazyColumn() {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 8.dp)
+        ) {
+            navBar();Text(
+            "Attendance",
+            style = MaterialTheme.typography.displaySmall,
+            fontSize = 24.sp,
+            modifier = Modifier.padding(top = 4.dp, start = 12.dp)
+        )
+        }
+        LazyColumn {
             item {
                 for (course in Datasource.attendanceDatabase) {
                     AttendanceCard(course) { attendanceViewModel.showCourse(course) }
@@ -56,12 +62,12 @@ fun AttendanceScreen(
     }
 
     if (uiState.currentAttendanceCourse != null) AttendanceDetails(uiState.currentAttendanceCourse) {
-        attendanceViewModel.showCourse(courseAttendance("", 0f, listOf()))
+        attendanceViewModel.showCourse(CourseAttendance("", 0f, listOf()))
     }
 }
 
 @Composable
-fun AttendanceDetails(course: courseAttendance, hideCourse: () -> Unit) {
+fun AttendanceDetails(course: CourseAttendance, hideCourse: () -> Unit) {
     BackHandler {
         hideCourse()
     }
@@ -73,32 +79,43 @@ fun AttendanceDetails(course: courseAttendance, hideCourse: () -> Unit) {
             .align(Alignment.Center)
             .fillMaxSize()
             .padding(40.dp)
-            .clickable { }
-            , shape = CutCornerShape(topStart = 80f, bottomEnd = 80f))
-        {
+            .clickable { },
+            shape = CutCornerShape(topStart = 80f, bottomEnd = 80f)) {
             LazyColumn {
                 item {
-                    Text(course.courseName.substring(7), modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(vertical = 12.dp, horizontal = 16.dp)
-                        .padding(top = 8.dp), style = MaterialTheme.typography.displaySmall, fontSize = 28.sp,  textAlign = TextAlign.Center)
+                    Text(
+                        course.courseName.substring(7),
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(vertical = 12.dp, horizontal = 16.dp)
+                            .padding(top = 8.dp),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontSize = 28.sp,
+                        textAlign = TextAlign.Center
+                    )
 
-                    Divider(thickness = 2.dp, modifier = Modifier
-                        .padding(horizontal = 32.dp)
-                        .padding(bottom = 20.dp), color = Color.White)
+                    Divider(
+                        thickness = 2.dp,
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp)
+                            .padding(bottom = 20.dp),
+                        color = Color.White
+                    )
 
-                    course.attendance.forEachIndexed() {index: Int, attendance: Attendance ->
-                        val color = if(attendance.present) sweetie_pie else Color(221, 24, 24)
+                    course.attendance.forEachIndexed { index: Int, attendance: Attendance ->
+                        val color = if (attendance.present) sweetie_pie else Color(221, 24, 24)
 
-                        Row(modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .padding(bottom = 20.dp)) {
+                        Row(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
+                                .padding(bottom = 20.dp)
+                        ) {
                             Spacer(modifier = Modifier.weight(0.5f))
                             Text("${index + 1}", color = color, textAlign = TextAlign.End)
                             Spacer(modifier = Modifier.weight(1f))
                             Text(attendance.date, color = color)
                             Spacer(modifier = Modifier.weight(1f))
-                            Text(if(attendance.present) "P" else "A", color = color)
+                            Text(if (attendance.present) "P" else "A", color = color)
                             Spacer(modifier = Modifier.weight(0.5f))
                         }
                     }
@@ -109,7 +126,7 @@ fun AttendanceDetails(course: courseAttendance, hideCourse: () -> Unit) {
 }
 
 @Composable
-fun AttendanceCard(course: courseAttendance, showCourse: () -> Unit) {
+fun AttendanceCard(course: CourseAttendance, showCourse: () -> Unit) {
     Card(
         shape = CutCornerShape(topEnd = 32.dp, bottomStart = 32.dp),
         modifier = Modifier
@@ -120,13 +137,9 @@ fun AttendanceCard(course: courseAttendance, showCourse: () -> Unit) {
                 if (course.percentage <= 80) 1000 else 12500,
                 10f,
                 if ((course.percentage <= 80)) listOf(
-                    Color.Red,
-                    Color.LightGray,
-                    Color.Red
+                    Color.Red, Color.LightGray, Color.Red
                 ) else listOf(
-                    Color(0xFF659999),
-                    Color(0xFF6BE585),
-                    Color(0xFF659999)
+                    Color(0xFF659999), Color(0xFF6BE585), Color(0xFF659999)
                 )
             )
             .clickable { showCourse() },
@@ -136,12 +149,13 @@ fun AttendanceCard(course: courseAttendance, showCourse: () -> Unit) {
         Text(
             text = course.courseName.substring(7),
             style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Black,
             textAlign = TextAlign.Start,
             softWrap = true,
             modifier = Modifier.padding(start = 12.dp, top = 12.dp),
         )
 
-        Row() {
+        Row {
             Text(
                 text = course.courseName.substring(0, 6),
                 style = MaterialTheme.typography.headlineSmall,

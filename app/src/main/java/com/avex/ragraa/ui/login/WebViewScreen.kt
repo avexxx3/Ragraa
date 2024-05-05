@@ -14,26 +14,22 @@ import com.avex.ragraa.network.captchaLoaded
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun WebViewScreen(
-    updateCaptcha: (String) -> Unit,
-    navLogin: () -> Unit
+    updateCaptcha: (String) -> Unit, navLogin: () -> Unit
 ) {
-    BackHandler {navLogin()}
+    BackHandler { navLogin() }
 
     val webViewClient = CustomWebViewClient()
 
-    val webChromeClient = CustomWebChromeClient{updateCaptcha(it)}
+    val webChromeClient = CustomWebChromeClient { updateCaptcha(it) }
 
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
-            WebView(context).apply {
-                this.webViewClient = webViewClient
-                this.webChromeClient = webChromeClient
-                settings.javaScriptEnabled = true
-                settings.setSupportZoom(true)
-            }
+    AndroidView(modifier = Modifier.fillMaxSize(), factory = { context ->
+        WebView(context).apply {
+            this.webViewClient = webViewClient
+            this.webChromeClient = webChromeClient
+            settings.javaScriptEnabled = true
+            settings.setSupportZoom(true)
         }
-    ) { webView ->
+    }) { webView ->
         webView.loadUrl("https://flexstudent.nu.edu.pk/Login")
         captchaLoaded = false
     }

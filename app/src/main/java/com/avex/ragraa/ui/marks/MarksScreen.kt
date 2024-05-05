@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -84,10 +85,12 @@ fun MarksScreen(
         newNavController, "marks"
     ) {
         composable("marks") {
-            LazyColumn() {
+            LazyColumn {
                 item {
                     for (course in Datasource.marksDatabase) {
-                        CourseCard(course, {newNavController.navigate("course")}) {marksViewModel.showCourse(it)}
+                        CourseCard(
+                            course,
+                            { newNavController.navigate("course") }) { marksViewModel.showCourse(it) }
                     }
                 }
             }
@@ -104,8 +107,7 @@ fun CourseDetails(course: Course) {
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.animateContentSize(
             animationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessMedium
+                dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
             )
         )
     ) {
@@ -120,7 +122,7 @@ fun CourseDetails(course: Course) {
             )
 
             for (courseItem in course.courseMarks) {
-                CourseItem(courseItem)
+                if (courseItem.listOfMarks.isNotEmpty()) CourseItem(courseItem)
             }
         }
     }
@@ -130,40 +132,42 @@ fun CourseDetails(course: Course) {
 fun CourseItem(courseItem: Section) {
     val isExpanded = remember { mutableStateOf(true) }
 
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-        .clickable { isExpanded.value = !isExpanded.value }) {
+    Row(verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable { isExpanded.value = !isExpanded.value }) {
 
         Text(
             text = courseItem.name,
             style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.W900),
             textAlign = TextAlign.Center,
-            color = if(courseItem.new) sweetie_pie else Color.Unspecified,
+            color = if (courseItem.new) sweetie_pie else Color.Unspecified,
             modifier = Modifier.padding(end = 8.dp),
         )
 
 
         Icon(
             imageVector = if (isExpanded.value) Icons.AutoMirrored.Outlined.KeyboardArrowRight else Icons.Outlined.KeyboardArrowDown,
-            tint = if(courseItem.new) sweetie_pie else LocalContentColor.current,
+            tint = if (courseItem.new) sweetie_pie else LocalContentColor.current,
             contentDescription = null
         )
     }
 
-    Divider(thickness = 2.dp, modifier = Modifier.padding(top = 8.dp, bottom = 16.dp, start = 68.dp, end = 68.dp), color = if(courseItem.new) sweetie_pie else if(isSystemInDarkTheme()) Color.White else Color.Black)
+    Divider(
+        thickness = 2.dp,
+        modifier = Modifier.padding(top = 8.dp, bottom = 16.dp, start = 68.dp, end = 68.dp),
+        color = if (courseItem.new) sweetie_pie else if (isSystemInDarkTheme()) Color.White else Color.Black
+    )
 
     Column(
         modifier = Modifier.animateContentSize(
             animationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessMediumLow
+                dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow
             )
         )
     ) {
 
         if (isExpanded.value) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
             ) {
                 val style = TextStyle(
                     fontFamily = monteserratFamily,
@@ -204,10 +208,12 @@ fun CourseItem(courseItem: Section) {
                 CourseMarks(marks, (index + 1).toString())
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 20.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 20.dp)
+            ) {
                 Spacer(modifier = Modifier.weight(1f))
-                Text("Total:", style = MaterialTheme.typography.displaySmall, fontSize = 22.sp)
-                Spacer(modifier = Modifier.weight(0.3f))
+                Text("Total: ", style = MaterialTheme.typography.displaySmall, fontSize = 22.sp)
 
                 Text(
                     formatMarks(courseItem.obtained),
@@ -227,10 +233,20 @@ fun CourseItem(courseItem: Section) {
                         fontSize = 22.sp
                     ),
                 )
+
+                Spacer(modifier = Modifier.weight(0.3f))
+
+                Text(
+                    "Avg: " + formatMarks(courseItem.average),
+                    style = TextStyle(
+                        fontFamily = monteserratFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 22.sp
+                    ),
+                )
                 Spacer(modifier = Modifier.weight(1f))
             }
 
-            //Divider(thickness = 0.dp, modifier = Modifier.padding(top = 4.dp, bottom = 16.dp, start = 108.dp, end = 108.dp))
         }
     }
 }
@@ -247,23 +263,25 @@ fun CourseMarks(marks: Marks, index: String) {
             .padding(
                 horizontal = dimensionResource(
                     id = R.dimen.padding_large
-                ),
-                vertical = dimensionResource(id = R.dimen.padding_small)
+                ), vertical = dimensionResource(id = R.dimen.padding_small)
             )
             .fillMaxWidth()
     ) {
-        CustomerCircularProgressBar(marks.obtained, marks.total, formatMarks(marks.weightage), index)
+        CustomerCircularProgressBar(
+            marks.obtained,
+            marks.total,
+            formatMarks(marks.weightage),
+            index
+        )
 
         Box(Modifier.size(80.dp)) {
             Row(Modifier.align(Alignment.Center)) {
                 Text(
-                    formatMarks(marks.obtained),
-                    style = TextStyle(
+                    formatMarks(marks.obtained), style = TextStyle(
                         fontFamily = monteserratFamily,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp
-                    ),
-                    color = if(marks.new) sweetie_pie else Color.Unspecified
+                    ), color = if (marks.new) sweetie_pie else Color.Unspecified
                 )
 
                 Text(
@@ -280,80 +298,64 @@ fun CourseMarks(marks: Marks, index: String) {
 
         Box(Modifier.size(60.dp)) {
             Text(
-                formatMarks(marks.average),
-                style = TextStyle(
+                formatMarks(marks.average), style = TextStyle(
                     fontFamily = monteserratFamily,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
-                ),
-                modifier = Modifier.align(Alignment.Center),
-                textAlign = TextAlign.Center
+                ), modifier = Modifier.align(Alignment.Center), textAlign = TextAlign.Center
             )
         }
 
         Box(Modifier.size(60.dp)) {
             Text(
-                formatMarks(marks.minimum),
-                style = TextStyle(
+                formatMarks(marks.minimum), style = TextStyle(
                     fontFamily = monteserratFamily,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
-                ),
-                modifier = Modifier.align(Alignment.Center),
-                textAlign = TextAlign.Center
+                ), modifier = Modifier.align(Alignment.Center), textAlign = TextAlign.Center
             )
         }
 
         Box(Modifier.size(60.dp)) {
             Text(
-                formatMarks(marks.maximum),
-                style = TextStyle(
+                formatMarks(marks.maximum), style = TextStyle(
                     fontFamily = monteserratFamily,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
-                ),
-                modifier = Modifier.align(Alignment.Center),
-                textAlign = TextAlign.Center
+                ), modifier = Modifier.align(Alignment.Center), textAlign = TextAlign.Center
             )
         }
     }
 }
 
 @Composable
-fun CourseCard(course: Course, navCourse:() -> Unit, selectCourse:(Course) -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.padding_medium))
-            .clickable { selectCourse(course); navCourse() }
-            .drawRainbowBorder(
-                2.dp,
-                if (!course.new) 12500 else 1000, 10f,
-                if (!course.new) listOf(
-                    Color(0xFF59C173),
-                    Color(0xFFA17FE0),
-                    Color(0xFF5D26C1),
-                    Color(0xFF59C173)
-                )
-                else listOf(
-                    Color(0xFFFF685D),
-                    Color(0xFFFF64F0),
-                    Color(0xFF5155FF),
-                    Color(0xFF54EDFF),
-                    Color(0xFF5BFF7B),
-                    Color(0xFFFDFF59),
-                    Color(0xFFFFCA55),
-                )
+fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> Unit) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(dimensionResource(id = R.dimen.padding_medium))
+        .clickable { selectCourse(course); navCourse() }
+        .drawRainbowBorder(
+            2.dp, if (!course.new) 12500 else 1000, 10f, if (!course.new) listOf(
+                Color(0xFF59C173), Color(0xFFA17FE0), Color(0xFF5D26C1), Color(0xFF59C173)
             )
-        ,
+            else listOf(
+                Color(0xFFFF685D),
+                Color(0xFFFF64F0),
+                Color(0xFF5155FF),
+                Color(0xFF54EDFF),
+                Color(0xFF5BFF7B),
+                Color(0xFFFDFF59),
+                Color(0xFFFFCA55),
+            )
+        ),
         shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0, 0, 0, 0))
-    ) {
+        colors = CardDefaults.cardColors(containerColor = Color(0, 0, 0, 0))) {
 
         Text(
             text = course.courseName.substring(7),
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Start,
+            fontWeight = FontWeight.Black,
             softWrap = true,
             modifier = Modifier.padding(start = 12.dp, top = 12.dp),
         )
@@ -379,24 +381,26 @@ fun CustomerCircularProgressBar(
     strokeWidth: Dp = 8.dp,
     backgroundArcColor: Color = Color.Gray
 ) {
-
-    var progress by remember { mutableStateOf(0F) }
+    var progress by remember { mutableFloatStateOf(0F) }
     val progressAnimDuration = 1_500
     val progressAnimation by animateFloatAsState(
         targetValue = progress,
         animationSpec = tween(durationMillis = progressAnimDuration, easing = FastOutSlowInEasing),
+        label = "",
     )
 
     LaunchedEffect(LocalLifecycleOwner.current) {
-        progress = if (obtained < 0) 0f else if(obtained <= total) obtained / total * 270 else 270f
+        progress = if (obtained < 0) 0f else if (obtained <= total) obtained / total * 270 else 270f
     }
 
     Box(modifier = Modifier.padding(end = 12.dp)) {
         Text(index, modifier = Modifier.align(Alignment.Center))
         Text(
-            weightage, modifier = Modifier
+            weightage,
+            modifier = Modifier
                 .align(Alignment.Center)
-                .padding(top = 48.dp), fontSize = 12.sp
+                .padding(top = 48.dp),
+            fontSize = 12.sp
         )
 
         Canvas(modifier = Modifier.size(size)) {
@@ -415,9 +419,7 @@ fun CustomerCircularProgressBar(
 
             drawArc(
                 color = if (obtained <= 0 || total <= 0) backgroundArcColor else Color.hsl(
-                    ((100.8 * obtained / total).toFloat()),
-                    0.78F,
-                    0.75F
+                    ((100.8 * obtained / total).toFloat()), 0.78F, 0.75F
                 ),
                 startAngle = 135f,
                 sweepAngle = progressAnimation,

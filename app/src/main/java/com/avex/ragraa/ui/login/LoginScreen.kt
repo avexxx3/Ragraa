@@ -15,7 +15,7 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Checkbox
-import androidx.compose.material.OutlinedButton
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -27,6 +27,9 @@ import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,20 +56,19 @@ import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.ui.theme.sweetie_pie
+import java.util.Calendar
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
-    navBar: @Composable () -> Unit
+    viewModel: LoginViewModel, navBar: @Composable () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
     BackHandler {
-        if(Datasource.rollNo.isNotEmpty())
-            viewModel.navController.navigate("home")
-        }
+        if (Datasource.rollNo.isNotEmpty()) viewModel.navController.navigate("home")
+    }
 
-    if(uiState.isCompleted) {
+    if (uiState.isCompleted) {
         viewModel.updateStatus("")
         viewModel.resetData()
         viewModel.navController.navigate("home")
@@ -76,20 +78,27 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        if(Datasource.rollNo.isNotEmpty() && (uiState.status.isEmpty() || uiState.status.contains("Error"))) {
-            Row(verticalAlignment = Alignment.CenterVertically){navBar();androidx.compose.material3.Text(
-                "Login", style = MaterialTheme.typography.displaySmall, fontSize = 24.sp, modifier = Modifier.padding(top = 4.dp, start = 12.dp));Spacer(Modifier.weight(1f))
+        if (Datasource.rollNo.isNotEmpty() && (uiState.status.isEmpty() || uiState.status.contains("Error"))) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                navBar();androidx.compose.material3.Text(
+                "Login",
+                style = MaterialTheme.typography.displaySmall,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(top = 4.dp, start = 12.dp)
+            );Spacer(Modifier.weight(1f))
             }
         }
 
-        Spacer(modifier = Modifier.weight(0.3f))
+        Spacer(modifier = Modifier.weight(0.2f))
 
         //Logo
         Logo()
 
-        Spacer(modifier = Modifier.weight(0.2f))
+        Spacer(modifier = Modifier.weight(0.15f))
 
         val focusManager = LocalFocusManager.current
+
+        SemesterMenu(viewModel)
 
         //Username text field
         OutlinedTextField(
@@ -110,7 +119,7 @@ fun LoginScreen(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
-                textColor = if(isSystemInDarkTheme()) Color.White else Color.Black
+                textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
             )
         )
 
@@ -151,50 +160,116 @@ fun LoginScreen(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
-                textColor = if(isSystemInDarkTheme()) Color.White else Color.Black
+                textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
             )
         )
-        if((uiState.status.isEmpty() || uiState.status.contains("Error") ) && !uiState.isCompleted)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.padding(start = 11.dp)
-            ) {
-                CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
-                    Checkbox(
-                        checked = uiState.rememberLogin,
-                        onCheckedChange = { viewModel.updatePreference() })
-                }
-
-                Text(
-                    "Remember login info",
-                    color = if(isSystemInDarkTheme()) Color.White else Color.Black,
-                    modifier = Modifier.clickable { viewModel.updatePreference() }
-                )
-
-                Spacer(Modifier.weight(1f))
+        if ((uiState.status.isEmpty() || uiState.status.contains("Error")) && !uiState.isCompleted) Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.padding(start = 11.dp)
+        ) {
+            CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
+                Checkbox(checked = uiState.rememberLogin,
+                    onCheckedChange = { viewModel.updatePreference() })
             }
 
-        if(uiState.status.isNotEmpty()) Text(text = uiState.status, color = if(isSystemInDarkTheme()) Color.White else Color.Black, modifier = Modifier.padding(10.dp))
+            Text("Remember login info",
+                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                modifier = Modifier.clickable { viewModel.updatePreference() })
 
-        if((uiState.status.isEmpty() || uiState.status.contains("Error") ) && !uiState.isCompleted)
-            OutlinedButton(
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
-                    .fillMaxWidth(),
-                onClick = { viewModel.navController.navigate("web") }
-            ) {
-                Text("Login", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(vertical = 6.dp))
-            }
+            Spacer(Modifier.weight(1f))
+        }
+
+        if (uiState.status.isNotEmpty()) Text(
+            text = uiState.status,
+            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+            modifier = Modifier.padding(10.dp)
+        )
+
+        if ((uiState.status.isEmpty() || uiState.status.contains("Error")) && !uiState.isCompleted) Button(modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
+            .fillMaxWidth(),
+            onClick = { viewModel.navController.navigate("web") }) {
+            Text(
+                "Login",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(vertical = 6.dp)
+            )
+        }
 
         Spacer(Modifier.weight(0.5f))
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SemesterMenu(viewModel: LoginViewModel) {
+    val uiState = viewModel.uiState.collectAsState().value
+
+    ExposedDropdownMenuBox(
+        expanded = uiState.expanded,
+        onExpandedChange = { viewModel.showMenu() },
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_large))
+    ) {
+        OutlinedTextField(
+            value = when (Datasource.semId[2]) {
+                '1' -> "Spring "
+                '2' -> "Summer "
+                '3' -> "Fall "
+                else -> ""
+            } + Datasource.semId.substring(0, 2),
+            label = { Text("Semester") },
+            textStyle = MaterialTheme.typography.bodyLarge,
+            shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.DarkGray,
+                focusedLabelColor = Color.Gray,
+                unfocusedBorderColor = Color.DarkGray,
+                unfocusedLabelColor = Color.Gray,
+                textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+            ),
+            onValueChange = {},
+            readOnly = true,
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
+        )
+
+        ExposedDropdownMenu(
+            expanded = uiState.expanded,
+            onDismissRequest = { viewModel.showMenu(false) }) {
+            for (i in -1..1) {
+                val year = (Calendar.getInstance().time.year + i).toString().substring(1, 3)
+                DropdownMenuItem(onClick = { viewModel.select("${year}1") }) {
+                    Text(
+                        "Spring $year",
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                    )
+                }
+                DropdownMenuItem(onClick = { viewModel.select("${year}2") }) {
+                    Text(
+                        "Summer $year",
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                    )
+                }
+                DropdownMenuItem(onClick = { viewModel.select("${year}3") }) {
+                    Text(
+                        "Fall $year",
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun Logo(
-    modifier:Modifier = Modifier
-){
+    modifier: Modifier = Modifier
+) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Image(
             painter = painterResource(id = R.mipmap.ic_launcher_foreground),
@@ -216,5 +291,5 @@ private object NoRippleTheme : RippleTheme {
     override fun defaultColor() = Color.Unspecified
 
     @Composable
-    override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0f,0.0f,0.0f,0.0f)
+    override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0f, 0.0f, 0.0f, 0.0f)
 }

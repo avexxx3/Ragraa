@@ -25,10 +25,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountTree
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.Grade
-import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -54,7 +52,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -78,8 +75,7 @@ import com.avex.ragraa.ui.theme.ralewayFamily
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
-    navBar: @Composable () -> Unit
+    viewModel: HomeViewModel, navBar: @Composable () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     if (uiState.updated && !uiState.vibrate) viewModel.vibrate()
@@ -92,7 +88,12 @@ fun HomeScreen(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 navBar()
-                Text("Home", style = MaterialTheme.typography.displaySmall, fontSize = 24.sp,modifier = Modifier.padding(top = 4.dp, start = 12.dp))
+                Text(
+                    "Home",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(top = 4.dp, start = 12.dp)
+                )
                 Spacer(Modifier.weight(1f))
                 Box(modifier = Modifier
                     .padding(top = 8.dp, end = 12.dp)
@@ -100,8 +101,7 @@ fun HomeScreen(
                     .padding(8.dp)
                     .clickable { viewModel.toggleSettings() }) {
                     Icon(
-                        imageVector = Icons.Filled.Settings,
-                        contentDescription = null
+                        imageVector = Icons.Filled.Settings, contentDescription = null
                     )
                 }
             }
@@ -111,11 +111,10 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.weight(0.3f))
 
-            if (uiState.image != null && uiState.showImage) ProfilePicture(uiState.image)
+            if (uiState.image != null && uiState.showImage) ProfilePicture()
 
             Text(
-                "Welcome,",
-                style = TextStyle(
+                "Welcome,", style = TextStyle(
                     fontFamily = ralewayFamily,
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 40.sp,
@@ -130,13 +129,21 @@ fun HomeScreen(
                 fontSize = 30.sp
             )
 
+            Text(
+                text = "Last updated: ${uiState.date}",
+                modifier = Modifier.padding(top = 8.dp),
+                style = MaterialTheme.typography.displaySmall,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Thin
+            )
+
             Spacer(modifier = Modifier.weight(0.5f))
 
             //Button(onClick = { navController.navigate("login") }) { }
 
             Row {
                 ClickableCard(
-                    icon = Icons.Filled.Login,
+                    icon = Icons.AutoMirrored.Filled.Login,
                     text = "Login",
                     onClick = { viewModel.navController.navigate("login") },
                     modifier = Modifier
@@ -164,7 +171,7 @@ fun HomeScreen(
 
             Spacer(Modifier.weight(0.3f))
 
-            Row() {
+            Row {
                 ClickableCard(
                     icon = Icons.Filled.Percent,
                     text = "Marks",
@@ -214,12 +221,15 @@ fun Settings(viewModel: HomeViewModel) {
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()
-                .padding(20.dp), shape = CutCornerShape(topStart = 32f, bottomEnd = 32f)
+                .padding(20.dp),
+            shape = CutCornerShape(topStart = 32f, bottomEnd = 32f)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                .padding(vertical = 10.dp)
-                .clickable { viewModel.toggleImage() }) {
-                Text("Show profile picture",
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .clickable { viewModel.toggleImage() }) {
+                Text(
+                    "Show profile picture",
                     Modifier
                         .padding(start = 12.dp)
                         .clickable { viewModel.toggleImage() },
@@ -239,7 +249,7 @@ fun Settings(viewModel: HomeViewModel) {
 
 @Composable
 fun ClickableCard(
-    icon:ImageVector,
+    icon: ImageVector,
     text: String,
     onClick: () -> Unit,
     modifier: Modifier,
@@ -259,14 +269,11 @@ fun ClickableCard(
                 Color(0xFFFFCA55),
             ) else if (danger) listOf(Color.Red, Color.LightGray, Color.Red)
             else listOf(
-                Color(0xFF659999),
-                Color(0xFF6BE585),
-                Color(0xFF659999)
+                Color(0xFF659999), Color(0xFF6BE585), Color(0xFF659999)
             )
         ), colors = CardDefaults.cardColors(Color(0, 0, 0, 0))) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
         ) {
             Spacer(Modifier.weight(1f))
             Icon(imageVector = icon, contentDescription = null)
@@ -285,7 +292,7 @@ fun ClickableCard(
 
 
 @Composable
-fun ProfilePicture(image: ImageBitmap) {
+fun ProfilePicture() {
     Box(Modifier.padding(bottom = 10.dp)) {
         Image(
             bitmap = Datasource.bitmap!!,
@@ -302,20 +309,15 @@ fun ProfilePicture(image: ImageBitmap) {
 }
 
 class NavShape(
-    private val widthOffset: Dp,
-    private val scale: Float
-):Shape {
+    private val widthOffset: Dp, private val scale: Float
+) : Shape {
     override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density
+        size: Size, layoutDirection: LayoutDirection, density: Density
     ): Outline {
         return Outline.Rectangle(
             Rect(
-                Offset.Zero,
-                Offset(
-                    size.width * scale + with(density) { widthOffset.toPx() },
-                    size.height
+                Offset.Zero, Offset(
+                    size.width * scale + with(density) { widthOffset.toPx() }, size.height
                 )
             )
         )
@@ -325,20 +327,13 @@ class NavShape(
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 @Composable
 fun Modifier.drawRainbowBorder(
-    strokeWidth: Dp,
-    durationMillis: Int,
-    radius: Float,
-    gradientColors: List<Color> = listOf(
-        Color(0xFF659999),
-        Color(0xFF6BE585),
-        Color(0xFF659999)
+    strokeWidth: Dp, durationMillis: Int, radius: Float, gradientColors: List<Color> = listOf(
+        Color(0xFF659999), Color(0xFF6BE585), Color(0xFF659999)
     )
 ) = composed {
     val infiniteTransition = rememberInfiniteTransition(label = "rotation")
     val angle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
+        initialValue = 0f, targetValue = 360f, animationSpec = infiniteRepeatable(
             animation = tween(durationMillis, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ), label = "rotation"
