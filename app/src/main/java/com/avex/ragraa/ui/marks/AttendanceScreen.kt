@@ -62,7 +62,7 @@ fun AttendanceScreen(
     }
 
     if (uiState.currentAttendanceCourse != null) AttendanceDetails(uiState.currentAttendanceCourse) {
-        attendanceViewModel.showCourse(CourseAttendance("", 0f, listOf()))
+        attendanceViewModel.showCourse(CourseAttendance("", 0f, listOf(), 0))
     }
 }
 
@@ -163,6 +163,17 @@ fun AttendanceCard(course: CourseAttendance, showCourse: () -> Unit) {
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(start = 12.dp, bottom = 12.dp, top = 4.dp)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = "Absents: " + course.absents,
+                style = MaterialTheme.typography.headlineSmall,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp)
             )
 
             Spacer(modifier = Modifier.weight(1f))

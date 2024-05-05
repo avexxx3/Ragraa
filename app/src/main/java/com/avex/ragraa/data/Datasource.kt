@@ -50,7 +50,7 @@ data class Course(
 data class Attendance(val date: String, val present: Boolean)
 
 data class CourseAttendance(
-    val courseName: String, var percentage: Float, val attendance: List<Attendance>
+    val courseName: String, var percentage: Float, val attendance: List<Attendance>, val absents:Int
 )
 
 @Entity
@@ -100,7 +100,7 @@ object Datasource {
         }
 
         date = sharedPreferences.getString("date", "").toString()
-
+        Log.d("Dev", date)
         showImage = sharedPreferences.getBoolean("showImage", true)
 
         semId = sharedPreferences.getString("semId", "241").toString()
@@ -121,14 +121,12 @@ object Datasource {
     }
 
     fun saveLogin() {
-        date = SimpleDateFormat(
-            "dd MMM, HH:mm", Locale.getDefault()
-        ).format(Calendar.getInstance().time)
-
         val editor = sharedPreferences.edit()
         editor.putString("rollNo", rollNo.encrypt())
         editor.putString("password", password.encrypt())
-        editor.putString("date", date)
+        editor.putString("date", SimpleDateFormat(
+            "dd MMM, HH:mm", Locale.getDefault()
+        ).format(Calendar.getInstance().time))
         editor.apply()
     }
 
@@ -292,19 +290,21 @@ object Datasource {
 
             var date: String? = null
             var presence: Boolean? = null
+            var absent:Int = 0
 
             for (textCenter in courseDetails) {
                 if (textCenter.text().contains('-')) date = textCenter.text()
-                if (textCenter.text().contains('P') || textCenter.text().contains('A')) presence =
-                    textCenter.text().contains('P')
+                if (textCenter.text()[0] == 'P' || textCenter.text()[0] == 'A') {presence = textCenter.text().contains('P')}
+                if(textCenter.text()[0] == 'A') absent++
                 if (date != null && presence != null) {
                     listAttendance.add(Attendance(date, presence))
                     date = null
                     presence = null
                 }
+
             }
 
-            attendanceDatabase.add(CourseAttendance(courseName, percentage, listAttendance))
+            attendanceDatabase.add(CourseAttendance(courseName, percentage, listAttendance, absent))
         }
 
         val box = store.boxFor<attendanceHTML>()

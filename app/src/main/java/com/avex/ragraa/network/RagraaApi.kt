@@ -1,8 +1,10 @@
 package com.avex.ragraa.network
 
+import android.provider.ContactsContract.Data
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.Datasource.saveImage
 import com.avex.ragraa.data.LoginRequest
+import com.avex.ragraa.sharedPreferences
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Cookie
@@ -13,6 +15,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 
@@ -89,6 +94,11 @@ object RagraaApi {
                     updateStatus("Error: Failed to log in")
                 }
 
+                Datasource.date = SimpleDateFormat(
+                    "dd MMM, HH:mm", Locale.getDefault()
+                ).format(Calendar.getInstance().time)
+
+                sharedPreferences.edit().putString("date", Datasource.date).apply()
 
                 Datasource.parseMarks()
                 updateStatus("Fetched marks successfully")

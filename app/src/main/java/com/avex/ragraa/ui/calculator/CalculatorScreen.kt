@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.avex.ragraa.context
 import java.util.Locale
 
 @Composable
@@ -48,6 +50,11 @@ fun CalculatorScreen(viewModel: CalculatorViewModel, navBar: @Composable () -> U
     val uiState = viewModel.uiState.collectAsState().value
 
     BackHandler { viewModel.navController.navigate("home") }
+
+    LaunchedEffect(context) {
+        if(uiState.courses.isEmpty())
+            viewModel.init()
+    }
 
     Column {
         Row(
@@ -146,9 +153,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 keyboardActions = KeyboardActions {
-                    focusManager.clearFocus()
                     focusManager.moveFocus(FocusDirection.Next)
                 },
                 textStyle = MaterialTheme.typography.bodyLarge,

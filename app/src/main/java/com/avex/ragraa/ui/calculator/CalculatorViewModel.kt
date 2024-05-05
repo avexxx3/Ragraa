@@ -21,6 +21,17 @@ class CalculatorViewModel : ViewModel() {
     private var editingCourse: CalculatorCourse? = null
     private var totalGPA:Float = 0f
 
+    fun init() {
+        for (course in Datasource.marksDatabase) {
+            courses.add(CalculatorCourse(course.courseName.substring(7)))
+        }
+        updateUI()
+    }
+
+    init{
+        init()
+    }
+
     private fun updateUI() {
         _uiState.update {
             it.copy(
@@ -155,13 +166,6 @@ class CalculatorViewModel : ViewModel() {
     fun deleteCourse() {
         courses.remove(editingCourse)
         editingCourse = null
-        updateUI()
-    }
-
-    init {
-        for (course in Datasource.marksDatabase) {
-            courses.add(CalculatorCourse(course.courseName.substring(7)))
-        }
         updateUI()
     }
 }
