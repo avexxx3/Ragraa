@@ -45,7 +45,7 @@ Using this as a notepad incase I happen to forget:
 
 ## Releases
 
-[APK](https://github.com/avexxx3/Ragraa/blob/master/app/release/Ragraa_v1.0.apk)
+[Latest release](https://github.com/avexxx3/Ragraa/releases/latest)
 
 
 ## License
