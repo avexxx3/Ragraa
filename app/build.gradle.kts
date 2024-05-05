@@ -52,21 +52,15 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.jsoup.jsoup)
-    implementation(libs.converter.scalars)
-    implementation(libs.converter.gson)
     implementation(libs.okhttp.v4120)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.compose.recyclerview)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.okhttp)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

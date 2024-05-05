@@ -9,8 +9,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,8 +45,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -121,6 +123,8 @@ fun CourseDetails(course: Course) {
                     .padding(horizontal = 10.dp)
             )
 
+            if(course.courseMarks.isEmpty()) Image(painter = painterResource(id = R.drawable.cat), contentDescription = null, contentScale = ContentScale.FillBounds)
+
             for (courseItem in course.courseMarks) {
                 if (courseItem.listOfMarks.isNotEmpty()) CourseItem(courseItem)
             }
@@ -154,7 +158,7 @@ fun CourseItem(courseItem: Section) {
     Divider(
         thickness = 2.dp,
         modifier = Modifier.padding(top = 8.dp, bottom = 16.dp, start = 68.dp, end = 68.dp),
-        color = if (courseItem.new) sweetie_pie else if (isSystemInDarkTheme()) Color.White else Color.Black
+        color = if (courseItem.new) sweetie_pie else Color.White
     )
 
     Column(

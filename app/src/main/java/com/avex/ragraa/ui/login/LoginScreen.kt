@@ -119,7 +119,7 @@ fun LoginScreen(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
-                textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                textColor = Color.White
             )
         )
 
@@ -160,7 +160,7 @@ fun LoginScreen(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
-                textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                textColor = Color.White
             )
         )
         if ((uiState.status.isEmpty() || uiState.status.contains("Error")) && !uiState.isCompleted) Row(
@@ -174,7 +174,7 @@ fun LoginScreen(
             }
 
             Text("Remember login info",
-                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                color = Color.White,
                 modifier = Modifier.clickable { viewModel.updatePreference() })
 
             Spacer(Modifier.weight(1f))
@@ -182,7 +182,7 @@ fun LoginScreen(
 
         if (uiState.status.isNotEmpty()) Text(
             text = uiState.status,
-            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+            color = Color.White,
             modifier = Modifier.padding(10.dp)
         )
 
@@ -229,7 +229,7 @@ fun SemesterMenu(viewModel: LoginViewModel) {
                 focusedLabelColor = Color.Gray,
                 unfocusedBorderColor = Color.DarkGray,
                 unfocusedLabelColor = Color.Gray,
-                textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                textColor = Color.White
             ),
             onValueChange = {},
             readOnly = true,
@@ -246,19 +246,19 @@ fun SemesterMenu(viewModel: LoginViewModel) {
                 DropdownMenuItem(onClick = { viewModel.select("${year}1") }) {
                     Text(
                         "Spring $year",
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = Color.White
                     )
                 }
                 DropdownMenuItem(onClick = { viewModel.select("${year}2") }) {
                     Text(
                         "Summer $year",
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = Color.White
                     )
                 }
                 DropdownMenuItem(onClick = { viewModel.select("${year}3") }) {
                     Text(
                         "Fall $year",
-                        color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        color = Color.White
                     )
                 }
             }

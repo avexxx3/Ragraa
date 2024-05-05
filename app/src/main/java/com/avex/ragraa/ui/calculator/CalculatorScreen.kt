@@ -156,7 +156,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
                     unfocusedBorderColor = Color.Gray,
                     unfocusedLabelColor = Color.LightGray,
-                    textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                    textColor = Color.White
                 )
             )
 
@@ -175,7 +175,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
                     unfocusedBorderColor = Color.Gray,
                     unfocusedLabelColor = Color.LightGray,
-                    textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                    textColor = Color.White
                 )
             )
             OutlinedTextField(label = { Text("Obtained") },
@@ -193,7 +193,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
                     unfocusedBorderColor = Color.Gray,
                     unfocusedLabelColor = Color.LightGray,
-                    textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                    textColor = Color.White
                 )
             )
 
@@ -232,7 +232,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
                     unfocusedBorderColor = Color.Gray,
                     unfocusedLabelColor = Color.LightGray,
-                    textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                    textColor = Color.White
                 )
             )
             Row {
