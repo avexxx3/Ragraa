@@ -1,6 +1,5 @@
 package com.avex.ragraa.ui.calculator
 
-import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
