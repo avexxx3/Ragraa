@@ -47,7 +47,7 @@ data class Course(
     var new: Boolean = false,
 )
 
-data class Attendance(val date: String, val present: Boolean)
+data class Attendance(val date: String, val present: Char)
 
 data class CourseAttendance(
     val courseName: String, var percentage: Float, val attendance: List<Attendance>, val absents:Int
@@ -302,21 +302,20 @@ object Datasource {
                 )
 
             var date: String? = null
-            var presence: Boolean? = null
+            var presence: Char? = null
             var absent:Int = 0
 
             for (textCenter in courseDetails) {
                 if (textCenter.text().contains('-')) date = textCenter.text()
-                if (textCenter.text()[0] == 'P' || textCenter.text()[0] == 'A') {presence = textCenter.text().contains('P')}
+                if (textCenter.text()[0] == 'P' || textCenter.text()[0] == 'A' || textCenter.text()[0] == 'L') {presence = textCenter.text()[0]}
                 if(textCenter.text()[0] == 'A') absent++
+
                 if (date != null && presence != null) {
                     listAttendance.add(Attendance(date, presence))
                     date = null
                     presence = null
                 }
-
             }
-
             attendanceDatabase.add(CourseAttendance(courseName, percentage, listAttendance, absent))
         }
 

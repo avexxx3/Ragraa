@@ -103,7 +103,7 @@ fun AttendanceDetails(course: CourseAttendance, hideCourse: () -> Unit) {
                     )
 
                     course.attendance.forEachIndexed { index: Int, attendance: Attendance ->
-                        val color = if (attendance.present) sweetie_pie else Color(221, 24, 24)
+                        val color = if (attendance.present == 'P') sweetie_pie else (if(attendance.present == 'A') Color(221, 24, 24) else Color.Yellow)
 
                         Row(
                             modifier = Modifier
@@ -115,7 +115,7 @@ fun AttendanceDetails(course: CourseAttendance, hideCourse: () -> Unit) {
                             Spacer(modifier = Modifier.weight(1f))
                             Text(attendance.date, color = color)
                             Spacer(modifier = Modifier.weight(1f))
-                            Text(if (attendance.present) "P" else "A", color = color)
+                            Text(attendance.present.toString(), color = color)
                             Spacer(modifier = Modifier.weight(0.5f))
                         }
                     }
