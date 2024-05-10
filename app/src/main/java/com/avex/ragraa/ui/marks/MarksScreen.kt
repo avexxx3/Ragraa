@@ -170,7 +170,7 @@ fun CourseItem(courseItem: Section) {
     ) {
 
         if (isExpanded.value) {
-            if(courseItem.listOfMarks.isNotEmpty())
+            if(courseItem.listOfMarks.isNotEmpty()) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(start = dimensionResource(id = R.dimen.padding_medium)), horizontalArrangement = Arrangement.SpaceAround
             ) {
@@ -195,9 +195,10 @@ fun CourseItem(courseItem: Section) {
                 Box(
                     Modifier.weight(1f)
                 ) { Text("Max", style = style, modifier = Modifier.align(Alignment.Center)) }
-
-                Spacer(modifier = Modifier.padding(top = 4.dp))
             }
+            }
+
+            Spacer(modifier = Modifier.padding(top = 4.dp))
 
 
             courseItem.listOfMarks.forEachIndexed { index, marks ->
