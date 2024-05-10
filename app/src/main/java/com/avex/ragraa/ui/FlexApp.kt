@@ -69,11 +69,11 @@ fun FlexApp(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var currentScreen by remember{mutableStateOf("")}
+    var currentScreen by remember{mutableStateOf(if (Datasource.rollNo.isEmpty()) "login" else "home")}
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        gesturesEnabled = currentScreen != "web",
+        gesturesEnabled = !(currentScreen == "web" || (Datasource.rollNo.isEmpty() && currentScreen == "login")),
         drawerContent = {
             ModalDrawerSheet(drawerShape = NavShape(0.dp, 0.8f)) {
                 Image(

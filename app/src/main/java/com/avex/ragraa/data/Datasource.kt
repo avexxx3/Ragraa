@@ -147,6 +147,10 @@ object Datasource {
             val listOfItems: MutableList<Section> = mutableListOf()
             var totalWeightage = 0f
 
+            var projectedObt = 0f
+            var projectedTotal = 0f
+            var projectedAvg = 0f
+
             for ((i, courseWork) in course.getElementsByClass("mb-0").withIndex()) {
                 if (i == course.getElementsByClass("mb-0").size - 1) continue
 
@@ -193,8 +197,14 @@ object Datasource {
                 val total =
                     course.getElementsByClass("text-center totalColweightage")[i].text().toFloat()
 
+                projectedAvg += average
+                projectedTotal += total
+                projectedObt += obtained
+
                 listOfItems.add(Section(courseWork.text(), listOfMarks, obtained, total, average))
             }
+
+            listOfItems.add(Section("Projected Total", listOf(), projectedObt, projectedTotal, projectedAvg))
 
             newDatabase.add(Course(course.getElementsByTag("h5")[0].text(), listOfItems))
         }
@@ -242,8 +252,11 @@ object Datasource {
                     continue
                 }
 
+                val originalMarks = marksDatabase[index].courseMarks[index2].listOfMarks.map{it.copy(weightage = 0f) }
+
                 for (marks in section.listOfMarks) {
-                    if (!marksDatabase[index].courseMarks[index2].listOfMarks.contains(marks)) {
+                    val newMarks = marks.copy(weightage = 0f)
+                    if (!originalMarks.contains(newMarks)) {
                         course.new = true
                         section.new = true
                         marks.new = true

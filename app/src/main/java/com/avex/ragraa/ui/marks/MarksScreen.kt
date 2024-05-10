@@ -120,13 +120,13 @@ fun CourseDetails(course: Course) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(vertical = 30.dp)
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = 20.dp)
             )
 
             if(course.courseMarks.isEmpty()) Image(painter = painterResource(id = R.drawable.cat), contentDescription = null, contentScale = ContentScale.FillBounds)
 
             for (courseItem in course.courseMarks) {
-                if (courseItem.listOfMarks.isNotEmpty()) CourseItem(courseItem)
+                if (courseItem.listOfMarks.isNotEmpty() || courseItem.name.contains("Projected")) CourseItem(courseItem)
             }
         }
     }
@@ -170,8 +170,9 @@ fun CourseItem(courseItem: Section) {
     ) {
 
         if (isExpanded.value) {
+            if(courseItem.listOfMarks.isNotEmpty())
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
+                modifier = Modifier.fillMaxWidth().padding(start = dimensionResource(id = R.dimen.padding_medium)), horizontalArrangement = Arrangement.SpaceAround
             ) {
                 val style = TextStyle(
                     fontFamily = monteserratFamily,
@@ -180,33 +181,24 @@ fun CourseItem(courseItem: Section) {
                 )
 
                 Box(
-                    Modifier
-                        .padding(start = 28.dp)
-                        .size(40.dp, 24.dp)
+                    Modifier.weight(1f)
                 ) { Text("#", style = style, modifier = Modifier.align(Alignment.Center)) }
                 Box(
-                    Modifier
-                        .padding(start = 26.dp)
-                        .size(40.dp, 24.dp)
+                    Modifier.weight(1f)
                 ) { Text("Obt", style = style, modifier = Modifier.align(Alignment.Center)) }
                 Box(
-                    Modifier
-                        .padding(start = 14.dp)
-                        .size(40.dp, 24.dp)
+                    Modifier.weight(1f)
                 ) { Text("Avg", style = style, modifier = Modifier.align(Alignment.Center)) }
                 Box(
-                    Modifier
-                        .padding(end = 6.dp)
-                        .size(40.dp, 24.dp)
+                    Modifier.weight(1f)
                 ) { Text("Min", style = style, modifier = Modifier.align(Alignment.Center)) }
                 Box(
-                    Modifier
-                        .padding(end = 40.dp)
-                        .size(40.dp, 24.dp)
+                    Modifier.weight(1f)
                 ) { Text("Max", style = style, modifier = Modifier.align(Alignment.Center)) }
+
+                Spacer(modifier = Modifier.padding(top = 4.dp))
             }
 
-            Spacer(modifier = Modifier.padding(top = 4.dp))
 
             courseItem.listOfMarks.forEachIndexed { index, marks ->
                 CourseMarks(marks, (index + 1).toString())
@@ -261,24 +253,20 @@ fun formatMarks(marks: Float): String {
 
 @Composable
 fun CourseMarks(marks: Marks, index: String) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .padding(
-                horizontal = dimensionResource(
-                    id = R.dimen.padding_large
-                ), vertical = dimensionResource(id = R.dimen.padding_small)
-            )
+            .padding(vertical = dimensionResource(id = R.dimen.padding_small))
+            .padding(start = dimensionResource(id = R.dimen.padding_medium))
             .fillMaxWidth()
     ) {
         CustomerCircularProgressBar(
             marks.obtained,
             marks.total,
             formatMarks(marks.weightage),
-            index
+            index,
         )
 
-        Box(Modifier.size(80.dp)) {
+        Box(Modifier.weight(1f)) {
             Row(Modifier.align(Alignment.Center)) {
                 Text(
                     formatMarks(marks.obtained), style = TextStyle(
@@ -300,7 +288,7 @@ fun CourseMarks(marks: Marks, index: String) {
             }
         }
 
-        Box(Modifier.size(60.dp)) {
+        Box(Modifier.weight(1f)) {
             Text(
                 formatMarks(marks.average), style = TextStyle(
                     fontFamily = monteserratFamily,
@@ -310,7 +298,7 @@ fun CourseMarks(marks: Marks, index: String) {
             )
         }
 
-        Box(Modifier.size(60.dp)) {
+        Box(Modifier.weight(1f)) {
             Text(
                 formatMarks(marks.minimum), style = TextStyle(
                     fontFamily = monteserratFamily,
@@ -320,7 +308,7 @@ fun CourseMarks(marks: Marks, index: String) {
             )
         }
 
-        Box(Modifier.size(60.dp)) {
+        Box(Modifier.weight(1f)) {
             Text(
                 formatMarks(marks.maximum), style = TextStyle(
                     fontFamily = monteserratFamily,
@@ -397,7 +385,7 @@ fun CustomerCircularProgressBar(
         progress = if (obtained < 0) 0f else if (obtained <= total) obtained / total * 270 else 270f
     }
 
-    Box(modifier = Modifier.padding(end = 12.dp)) {
+    Box(modifier = Modifier.padding()) {
         Text(index, modifier = Modifier.align(Alignment.Center))
         Text(
             weightage,

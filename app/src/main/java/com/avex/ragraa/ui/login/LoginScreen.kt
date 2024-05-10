@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
@@ -183,7 +184,8 @@ fun LoginScreen(
         if (uiState.status.isNotEmpty()) Text(
             text = uiState.status,
             color = Color.White,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(10.dp),
+            textAlign = TextAlign.Center
         )
 
         if ((uiState.status.isEmpty() || uiState.status.contains("Error")) && !uiState.isCompleted) Button(modifier = Modifier
