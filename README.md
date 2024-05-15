@@ -5,12 +5,6 @@
 Ragraa is a frontend third-party client for [Flex](https://flexstudent.nu.edu.pk/Login), made solely for the purpose of optimizing the user experience on Android.
 
 
-## Instructions
-
-Since the app doesn't have access to Flex API, it cannot login without having solved the recaptcha. So you must refresh (which just logs you in again) and solve the captcha that pops up to update your marks/attendance.
-You have to choose the current semester (only once though, it remembers!) in the login screen, because Flex only shows the current semester's marks.
-Also, the app only exists in dark mode. Fine-tuning the colors in the dark was too much for my eyes, thank you for your understanding.
-
 
 ## Features
 
@@ -24,14 +18,27 @@ Also, the app only exists in dark mode. Fine-tuning the colors in the dark was t
 *  GPA Calculator to ease your suffering near the end of the semester. Calculates GPA based on MCA for relative subjects, so the actual grade may vary
 
 
+
 ## Screenshots
 
 <img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/Login.jpg" width = "190"> <img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/Home.jpg" width = "190"> <img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/Marks.jpg" width = "190"> <img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/Attendance.jpg" width = "190"> <img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/Calculator.jpg" width = "190"> 
 
 
+
 ## Releases
 
 [Latest release](https://github.com/avexxx3/Ragraa/releases/latest)
+
+
+
+## Instructions
+
+Since the app doesn't have access to Flex API, it cannot login without having solved the recaptcha. So you must refresh (which just logs you in again) and solve the captcha that pops up to update your marks/attendance.
+
+You have to choose the current semester (only once though, it remembers!) in the login screen, because Flex only shows the current semester's marks.
+
+Also, the app only exists in dark mode. Fine-tuning the colors in the dark was too much for my eyes, thank you for your understanding.
+
 
 
 ## Features I'd like to implement
