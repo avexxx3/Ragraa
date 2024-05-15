@@ -50,7 +50,7 @@ Using this as a notepad incase I happen to forget:
 
 ## Open-source libraries
 
-- Based on [Kotlin](https://kotlinlang.org/)
+- Built using [Kotlin](https://kotlinlang.org/)
 - [Compose](https://developer.android.com/develop/ui/compose): a modern UI framework for Kotlin
 - [OkHttp](https://github.com/square/okhttp/): HTTP client to scrape data
 - [ObjectBox](https://github.com/objectbox/objectbox-java): SQL Library to store data locally
