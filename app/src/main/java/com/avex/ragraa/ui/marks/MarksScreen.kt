@@ -172,14 +172,15 @@ fun CourseItem(courseItem: Section) {
         if (isExpanded.value) {
             if(courseItem.listOfMarks.isNotEmpty()) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(start = dimensionResource(id = R.dimen.padding_medium)), horizontalArrangement = Arrangement.SpaceAround
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.padding_medium)), horizontalArrangement = Arrangement.SpaceAround
             ) {
                 val style = TextStyle(
                     fontFamily = monteserratFamily,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
                 )
-
                 Box(
                     Modifier.weight(1f)
                 ) { Text("#", style = style, modifier = Modifier.align(Alignment.Center)) }
@@ -260,32 +261,36 @@ fun CourseMarks(marks: Marks, index: String) {
             .padding(start = dimensionResource(id = R.dimen.padding_medium))
             .fillMaxWidth()
     ) {
-        CustomerCircularProgressBar(
-            marks.obtained,
-            marks.total,
-            formatMarks(marks.weightage),
-            index,
-        )
+        Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            CustomerCircularProgressBar(
+                marks.obtained,
+                marks.total,
+                formatMarks(marks.weightage),
+                index,
+            )
+        }
 
         Box(Modifier.weight(1f)) {
             Row(Modifier.align(Alignment.Center)) {
-                Text(
-                    formatMarks(marks.obtained), style = TextStyle(
-                        fontFamily = monteserratFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
-                    ), color = if (marks.new) sweetie_pie else Color.Unspecified
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        formatMarks(marks.obtained), style = TextStyle(
+                            fontFamily = monteserratFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
+                        ), color = if (marks.new) sweetie_pie else Color.Unspecified
+                    )
 
-                Text(
-                    '/' + formatMarks(marks.total),
-                    color = Color.Gray,
-                    style = TextStyle(
-                        fontFamily = monteserratFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
-                    ),
-                )
+                    Text(
+                        '/' + formatMarks(marks.total),
+                        color = Color.Gray,
+                        style = TextStyle(
+                            fontFamily = monteserratFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp
+                        ),
+                    )
+                }
             }
         }
 
