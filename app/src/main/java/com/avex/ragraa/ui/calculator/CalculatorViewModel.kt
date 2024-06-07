@@ -99,9 +99,8 @@ class CalculatorViewModel : ViewModel() {
 
     fun editCourse(course: CalculatorCourse? = null) {
         editingCourse = course
-        currentCourse = Datasource.marksDatabase[courses.indexOf(course)]
-
-        index = courses.indexOf(course)
+        val index = courses.indexOf(course)
+        currentCourse = if (index >= 0) Datasource.marksDatabase[index] else null
         updateUI()
     }
 

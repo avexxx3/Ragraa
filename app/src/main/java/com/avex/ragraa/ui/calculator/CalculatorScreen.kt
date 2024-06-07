@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ButtonDefaults
@@ -286,12 +285,25 @@ fun EditCourse(viewModel: CalculatorViewModel) {
 
 @Composable
 fun ViewMarks(viewModel: CalculatorViewModel) {
-    Surface(Modifier.fillMaxSize()) {
-        BackHandler {
-            viewModel.viewMarks()
-        }
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color(0, 0, 0, 230))
+        .clickable { viewModel.viewMarks() }) {
+        Card(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .clickable { viewModel.viewMarks() }
+                .animateContentSize()
+                .padding(horizontal = 20.dp, vertical = 40.dp),
+            shape = CutCornerShape(topStart = 64f, bottomEnd = 64f),
+        ) {
+            BackHandler {
+                viewModel.viewMarks()
+            }
 
-        viewModel.currentCourse?.let { CourseDetails(it) }
+            viewModel.currentCourse?.let { CourseDetails(it) }
+        }
     }
 }
 
