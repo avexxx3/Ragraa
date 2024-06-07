@@ -45,7 +45,7 @@ data class Course(
     val courseName: String,
     val courseMarks: List<Section>,
     var new: Boolean = false,
-    val grandTotalExists: Boolean
+    val grandTotalExists: Boolean,
 )
 
 data class Attendance(val date: String, val present: Char)
@@ -63,9 +63,14 @@ data class marksHTML(val html: String = "", @Id var id: Long = 0)
 @Entity
 data class attendanceHTML(val html: String = "", @Id var id: Long = 0)
 
+@Entity
+data class transcriptHTML(val html: String = "", @Id var id: Long = 0)
+
+
 object Datasource {
     var marksResponse = ""
     var attendanceResponse = ""
+    var transcriptResponse = ""
 
     var rollNo: String = ""
     var password: String = ""
@@ -92,6 +97,12 @@ object Datasource {
             marksResponse = marksBox[0].html
             parseMarks()
         } else Log.d("Dev", "Marks is empty")
+
+        val transcriptBox = store.boxFor<transcriptHTML>().all
+        if (transcriptBox.isNotEmpty()) {
+            transcriptResponse = marksBox[0].html
+            parseTranscript()
+        } else Log.d("Dev", "Transcript is empty")
 
         rollNo = sharedPreferences.getString("rollNo", "").toString()
         if (rollNo.isNotEmpty()) {
@@ -147,8 +158,6 @@ object Datasource {
 
         //Divide into courses
         val totalCourses = htmlFile.getElementsByAttributeValue("id", "accordion")
-
-        var fetchTranscript = false
 
         for (course in totalCourses) {
 
@@ -260,10 +269,6 @@ object Datasource {
         box.removeAll()
         box.put(marksHTML(marksResponse))
 
-        if (fetchTranscript) {
-
-        }
-
         updateHomeUI()
     }
 
@@ -352,7 +357,7 @@ object Datasource {
 
             var date: String? = null
             var presence: Char? = null
-            var absent: Int = 0
+            var absent = 0
 
             for (textCenter in courseDetails) {
                 if (textCenter.text().contains('-')) date = textCenter.text()
@@ -373,6 +378,21 @@ object Datasource {
         val box = store.boxFor<attendanceHTML>()
         box.removeAll()
         box.put(attendanceHTML(attendanceResponse))
+    }
+
+    fun parseTranscript() {
+        val htmlFile = Jsoup.parse(transcriptResponse).body()
+        val semesters = htmlFile.getElementsByClass("col-md-6")
+        for (semester in semesters) {
+            Log.d("Dev", semester.getElementsByClass("col-md-3").text())
+        }
+
+        Log.d("Dev", transcriptResponse)
+
+
+        val box = store.boxFor<transcriptHTML>()
+        box.removeAll()
+        box.put(transcriptHTML(transcriptResponse))
     }
 }
 

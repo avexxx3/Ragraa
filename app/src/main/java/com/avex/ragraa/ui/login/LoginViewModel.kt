@@ -21,7 +21,7 @@ class LoginViewModel : ViewModel() {
 
     private val loginRequest = LoginRequest()
     private var isError: Boolean = false
-    private var status: String = ""
+    private var status: MutableList<String> = mutableListOf("", "", "", "", "")
     private var isOnCredential: Boolean = true
     private var response: Int = 0
     private var isCompleted: Boolean = false
@@ -37,12 +37,12 @@ class LoginViewModel : ViewModel() {
         loginRequest.password = Datasource.password
 
         Datasource.updateLoginUI = { updateUI() }
-        RagraaApi.updateStatus = { updateStatus(it) }
+        RagraaApi.updateStatus = { updateStatus(it.first, it.second) }
         updateUI()
     }
 
     fun resetData() {
-        status = ""
+        status = mutableListOf("", "", "", "", "")
         response = 0
         isCompleted = false
     }
@@ -60,10 +60,14 @@ class LoginViewModel : ViewModel() {
     }
 
     //This will only move to the next screen if status fetches marks successfully
-    fun updateStatus(newStatus: String) {
-        status = newStatus
-        Log.d("Dev", "Status: $status")
-        if (status.contains("Fetched marks successfully") || status.contains("Fetched attendance successfully")) response++
+    private fun updateStatus(newStatus: String, index: Int) {
+        status[index] = newStatus
+
+        if ((status[4].isEmpty() && status[index].contains("Fetched marks successfully") || status[index].contains(
+                "Fetched attendance successfully"
+            )) || status[index].contains("Fetched transcript successfully")
+        )
+            response++
 
         if (response == 2) {
             isCompleted = true
@@ -88,7 +92,7 @@ class LoginViewModel : ViewModel() {
                 rollNo = loginRequest.rollNo,
                 password = loginRequest.password,
                 isError = isError,
-                status = status,
+                status = status.toString(),
                 isOnCredential = isOnCredential,
                 isCompleted = isCompleted,
                 rememberLogin = rememberLogin,

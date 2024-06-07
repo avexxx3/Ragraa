@@ -67,7 +67,6 @@ fun LoginScreen(
     }
 
     if (uiState.isCompleted) {
-        viewModel.updateStatus("")
         viewModel.resetData()
         viewModel.navController.navigate("home")
     }
@@ -170,16 +169,25 @@ fun LoginScreen(
             Spacer(Modifier.weight(1f))
         }
 
-        if (uiState.status.isNotEmpty()) Text(
-            text = uiState.status,
-            color = Color.White,
-            modifier = Modifier.padding(10.dp),
-            textAlign = TextAlign.Center
-        )
+        Row(Modifier.padding(3.dp)) {}
 
-        if ((uiState.status.isEmpty() || uiState.status.contains("Error")) && !uiState.isCompleted) Button(modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
-            .fillMaxWidth(),
+        val statusList = uiState.status.substring(1, uiState.status.length - 1).split(", ")
+
+        for (status in statusList)
+            if (status.isNotEmpty()) Text(
+                text = status,
+                color = if (status.contains("successfully")) sweetie_pie else if (status.contains(
+                        "Error"
+                    )
+                ) Color.Red else Color.White,
+                modifier = Modifier.padding(4.dp),
+                textAlign = TextAlign.Center
+            )
+
+        if ((uiState.status.isEmpty() || uiState.status.contains("Error")) && !uiState.isCompleted) Button(
+            modifier = Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
+                .fillMaxWidth(),
             onClick = { viewModel.navController.navigate("web") }) {
             Text(
                 "Login",

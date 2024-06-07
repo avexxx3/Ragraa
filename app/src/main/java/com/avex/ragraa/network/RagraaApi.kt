@@ -1,6 +1,8 @@
 package com.avex.ragraa.network
 
+import android.util.Log
 import com.avex.ragraa.data.Datasource
+import com.avex.ragraa.data.Datasource.marksResponse
 import com.avex.ragraa.data.Datasource.saveImage
 import com.avex.ragraa.data.LoginRequest
 import com.avex.ragraa.sharedPreferences
@@ -14,6 +16,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
+import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -22,10 +25,10 @@ import java.util.concurrent.TimeUnit
 
 object RagraaApi {
     var sessionID = ""
-    var updateStatus: (String) -> Unit = {}
+    var updateStatus: (Pair<String, Int>) -> Unit = {}
 
     fun loginFlex(loginRequest: LoginRequest) {
-        updateStatus("Logging in")
+        updateStatus(Pair("Logging in..", 0))
 
         val url = "https://flexstudent.nu.edu.pk/Login/Login"
 
@@ -41,16 +44,21 @@ object RagraaApi {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: java.io.IOException) {
-                updateStatus("Response to Flex servers timed out.")
+                updateStatus(Pair("Error: Response to Flex servers timed out.", 0))
                 e.printStackTrace()
             }
 
             override fun onResponse(call: Call, response: Response) {
                 if (!response.body?.string().toString().contains("\"status\":\"done\"")) {
-                    updateStatus("Error: Invalid credentials or recaptcha. Please login again")
+                    updateStatus(
+                        Pair(
+                            "Error: Invalid credentials or recaptcha. Please login again",
+                            0
+                        )
+                    )
                     return
                 }
-                updateStatus("Logged in successfully")
+                updateStatus(Pair("Logged in successfully", 0))
                 sessionID = response.header("set-cookie").toString().substring(18, 42)
 
                 Datasource.rollNo = loginRequest.rollNo
@@ -63,7 +71,7 @@ object RagraaApi {
     }
 
     private fun fetchMarks() {
-        updateStatus("Fetching marks")
+        updateStatus(Pair("Fetching marks..", 3))
 
         val url = "https://flexstudent.nu.edu.pk/Student/StudentMarks?semid=20${Datasource.semId}"
 
@@ -81,16 +89,16 @@ object RagraaApi {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                updateStatus("Error: Failed to connect to flex")
+                updateStatus(Pair("Error: Failed to connect to flex", 0))
             }
 
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
-                Datasource.marksResponse = response.body?.string().toString()
+                marksResponse = response.body?.string().toString()
 
-                if (Datasource.marksResponse.contains("recaptcha")) {
-                    updateStatus("Error: Failed to log in")
+                if (marksResponse.contains("recaptcha")) {
+                    updateStatus(Pair("Error: Failed to log in", 0))
                 }
 
                 Datasource.date = SimpleDateFormat(
@@ -99,14 +107,26 @@ object RagraaApi {
 
                 sharedPreferences.edit().putString("date", Datasource.date).apply()
 
+                if (Jsoup.parse(marksResponse).body().getElementsByClass("GrandtotalColumn")
+                        .isNotEmpty()
+                ) {
+                    val menuItems = Jsoup.parse(marksResponse).body()
+                        .getElementsByClass("m-menu__item  m-menu__item--submenu").html()
+                    val transcriptItem =
+                        menuItems.substring(menuItems.indexOf("/Student/Transcript"))
+                    val transcriptURL = transcriptItem.substring(0, transcriptItem.indexOf('\"'))
+                    fetchTranscript(transcriptURL)
+                }
+
+                updateStatus(Pair("Fetched marks successfully", 3))
+
                 Datasource.parseMarks()
-                updateStatus("Fetched marks successfully")
             }
         })
     }
 
     private fun fetchAttendance() {
-        updateStatus("Fetching attendance")
+        updateStatus(Pair("Fetching attendance..", 2))
 
         val url =
             "https://flexstudent.nu.edu.pk/Student/StudentAttendance?semid=20${Datasource.semId}"
@@ -125,7 +145,7 @@ object RagraaApi {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                updateStatus("Error: Failed to connect to flex")
+                updateStatus(Pair("Error: Failed to connect to flex", 0))
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -133,20 +153,18 @@ object RagraaApi {
 
                 Datasource.attendanceResponse = response.body?.string().toString()
 
-                //TODO Run if-check directly on the response and move assignment down
-
                 if (Datasource.attendanceResponse.contains("recaptcha")) {
-                    updateStatus("Error: Failed to log in")
+                    updateStatus(Pair("Error: Failed to log in", 0))
                 }
 
                 Datasource.parseAttendance()
-                updateStatus("Fetched attendance successfully, fetching marks")
+                updateStatus(Pair("Fetched attendance successfully", 2))
             }
         })
     }
 
     private fun fetchImage(rollNo: String) {
-        updateStatus("Fetching profile picture")
+        updateStatus(Pair("Fetching profile picture..", 1))
         val request = Request.Builder().url("https://flexstudent.nu.edu.pk/Login/GetImage").build()
 
         val client = OkHttpClient().newBuilder().cookieJar(object : CookieJar {
@@ -161,19 +179,55 @@ object RagraaApi {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                updateStatus("Error connecting to flex")
+                updateStatus(Pair("Error: Failed to connect to flex", 0))
             }
 
             override fun onResponse(call: Call, response: Response) {
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                updateStatus("Fetched profile picture successfully, Fetching attendance")
+                updateStatus(Pair("Fetched profile picture successfully", 1))
                 saveImage(response, rollNo)
             }
         })
     }
 
-    private fun fetchTranscript() {
+    private fun fetchTranscript(transcriptURL: String) {
+        updateStatus(Pair("Fetching transcript..", 4))
 
+        val url = "https://flexstudent.nu.edu.pk$transcriptURL"
+
+        Log.d("Dev", url)
+
+        val request = Request.Builder().url(url).build()
+
+        val client = OkHttpClient().newBuilder().cookieJar(object : CookieJar {
+            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
+            override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                return listOf(createNonPersistentCookie())
+            }
+        })
+
+            .connectTimeout(1, TimeUnit.MINUTES).writeTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                updateStatus(Pair("Error: Failed to connect to flex", 0))
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+
+                Datasource.transcriptResponse = response.body?.string().toString()
+
+                if (Datasource.transcriptResponse.contains("recaptcha")) {
+                    updateStatus(Pair("Error: Failed to log in", 0))
+                }
+
+
+                Datasource.parseTranscript()
+                updateStatus(Pair("Fetched transcript successfully", 4))
+            }
+        })
     }
 
     private fun createNonPersistentCookie(): Cookie {
