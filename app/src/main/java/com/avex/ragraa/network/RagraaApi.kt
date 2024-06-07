@@ -223,7 +223,6 @@ object RagraaApi {
                     updateStatus(Pair("Error: Failed to log in", 0))
                 }
 
-
                 Datasource.parseTranscript()
                 updateStatus(Pair("Fetched transcript successfully", 4))
             }

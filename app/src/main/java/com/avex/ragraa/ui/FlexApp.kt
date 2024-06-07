@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
@@ -55,6 +56,7 @@ import com.avex.ragraa.ui.login.WebViewScreen
 import com.avex.ragraa.ui.marks.AttendanceScreen
 import com.avex.ragraa.ui.marks.MarksScreen
 import com.avex.ragraa.ui.theme.sweetie_pie
+import com.avex.ragraa.ui.transcript.TranscriptScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -137,6 +139,21 @@ fun FlexApp(
                     selected = currentScreen == "calculator",
                     onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("calculator") }
                 )
+                NavigationDrawerItem(
+                    label = { Text(text = "Transcript") },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Notes,
+                            contentDescription = null
+                        )
+                    },
+                    selected = currentScreen == "transcript",
+                    onClick = {
+                        scope.launch { drawerState.apply { close() } }; navController.navigate(
+                        "transcript"
+                    )
+                    }
+                )
             }
 
         }
@@ -197,6 +214,11 @@ fun FlexApp(
             composable("calculator") {
                 currentScreen = "calculator"
                 CalculatorScreen(calculatorViewModel, navBar = navBar)
+            }
+
+            composable("transcript") {
+                currentScreen = "transcript"
+                TranscriptScreen(navBar = navBar, navController = navController)
             }
         }
     }

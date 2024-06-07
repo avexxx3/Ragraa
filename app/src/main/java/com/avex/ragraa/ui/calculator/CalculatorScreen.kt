@@ -62,7 +62,9 @@ fun CalculatorScreen(viewModel: CalculatorViewModel, navBar: @Composable () -> U
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(bottom = 8.dp)
         ) {
-            navBar();Text(
+            navBar()
+
+            Text(
             "Calculator",
             style = MaterialTheme.typography.displaySmall,
             fontSize = 24.sp,

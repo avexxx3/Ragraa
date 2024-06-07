@@ -57,6 +57,18 @@ data class CourseAttendance(
     val absents: Int
 )
 
+data class TranscriptCourse(
+    val courseID: String,
+    val courseName: String,
+    val creditHours: Int,
+    val grade: String,
+    val gpa: Float
+)
+
+data class Semester(val cgpa: Float, val courses: List<TranscriptCourse>)
+
+data class Transcript(val sgpa: Float, val semesters: List<Semester>)
+
 @Entity
 data class marksHTML(val html: String = "", @Id var id: Long = 0)
 
@@ -80,6 +92,8 @@ object Datasource {
     var bitmap: ImageBitmap? = null
     var marksDatabase: MutableList<Course> = mutableListOf()
     var attendanceDatabase: MutableList<CourseAttendance> = mutableListOf()
+    var transcriptDatabase: Transcript? = null
+
     var semId: String = ""
 
     var updateLoginUI: () -> Unit = {}
@@ -100,7 +114,7 @@ object Datasource {
 
         val transcriptBox = store.boxFor<transcriptHTML>().all
         if (transcriptBox.isNotEmpty()) {
-            transcriptResponse = marksBox[0].html
+            transcriptResponse = transcriptBox[0].html
             parseTranscript()
         } else Log.d("Dev", "Transcript is empty")
 
@@ -382,13 +396,42 @@ object Datasource {
 
     fun parseTranscript() {
         val htmlFile = Jsoup.parse(transcriptResponse).body()
-        val semesters = htmlFile.getElementsByClass("col-md-6")
-        for (semester in semesters) {
-            Log.d("Dev", semester.getElementsByClass("col-md-3").text())
+
+        val semesterList: MutableList<Semester> = mutableListOf()
+        var sgpa = 0f
+
+        for (semester in htmlFile.getElementsByClass("col-md-6")) {
+            val courseList: MutableList<TranscriptCourse> = mutableListOf()
+
+            for (course in semester.getElementsByTag("tr")) {
+                if (course.html().contains("th")) continue
+
+                val grade = course.getElementsByTag("td")[4].text()
+
+                val tempCourse = TranscriptCourse(
+                    courseID = course.getElementsByTag("td")[0].text(),
+                    courseName = course.getElementsByTag("td")[1].text(),
+                    creditHours = course.getElementsByTag("td")[3].text().toInt(),
+                    grade = if (grade == "I") "" else grade,
+                    gpa = course.getElementsByTag("td")[5].text().toFloat()
+                )
+
+                courseList.add(tempCourse)
+            }
+
+            val dataList = semester.getElementsByClass("pull-right")[0].html()
+
+            val cData = dataList.substring(dataList.indexOf("CGPA"))
+            val cgpa = cData.substring(5, cData.indexOf('<')).toFloat()
+
+            val sData = dataList.substring(dataList.indexOf("SGPA"))
+            sgpa = sData.substring(5, sData.indexOf('<')).toFloat()
+
+
+            semesterList.add(Semester(cgpa, courseList))
         }
 
-        Log.d("Dev", transcriptResponse)
-
+        transcriptDatabase = Transcript(sgpa, semesterList)
 
         val box = store.boxFor<transcriptHTML>()
         box.removeAll()
