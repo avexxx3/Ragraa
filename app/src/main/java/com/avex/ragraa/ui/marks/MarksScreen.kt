@@ -126,7 +126,9 @@ fun CourseDetails(course: Course) {
             if(course.courseMarks.isEmpty()) Image(painter = painterResource(id = R.drawable.cat), contentDescription = null, contentScale = ContentScale.FillBounds)
 
             for (courseItem in course.courseMarks) {
-                if (courseItem.listOfMarks.isNotEmpty() || courseItem.name.contains("Projected")) CourseItem(courseItem)
+                if (courseItem.listOfMarks.isNotEmpty() || courseItem.name.contains("Total")) CourseItem(
+                    courseItem
+                )
             }
         }
     }

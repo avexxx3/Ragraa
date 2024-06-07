@@ -142,6 +142,8 @@ object Datasource {
         //Divide into courses
         val totalCourses = htmlFile.getElementsByAttributeValue("id", "accordion")
 
+        var fetchTranscript = false
+
         for (course in totalCourses) {
 
             val listOfItems: MutableList<Section> = mutableListOf()
@@ -150,9 +152,23 @@ object Datasource {
             var projectedObt = 0f
             var projectedTotal = 0f
             var projectedAvg = 0f
+            var grandTotalExists = false
 
             for ((i, courseWork) in course.getElementsByClass("mb-0").withIndex()) {
-                if (i == course.getElementsByClass("mb-0").size - 1) continue
+                if (i == course.getElementsByClass("mb-0").size - 1) {
+                    if (course.getElementsByClass("sum_table table m-table m-table--head-bg-info table-bordered table-striped table-responsive")[i].getElementsByClass(
+                            "GrandtotalColumn"
+                        ).isNotEmpty()
+                    )
+                        grandTotalExists = true
+
+                    if (!fetchTranscript) {
+                        fetchTranscript = true
+
+                    }
+
+                    continue
+                }
 
                 val listOfMarks: MutableList<Marks> = mutableListOf()
 
@@ -187,27 +203,49 @@ object Datasource {
                     )
                 }
 
+
                 var average = 0f
 
                 for (item in listOfMarks) {
                     average += item.average / item.total * item.weightage
                 }
                 val obtained =
-                    course.getElementsByClass("text-center totalColObtMarks")[i].text().toFloat()
+                    course.getElementsByClass("text-center totalColObtMarks")[i].text()
+                        .toFloat()
                 val total =
-                    course.getElementsByClass("text-center totalColweightage")[i].text().toFloat()
+                    course.getElementsByClass("text-center totalColweightage")[i].text()
+                        .toFloat()
 
                 projectedAvg += average
                 projectedTotal += total
                 projectedObt += obtained
 
-                listOfItems.add(Section(courseWork.text(), listOfMarks, obtained, total, average))
+                listOfItems.add(
+                    Section(
+                        courseWork.text(),
+                        listOfMarks,
+                        obtained,
+                        total,
+                        average
+                    )
+                )
+
             }
 
-            listOfItems.add(Section("Projected Total", listOf(), projectedObt, projectedTotal, projectedAvg))
+
+            listOfItems.add(
+                Section(
+                    if (grandTotalExists) "Grand Total" else "Projected Total",
+                    listOf(),
+                    projectedObt,
+                    projectedTotal,
+                    projectedAvg
+                )
+            )
 
             newDatabase.add(Course(course.getElementsByTag("h5")[0].text(), listOfItems))
         }
+
         checkAdditions(newDatabase)
         marksDatabase = newDatabase
 
