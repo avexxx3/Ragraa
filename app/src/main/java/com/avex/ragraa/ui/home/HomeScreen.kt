@@ -224,28 +224,51 @@ fun Settings(viewModel: HomeViewModel) {
                 .padding(20.dp),
             shape = CutCornerShape(topStart = 32f, bottomEnd = 32f)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .clickable { viewModel.toggleImage() }) {
-                Text(
-                    "Show profile picture",
-                    Modifier
-                        .padding(start = 12.dp)
-                        .clickable { viewModel.toggleImage() },
-                    style = MaterialTheme.typography.displaySmall,
-                    fontSize = 16.sp
-                )
-                Spacer(Modifier.weight(1f))
-                Switch(
-                    checked = viewModel.uiState.collectAsState().value.showImage,
-                    onCheckedChange = { viewModel.toggleImage() },
-                    modifier = Modifier.padding(end = 12.dp)
-                )
+            Column() {
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .clickable { viewModel.toggleImage() }) {
+                    Text(
+                        "Show profile picture",
+                        Modifier
+                            .padding(start = 12.dp)
+                            .clickable { viewModel.toggleImage() },
+                        style = MaterialTheme.typography.displaySmall,
+                        fontSize = 16.sp
+                    )
+                    Spacer(Modifier.weight(1f))
+                    Switch(
+                        checked = viewModel.uiState.collectAsState().value.showImage,
+                        onCheckedChange = { viewModel.toggleImage() },
+                        modifier = Modifier.padding(end = 12.dp)
+                    )
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(top = 6.dp, bottom = 10.dp)
+                        .clickable { viewModel.toggleStartupRefresh() }) {
+                    Text(
+                        "Refresh on startup",
+                        Modifier
+                            .padding(start = 12.dp)
+                            .clickable { viewModel.toggleStartupRefresh() },
+                        style = MaterialTheme.typography.displaySmall,
+                        fontSize = 16.sp
+                    )
+                    Spacer(Modifier.weight(1f))
+                    Switch(
+                        checked = viewModel.uiState.collectAsState().value.startupRefresh,
+                        onCheckedChange = { viewModel.toggleStartupRefresh() },
+                        modifier = Modifier.padding(end = 12.dp)
+                    )
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun ClickableCard(

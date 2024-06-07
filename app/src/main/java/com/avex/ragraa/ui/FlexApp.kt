@@ -43,16 +43,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
+import com.avex.ragraa.sharedPreferences
 import com.avex.ragraa.ui.calculator.CalculatorScreen
 import com.avex.ragraa.ui.calculator.CalculatorViewModel
 import com.avex.ragraa.ui.home.HomeScreen
 import com.avex.ragraa.ui.home.HomeViewModel
 import com.avex.ragraa.ui.home.NavShape
-import com.avex.ragraa.ui.marks.MarksScreen
 import com.avex.ragraa.ui.login.LoginScreen
 import com.avex.ragraa.ui.login.LoginViewModel
 import com.avex.ragraa.ui.login.WebViewScreen
 import com.avex.ragraa.ui.marks.AttendanceScreen
+import com.avex.ragraa.ui.marks.MarksScreen
 import com.avex.ragraa.ui.theme.sweetie_pie
 import kotlinx.coroutines.launch
 
@@ -157,7 +158,11 @@ fun FlexApp(
 
         NavHost(
             navController,
-            if (Datasource.rollNo.isEmpty()) "login" else "home"
+            if (sharedPreferences.getBoolean(
+                    "startupRefresh",
+                    false
+                )
+            ) "web" else if (Datasource.rollNo.isEmpty()) "login" else "home"
         ) {
             composable("home") {
                 currentScreen = "home"

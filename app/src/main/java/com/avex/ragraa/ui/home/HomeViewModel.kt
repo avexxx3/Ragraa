@@ -25,10 +25,12 @@ class HomeViewModel : ViewModel() {
     private var showImage: Boolean = true
     private var vibrate: Boolean = false
     private var danger: Boolean = false
+    private var startupRefresh: Boolean = false
 
     init {
         showImage = Datasource.showImage
         Datasource.updateHomeUI = { updateUI() }
+        startupRefresh = sharedPreferences.getBoolean("startupRefresh", false)
         updateUI()
     }
 
@@ -69,7 +71,8 @@ class HomeViewModel : ViewModel() {
                 showImage = showImage,
                 vibrate = vibrate,
                 danger = danger,
-                date = Datasource.date
+                date = Datasource.date,
+                startupRefresh = startupRefresh
             )
         }
     }
@@ -94,6 +97,13 @@ class HomeViewModel : ViewModel() {
             v.vibrate(500)
         }
         vibrate = true
+        updateUI()
+    }
+
+    fun toggleStartupRefresh() {
+        startupRefresh = !startupRefresh
+        sharedPreferences.getString("semId", "241").toString()
+        sharedPreferences.edit().putBoolean("startupRefresh", startupRefresh).apply()
         updateUI()
     }
 }
