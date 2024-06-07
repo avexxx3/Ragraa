@@ -3,12 +3,14 @@ package com.avex.ragraa.ui.calculator
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.avex.ragraa.data.Course
 import com.avex.ragraa.data.Datasource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.math.round
+import kotlin.math.roundToInt
 
 class CalculatorViewModel : ViewModel() {
     lateinit var navController: NavHostController
@@ -19,16 +21,68 @@ class CalculatorViewModel : ViewModel() {
     private val courses: MutableList<CalculatorCourse> = mutableListOf()
     private var index: Int = 0
     private var editingCourse: CalculatorCourse? = null
-    private var totalGPA:Float = 0f
+    private var totalGPA: Float = 0f
+
+    var currentCourse: Course? = null
+    private var viewingCourseMarks = false
 
     fun init() {
-        for (course in Datasource.marksDatabase) {
-            courses.add(CalculatorCourse(course.courseName.substring(7)))
+        for ((i, course) in Datasource.marksDatabase.withIndex()) {
+
+            if (course.grandTotalExists) {
+                val grade = when (course.courseMarks.last().obtained.roundToInt()) {
+                    in 90..100 -> "A+"
+                    in 86..<90 -> "A"
+                    in 82..<86 -> "A-"
+                    in 78..<82 -> "B+"
+                    in 74..<78 -> "B"
+                    in 70..<74 -> "B-"
+                    in 66..<79 -> "C+"
+                    in 62..<66 -> "C"
+                    in 58..<62 -> "C-"
+                    in 54..<58 -> "D+"
+                    in 50..<54 -> "D"
+                    0 -> ""
+                    else -> "F"
+                }
+
+                val gpa: Float = when (grade) {
+                    "A+" -> 4f
+                    "A" -> 4f
+                    "A-" -> 3.66f
+                    "B+" -> 3.33f
+                    "B" -> 3f
+                    "B-" -> 2.66f
+                    "C+" -> 2.33f
+                    "C" -> 2f
+                    "C-" -> 1.66f
+                    "D+" -> 1.33f
+                    "D" -> 1f
+                    "" -> 0f
+                    else -> 0f
+                }
+
+
+                courses.add(
+                    CalculatorCourse(
+                        course.courseName.substring(7),
+                        "0",
+                        course.courseMarks.last().average.roundToInt().toString(),
+                        course.courseMarks.last().obtained.roundToInt().toString(),
+                        gpa,
+                        grade,
+                        false
+                    )
+                )
+            } else
+                courses.add(CalculatorCourse(course.courseName.substring(7)))
         }
+
+        calculateGPA()
         updateUI()
     }
 
-    init{
+    init {
         init()
     }
 
@@ -37,6 +91,7 @@ class CalculatorViewModel : ViewModel() {
             it.copy(
                 courses = courses,
                 editingCourse = editingCourse,
+                viewingCourseMarks = viewingCourseMarks,
                 overallGpa = totalGPA
             )
         }
@@ -44,7 +99,14 @@ class CalculatorViewModel : ViewModel() {
 
     fun editCourse(course: CalculatorCourse? = null) {
         editingCourse = course
+        currentCourse = Datasource.marksDatabase[courses.indexOf(course)]
+
         index = courses.indexOf(course)
+        updateUI()
+    }
+
+    fun viewMarks() {
+        viewingCourseMarks = !viewingCourseMarks
         updateUI()
     }
 
@@ -79,6 +141,7 @@ class CalculatorViewModel : ViewModel() {
         calculateGrade()
         courses[index] = editingCourse!!
         calculateGPA()
+
         editingCourse = null
         updateUI()
     }
@@ -102,22 +165,22 @@ class CalculatorViewModel : ViewModel() {
         var totalCredits = 0
         totalGPA = 0f
 
-        for(course in courses) {
-            if(course.credits.isNotEmpty())
+        for (course in courses) {
+            if (course.credits.isNotEmpty())
                 totalCredits += course.credits.toInt()
         }
 
-        for(course in courses) {
-            if(course.credits.isNotEmpty()) {
+        for (course in courses) {
+            if (course.credits.isNotEmpty()) {
                 totalGPA += course.gpa * course.credits.toInt() / totalCredits
             }
         }
     }
 
     private fun calculateGrade() {
-        val grade:String
+        val grade: String
 
-        if((editingCourse?.mca!!.isEmpty() && editingCourse?.isRelative == true) || editingCourse?.obtained!!.isEmpty()) {
+        if ((editingCourse?.mca!!.isEmpty() && editingCourse?.isRelative == true) || editingCourse?.obtained!!.isEmpty()) {
             editingCourse = editingCourse?.copy(
                 grade = "", gpa = 0f
             )
@@ -125,9 +188,12 @@ class CalculatorViewModel : ViewModel() {
         }
 
         if (editingCourse?.isRelative == true) {
-            grade = mcaLookup(round(editingCourse?.mca!!.toFloat()).toInt(), round(editingCourse?.obtained!!.toFloat()).toInt())
+            grade = mcaLookup(
+                round(editingCourse?.mca!!.toFloat()).toInt(),
+                round(editingCourse?.obtained!!.toFloat()).toInt()
+            )
         } else {
-            grade = when(editingCourse?.obtained?.toFloat()!!) {
+            grade = when (editingCourse?.obtained?.toFloat()!!) {
                 in 90f..100f -> "A+"
                 in 86f..<90f -> "A"
                 in 82f..<86f -> "A-"
@@ -143,7 +209,7 @@ class CalculatorViewModel : ViewModel() {
             }
         }
 
-        val gpa:Float = when(grade) {
+        val gpa: Float = when (grade) {
             "A+" -> 4f
             "A" -> 4f
             "A-" -> 3.66f

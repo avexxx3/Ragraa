@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +17,7 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ButtonDefaults
@@ -43,6 +43,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.avex.ragraa.context
+import com.avex.ragraa.ui.marks.CourseDetails
+import com.avex.ragraa.ui.theme.sweetie_pie
 import java.util.Locale
 
 @Composable
@@ -125,6 +127,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
     val uiState = viewModel.uiState.collectAsState().value
     val focusManager = LocalFocusManager.current
 
+    if (!uiState.viewingCourseMarks)
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color(0, 0, 0, 230))
@@ -240,6 +243,20 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                     textColor = Color.White
                 )
             )
+
+
+            OutlinedButton(colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 16.dp, top = 12.dp, bottom = 16.dp),
+                onClick = {
+                    viewModel.viewMarks()
+                }) {
+                Text(
+                    "Show Marks", modifier = Modifier.padding(vertical = 8.dp), color = sweetie_pie
+                )
+            }
+
             Row {
                 OutlinedButton(modifier = Modifier
                     .fillMaxWidth(0.5f)
@@ -261,6 +278,20 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 }
             }
         }
+    }
+    else {
+        ViewMarks(viewModel)
+    }
+}
+
+@Composable
+fun ViewMarks(viewModel: CalculatorViewModel) {
+    Surface(Modifier.fillMaxSize()) {
+        BackHandler {
+            viewModel.viewMarks()
+        }
+
+        viewModel.currentCourse?.let { CourseDetails(it) }
     }
 }
 

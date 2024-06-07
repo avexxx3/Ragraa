@@ -237,7 +237,7 @@ fun CourseItem(courseItem: Section) {
                 Spacer(modifier = Modifier.weight(0.3f))
 
                 Text(
-                    "Avg: " + formatMarks(courseItem.average),
+                    "Average: " + formatMarks(courseItem.average),
                     style = TextStyle(
                         fontFamily = monteserratFamily,
                         fontWeight = FontWeight.SemiBold,

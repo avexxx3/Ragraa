@@ -45,12 +45,16 @@ data class Course(
     val courseName: String,
     val courseMarks: List<Section>,
     var new: Boolean = false,
+    val grandTotalExists: Boolean
 )
 
 data class Attendance(val date: String, val present: Char)
 
 data class CourseAttendance(
-    val courseName: String, var percentage: Float, val attendance: List<Attendance>, val absents:Int
+    val courseName: String,
+    var percentage: Float,
+    val attendance: List<Attendance>,
+    val absents: Int
 )
 
 @Entity
@@ -124,9 +128,11 @@ object Datasource {
         val editor = sharedPreferences.edit()
         editor.putString("rollNo", rollNo.encrypt())
         editor.putString("password", password.encrypt())
-        editor.putString("date", SimpleDateFormat(
-            "dd MMM, HH:mm", Locale.getDefault()
-        ).format(Calendar.getInstance().time))
+        editor.putString(
+            "date", SimpleDateFormat(
+                "dd MMM, HH:mm", Locale.getDefault()
+            ).format(Calendar.getInstance().time)
+        )
         editor.apply()
     }
 
@@ -159,13 +165,7 @@ object Datasource {
                     if (course.getElementsByClass("sum_table table m-table m-table--head-bg-info table-bordered table-striped table-responsive")[i].getElementsByClass(
                             "GrandtotalColumn"
                         ).isNotEmpty()
-                    )
-                        grandTotalExists = true
-
-                    if (!fetchTranscript) {
-                        fetchTranscript = true
-
-                    }
+                    ) grandTotalExists = true
 
                     continue
                 }
@@ -243,7 +243,14 @@ object Datasource {
                 )
             )
 
-            newDatabase.add(Course(course.getElementsByTag("h5")[0].text(), listOfItems))
+            newDatabase.add(
+                Course(
+                    course.getElementsByTag("h5")[0].text(),
+                    listOfItems,
+                    grandTotalExists = grandTotalExists
+                )
+            )
+
         }
 
         checkAdditions(newDatabase)
@@ -253,6 +260,9 @@ object Datasource {
         box.removeAll()
         box.put(marksHTML(marksResponse))
 
+        if (fetchTranscript) {
+
+        }
 
         updateHomeUI()
     }
@@ -290,7 +300,8 @@ object Datasource {
                     continue
                 }
 
-                val originalMarks = marksDatabase[index].courseMarks[index2].listOfMarks.map{it.copy(weightage = 0f) }
+                val originalMarks =
+                    marksDatabase[index].courseMarks[index2].listOfMarks.map { it.copy(weightage = 0f) }
 
                 for (marks in section.listOfMarks) {
                     val newMarks = marks.copy(weightage = 0f)
@@ -341,12 +352,14 @@ object Datasource {
 
             var date: String? = null
             var presence: Char? = null
-            var absent:Int = 0
+            var absent: Int = 0
 
             for (textCenter in courseDetails) {
                 if (textCenter.text().contains('-')) date = textCenter.text()
-                if (textCenter.text()[0] == 'P' || textCenter.text()[0] == 'A' || textCenter.text()[0] == 'L') {presence = textCenter.text()[0]}
-                if(textCenter.text()[0] == 'A') absent++
+                if (textCenter.text()[0] == 'P' || textCenter.text()[0] == 'A' || textCenter.text()[0] == 'L') {
+                    presence = textCenter.text()[0]
+                }
+                if (textCenter.text()[0] == 'A') absent++
 
                 if (date != null && presence != null) {
                     listAttendance.add(Attendance(date, presence))

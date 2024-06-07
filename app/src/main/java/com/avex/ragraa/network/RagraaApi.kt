@@ -1,6 +1,5 @@
 package com.avex.ragraa.network
 
-import android.provider.ContactsContract.Data
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.Datasource.saveImage
 import com.avex.ragraa.data.LoginRequest
@@ -171,6 +170,10 @@ object RagraaApi {
                 saveImage(response, rollNo)
             }
         })
+    }
+
+    private fun fetchTranscript() {
+
     }
 
     private fun createNonPersistentCookie(): Cookie {
