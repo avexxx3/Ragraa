@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Surface
@@ -21,10 +21,12 @@ import io.objectbox.BoxStore
 lateinit var context: Context
 lateinit var store: BoxStore
 lateinit var sharedPreferences: SharedPreferences
+lateinit var AppCompatActivity: AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatActivity = this
         context = applicationContext
         if (!::store.isInitialized) sharedPreferences = getSharedPreferences("main", MODE_PRIVATE)
         if (!::store.isInitialized) store = MyObjectBox.builder().androidContext(context).build()

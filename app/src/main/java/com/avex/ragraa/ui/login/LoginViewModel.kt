@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+
 class LoginViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -26,6 +27,8 @@ class LoginViewModel : ViewModel() {
     private var isCompleted: Boolean = false
     private var rememberLogin: Boolean = true
     private var expanded: Boolean = false
+    private var passwordVisible: Boolean = false
+    private var flipPassword: Boolean = false
 
     init {
         Datasource.cacheData()
@@ -89,7 +92,9 @@ class LoginViewModel : ViewModel() {
                 isOnCredential = isOnCredential,
                 isCompleted = isCompleted,
                 rememberLogin = rememberLogin,
-                expanded = expanded
+                expanded = expanded,
+                passwordVisible = passwordVisible,
+                flipPassword = flipPassword
             )
         }
     }
@@ -102,6 +107,16 @@ class LoginViewModel : ViewModel() {
     fun updatePassword(newPassword: String) {
         if (validatePassword(newPassword)) loginRequest.password = newPassword
         updateUI()
+    }
+
+    fun flipPassword() {
+        flipPassword = !flipPassword
+        updateUI()
+    }
+
+    fun changePasswordVisibility() {
+        passwordVisible = !passwordVisible
+        flipPassword()
     }
 
     //A bit vague but there's a whole lot going on in the usernames
