@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.avex.ragraa.data.Course
 import com.avex.ragraa.data.Datasource
+import com.avex.ragraa.data.Datasource.transcriptDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,55 +28,54 @@ class CalculatorViewModel : ViewModel() {
     private var viewingCourseMarks = false
 
     fun init() {
-        for ((i, course) in Datasource.marksDatabase.withIndex()) {
-
-            if (course.grandTotalExists) {
-                val grade = when (course.courseMarks.last().obtained.roundToInt()) {
-                    in 90..100 -> "A+"
-                    in 86..<90 -> "A"
-                    in 82..<86 -> "A-"
-                    in 78..<82 -> "B+"
-                    in 74..<78 -> "B"
-                    in 70..<74 -> "B-"
-                    in 66..<79 -> "C+"
-                    in 62..<66 -> "C"
-                    in 58..<62 -> "C-"
-                    in 54..<58 -> "D+"
-                    in 50..<54 -> "D"
-                    0 -> ""
-                    else -> "F"
-                }
-
-                val gpa: Float = when (grade) {
-                    "A+" -> 4f
-                    "A" -> 4f
-                    "A-" -> 3.66f
-                    "B+" -> 3.33f
-                    "B" -> 3f
-                    "B-" -> 2.66f
-                    "C+" -> 2.33f
-                    "C" -> 2f
-                    "C-" -> 1.66f
-                    "D+" -> 1.33f
-                    "D" -> 1f
-                    "" -> 0f
-                    else -> 0f
-                }
+        val transcript =
+            Datasource.transcriptDatabase!!.semesters.last().courses.map { it.courseID }
+        val marks = Datasource.marksDatabase.map { it.courseName }
 
 
+        for (course in marks) {
+            var locked = false
+
+            val index = transcript.indexOf(course.substring(0..5))
+
+            val transcriptCourse =
+                if (index != -1) transcriptDatabase!!.semesters.last().courses[index] else null
+            val marksCourse = Datasource.marksDatabase[marks.indexOf(course)]
+
+            if (index != -1) {
+                locked = transcriptCourse?.grade!!.isNotEmpty()
+            }
+
+            if (index == -1) {
                 courses.add(
                     CalculatorCourse(
-                        course.courseName.substring(7),
+                        marksCourse.courseName.substring(7),
                         "0",
-                        course.courseMarks.last().average.roundToInt().toString(),
-                        course.courseMarks.last().obtained.roundToInt().toString(),
-                        gpa,
-                        grade,
+                        Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().average.roundToInt()
+                            .toString(),
+                        Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().obtained.roundToInt()
+                            .toString(),
+                        0f,
+                        "",
+                        false,
                         false
                     )
                 )
             } else
-                courses.add(CalculatorCourse(course.courseName.substring(7)))
+                courses.add(
+                    CalculatorCourse(
+                        marksCourse.courseName,
+                        if (locked) transcriptCourse?.creditHours.toString() else "0",
+                        Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().average.roundToInt()
+                            .toString(),
+                        Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().obtained.roundToInt()
+                            .toString(),
+                        if (locked) transcriptCourse!!.gpa else 0f,
+                        if (locked) transcriptCourse!!.grade else "",
+                        false,
+                        locked
+                    )
+                )
         }
 
         calculateGPA()

@@ -65,7 +65,7 @@ data class TranscriptCourse(
     val gpa: Float
 )
 
-data class Semester(val cgpa: Float, val courses: List<TranscriptCourse>)
+data class Semester(val cgpa: Float, val session: String, val courses: List<TranscriptCourse>)
 
 data class Transcript(val sgpa: Float, val semesters: List<Semester>)
 
@@ -403,6 +403,8 @@ object Datasource {
         for (semester in htmlFile.getElementsByClass("col-md-6")) {
             val courseList: MutableList<TranscriptCourse> = mutableListOf()
 
+            val semesterName = semester.getElementsByTag("h5").text()
+
             for (course in semester.getElementsByTag("tr")) {
                 if (course.html().contains("th")) continue
 
@@ -428,7 +430,7 @@ object Datasource {
             sgpa = sData.substring(5, sData.indexOf('<')).toFloat()
 
 
-            semesterList.add(Semester(cgpa, courseList))
+            semesterList.add(Semester(cgpa, semesterName, courseList))
         }
 
         transcriptDatabase = Transcript(sgpa, semesterList)
