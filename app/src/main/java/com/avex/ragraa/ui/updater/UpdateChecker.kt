@@ -9,11 +9,18 @@ import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
 object UpdateChecker {
-    val currentVersion = 1.2
+    val currentVersion = 1.1
     var newVersion = 0f
     var updateURL = ""
 
-    fun fetchInfo() {
+    var updateUI: (Pair<Float, String>) -> Unit = {}
+
+    fun checkUpdate(_updateUI: (Pair<Float, String>) -> Unit) {
+        updateUI = _updateUI
+        fetchInfo()
+    }
+
+    private fun fetchInfo() {
         val client = OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(5, TimeUnit.MINUTES).readTimeout(5, TimeUnit.MINUTES).build()
 
@@ -31,7 +38,7 @@ object UpdateChecker {
                 val version = response.substring(response.indexOf("tag_name") + 12)
                 newVersion = version.substring(0, version.indexOf("\"")).toFloat()
 
-                updateURL = response.substring(response.indexOf("browser_download_url") + 24)
+                updateURL = response.substring(response.indexOf("browser_download_url") + 23)
                 updateURL = updateURL.substring(0, updateURL.indexOf("\""))
 
                 compareRelease()
@@ -42,7 +49,8 @@ object UpdateChecker {
 
     fun compareRelease() {
         if (currentVersion >= newVersion)
-            return;
+            return
         Log.d("Dev", "New version found: $newVersion")
+        updateUI(Pair(newVersion, updateURL))
     }
 }

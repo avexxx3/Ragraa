@@ -15,6 +15,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.avex.ragraa.data.MyObjectBox
 import com.avex.ragraa.ui.FlexApp
 import com.avex.ragraa.ui.theme.FlexTheme
+import com.avex.ragraa.ui.updater.Updater
 import io.objectbox.BoxStore
 
 @SuppressLint("StaticFieldLeak")
@@ -34,6 +35,8 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         actionBar?.hide()
 
+
+
         setContent {
             FlexTheme {
                 Surface(
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
                         .safeDrawingPadding()
                 ) {
                     FlexApp()
+                    Updater()
                 }
             }
         }
