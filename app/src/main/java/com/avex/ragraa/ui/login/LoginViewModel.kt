@@ -93,6 +93,7 @@ class LoginViewModel : ViewModel() {
                 password = loginRequest.password,
                 isError = isError,
                 status = status.toString(),
+                showButtons = !(status[0].isNotEmpty() || status[1].isNotEmpty()),
                 isOnCredential = isOnCredential,
                 isCompleted = isCompleted,
                 rememberLogin = rememberLogin,

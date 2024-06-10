@@ -152,7 +152,8 @@ fun LoginScreen(
                 textColor = Color.White
             )
         )
-        if ((uiState.status.isEmpty() || uiState.status.contains("Error")) && !uiState.isCompleted) Row(
+
+        if (uiState.showButtons && !uiState.isCompleted) Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.padding(start = 11.dp)
@@ -184,7 +185,7 @@ fun LoginScreen(
                 textAlign = TextAlign.Center
             )
 
-        if ((uiState.status.isEmpty() || uiState.status.contains("Error")) && !uiState.isCompleted) Button(
+        if (uiState.showButtons && !uiState.isCompleted) Button(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
                 .fillMaxWidth(),
