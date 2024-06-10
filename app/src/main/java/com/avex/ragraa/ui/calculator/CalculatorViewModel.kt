@@ -29,7 +29,9 @@ class CalculatorViewModel : ViewModel() {
 
     fun init() {
         val transcript =
-            Datasource.transcriptDatabase!!.semesters.last().courses.map { it.courseID }
+            if (Datasource.transcriptDatabase != null) Datasource.transcriptDatabase!!.semesters.last().courses.map { it.courseID } else listOf(
+                ""
+            )
         val marks = Datasource.marksDatabase.map { it.courseName }
 
 
