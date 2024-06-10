@@ -1,6 +1,7 @@
 package com.avex.ragraa.ui.updater
 
 import android.util.Log
+import com.avex.ragraa.context
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -8,7 +9,7 @@ import okhttp3.Request
 import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
-object UpdateChecker {
+object UpdateManager {
     val currentVersion = 1.1
     var newVersion = 0f
     var updateURL = ""

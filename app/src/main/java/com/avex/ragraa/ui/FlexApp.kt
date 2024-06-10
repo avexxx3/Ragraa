@@ -11,11 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
@@ -57,14 +57,15 @@ import com.avex.ragraa.ui.marks.AttendanceScreen
 import com.avex.ragraa.ui.marks.MarksScreen
 import com.avex.ragraa.ui.theme.sweetie_pie
 import com.avex.ragraa.ui.transcript.TranscriptScreen
+import com.avex.ragraa.ui.updater.Updater
 import kotlinx.coroutines.launch
 
 @Composable
 fun FlexApp(
     loginViewModel: LoginViewModel = viewModel(),
     homeViewModel: HomeViewModel = viewModel(),
-    calculatorViewModel : CalculatorViewModel = viewModel(),
-    navController : NavHostController = rememberNavController(),
+    calculatorViewModel: CalculatorViewModel = viewModel(),
+    navController: NavHostController = rememberNavController(),
 ) {
     loginViewModel.navController = navController
     homeViewModel.navController = navController
@@ -72,7 +73,7 @@ fun FlexApp(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var currentScreen by remember{mutableStateOf(if (Datasource.rollNo.isEmpty()) "login" else "home")}
+    var currentScreen by remember { mutableStateOf(if (Datasource.rollNo.isEmpty()) "login" else "home") }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -93,7 +94,11 @@ fun FlexApp(
                         )
                     },
                     selected = currentScreen == "home",
-                    onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("home");}
+                    onClick = {
+                        scope.launch { drawerState.apply { close() } }; navController.navigate(
+                        "home"
+                    )
+                    }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Login") },
@@ -104,7 +109,11 @@ fun FlexApp(
                         )
                     },
                     selected = currentScreen == "login",
-                    onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("login") }
+                    onClick = {
+                        scope.launch { drawerState.apply { close() } }; navController.navigate(
+                        "login"
+                    )
+                    }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Marks") },
@@ -115,7 +124,11 @@ fun FlexApp(
                         )
                     },
                     selected = currentScreen == "marks",
-                    onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("marks") }
+                    onClick = {
+                        scope.launch { drawerState.apply { close() } }; navController.navigate(
+                        "marks"
+                    )
+                    }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Attendance") },
@@ -126,7 +139,11 @@ fun FlexApp(
                         )
                     },
                     selected = currentScreen == "attendance",
-                    onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("attendance") }
+                    onClick = {
+                        scope.launch { drawerState.apply { close() } }; navController.navigate(
+                        "attendance"
+                    )
+                    }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Calculator") },
@@ -137,13 +154,17 @@ fun FlexApp(
                         )
                     },
                     selected = currentScreen == "calculator",
-                    onClick = { scope.launch { drawerState.apply { close() } }; navController.navigate("calculator") }
+                    onClick = {
+                        scope.launch { drawerState.apply { close() } }; navController.navigate(
+                        "calculator"
+                    )
+                    }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Transcript") },
                     icon = {
                         Icon(
-                            imageVector = Icons.Filled.Notes,
+                            imageVector = Icons.AutoMirrored.Filled.Notes,
                             contentDescription = null
                         )
                     },
@@ -189,7 +210,17 @@ fun FlexApp(
             composable("marks") {
                 currentScreen = "marks"
                 Column {
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 8.dp)){navBar();Text("Marks", style = MaterialTheme.typography.displaySmall, fontSize = 24.sp, modifier = Modifier.padding(top = 4.dp, start = 12.dp))}
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    ) {
+                        navBar();Text(
+                        "Marks",
+                        style = MaterialTheme.typography.displaySmall,
+                        fontSize = 24.sp,
+                        modifier = Modifier.padding(top = 4.dp, start = 12.dp)
+                    )
+                    }
                     MarksScreen(navController)
                 }
             }
@@ -222,4 +253,6 @@ fun FlexApp(
             }
         }
     }
+
+    if (!listOf("web", "login", "calculator").contains(currentScreen)) Updater()
 }

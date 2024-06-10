@@ -20,6 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,9 +34,13 @@ import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun Updater(updateViewModel: UpdateViewModel = viewModel()) {
-    LaunchedEffect(context) { UpdateChecker.checkUpdate { updateViewModel.collectData(it) } }
-
     val uiState by updateViewModel.uiState.collectAsState()
+
+    LaunchedEffect(context) {
+        if (!uiState.launched) {
+            updateViewModel.checkUpdate()
+        }
+    }
 
     if (uiState.showPrompt) {
         UpdatePrompt(updateViewModel, uiState)
@@ -103,7 +110,7 @@ fun UpdatePrompt(viewModel: UpdateViewModel, uiState: UpdateUIState) {
                     Box(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
-                            .clickable { viewModel.launchURL() }) {
+                            .clickable { viewModel.updateApp() }) {
                         Text(
                             "Update",
                             color = sweetie_pie

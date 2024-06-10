@@ -2,6 +2,7 @@ package com.avex.ragraa.ui.updater
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import com.avex.ragraa.context
@@ -23,7 +24,8 @@ open class UpdateViewModel : ViewModel() {
             it.copy(
                 newVersion = newVersion,
                 updateURL = updateURL,
-                showPrompt = showPrompt
+                showPrompt = showPrompt,
+                launched = true
             )
         }
     }
@@ -40,15 +42,24 @@ open class UpdateViewModel : ViewModel() {
         updateUI()
     }
 
-    fun launchURL() {
-        val browserIntent =
-            Intent(Intent.ACTION_VIEW, Uri.parse(updateURL)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    fun updateApp() {
+
+        val browserIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(updateURL)
+        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(context, browserIntent, null)
+    }
+
+    fun checkUpdate() {
+        updateUI()
+        UpdateManager.checkUpdate { collectData(it) }
     }
 }
 
 data class UpdateUIState(
     val newVersion: Float = 0f,
     val updateURL: String = "",
-    val showPrompt: Boolean = false
+    val showPrompt: Boolean = false,
+    val launched: Boolean = false
 )
