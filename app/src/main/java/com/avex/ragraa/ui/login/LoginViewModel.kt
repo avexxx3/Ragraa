@@ -66,8 +66,7 @@ class LoginViewModel : ViewModel() {
         if ((status[4].isEmpty() && status[index].contains("Fetched marks successfully") || status[index].contains(
                 "Fetched attendance successfully"
             )) || status[index].contains("Fetched transcript successfully")
-        )
-            response++
+        ) response++
 
         if (response == 2) {
             isCompleted = true

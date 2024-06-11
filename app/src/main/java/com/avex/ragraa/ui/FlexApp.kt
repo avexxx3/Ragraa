@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -45,16 +46,16 @@ import androidx.navigation.compose.rememberNavController
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.sharedPreferences
+import com.avex.ragraa.ui.attendance.AttendanceScreen
 import com.avex.ragraa.ui.calculator.CalculatorScreen
 import com.avex.ragraa.ui.calculator.CalculatorViewModel
 import com.avex.ragraa.ui.home.HomeScreen
 import com.avex.ragraa.ui.home.HomeViewModel
-import com.avex.ragraa.ui.home.NavShape
 import com.avex.ragraa.ui.login.LoginScreen
 import com.avex.ragraa.ui.login.LoginViewModel
 import com.avex.ragraa.ui.login.WebViewScreen
-import com.avex.ragraa.ui.marks.AttendanceScreen
 import com.avex.ragraa.ui.marks.MarksScreen
+import com.avex.ragraa.ui.misc.NavShape
 import com.avex.ragraa.ui.theme.sweetie_pie
 import com.avex.ragraa.ui.transcript.TranscriptScreen
 import com.avex.ragraa.ui.updater.Updater
@@ -67,16 +68,19 @@ fun FlexApp(
     calculatorViewModel: CalculatorViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
+    //The view-models are initialized here for a cheap dependency injection
+    // (I was not aware of Koin at the time of writing this)
     loginViewModel.navController = navController
     homeViewModel.navController = navController
     calculatorViewModel.navController = navController
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    //If the user doesn't have a saved login then it'll keep you at the login screen until logged in (i hate the word login)
     var currentScreen by remember { mutableStateOf(if (Datasource.rollNo.isEmpty()) "login" else "home") }
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
+    ModalNavigationDrawer(drawerState = drawerState,
         gesturesEnabled = !(currentScreen == "web" || (Datasource.rollNo.isEmpty() && currentScreen == "login")),
         drawerContent = {
             ModalDrawerSheet(drawerShape = NavShape(0.dp, 0.8f)) {
@@ -85,12 +89,10 @@ fun FlexApp(
                     contentDescription = null,
                     modifier = Modifier.padding(top = 4.dp)
                 )
-                NavigationDrawerItem(
-                    label = { Text(text = "Home") },
+                NavigationDrawerItem(label = { Text(text = stringResource(R.string.home)) },
                     icon = {
                         Icon(
-                            imageVector = Icons.Filled.Home,
-                            contentDescription = null
+                            imageVector = Icons.Filled.Home, contentDescription = null
                         )
                     },
                     selected = currentScreen == "home",
@@ -98,14 +100,11 @@ fun FlexApp(
                         scope.launch { drawerState.apply { close() } }; navController.navigate(
                         "home"
                     )
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Login") },
+                    })
+                NavigationDrawerItem(label = { Text(text = stringResource(R.string.login)) },
                     icon = {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Login,
-                            contentDescription = null
+                            imageVector = Icons.AutoMirrored.Filled.Login, contentDescription = null
                         )
                     },
                     selected = currentScreen == "login",
@@ -113,14 +112,11 @@ fun FlexApp(
                         scope.launch { drawerState.apply { close() } }; navController.navigate(
                         "login"
                     )
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Marks") },
+                    })
+                NavigationDrawerItem(label = { Text(text = stringResource(R.string.marks)) },
                     icon = {
                         Icon(
-                            imageVector = Icons.Filled.Percent,
-                            contentDescription = null
+                            imageVector = Icons.Filled.Percent, contentDescription = null
                         )
                     },
                     selected = currentScreen == "marks",
@@ -128,14 +124,11 @@ fun FlexApp(
                         scope.launch { drawerState.apply { close() } }; navController.navigate(
                         "marks"
                     )
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Attendance") },
+                    })
+                NavigationDrawerItem(label = { Text(text = stringResource(R.string.attendance)) },
                     icon = {
                         Icon(
-                            imageVector = Icons.Filled.Checklist,
-                            contentDescription = null
+                            imageVector = Icons.Filled.Checklist, contentDescription = null
                         )
                     },
                     selected = currentScreen == "attendance",
@@ -143,14 +136,11 @@ fun FlexApp(
                         scope.launch { drawerState.apply { close() } }; navController.navigate(
                         "attendance"
                     )
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Calculator") },
+                    })
+                NavigationDrawerItem(label = { Text(text = stringResource(R.string.calculator)) },
                     icon = {
                         Icon(
-                            imageVector = Icons.Filled.Grade,
-                            contentDescription = null
+                            imageVector = Icons.Filled.Grade, contentDescription = null
                         )
                     },
                     selected = currentScreen == "calculator",
@@ -158,14 +148,11 @@ fun FlexApp(
                         scope.launch { drawerState.apply { close() } }; navController.navigate(
                         "calculator"
                     )
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Transcript") },
+                    })
+                NavigationDrawerItem(label = { Text(text = stringResource(R.string.transcript)) },
                     icon = {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Notes,
-                            contentDescription = null
+                            imageVector = Icons.AutoMirrored.Filled.Notes, contentDescription = null
                         )
                     },
                     selected = currentScreen == "transcript",
@@ -173,12 +160,10 @@ fun FlexApp(
                         scope.launch { drawerState.apply { close() } }; navController.navigate(
                         "transcript"
                     )
-                    }
-                )
+                    })
             }
 
-        }
-    ) {
+        }) {
         val navBar = @Composable {
             Box(modifier = Modifier
                 .padding(top = 8.dp, start = 12.dp)
@@ -195,10 +180,8 @@ fun FlexApp(
         }
 
         NavHost(
-            navController,
-            if (sharedPreferences.getBoolean(
-                    "startupRefresh",
-                    false
+            navController, if (sharedPreferences.getBoolean(
+                    "startupRefresh", false
                 )
             ) "web" else if (Datasource.rollNo.isEmpty()) "login" else "home"
         ) {
@@ -215,7 +198,7 @@ fun FlexApp(
                         modifier = Modifier.padding(bottom = 8.dp)
                     ) {
                         navBar();Text(
-                        "Marks",
+                        stringResource(R.string.marks),
                         style = MaterialTheme.typography.displaySmall,
                         fontSize = 24.sp,
                         modifier = Modifier.padding(top = 4.dp, start = 12.dp)
@@ -254,5 +237,7 @@ fun FlexApp(
         }
     }
 
+    //Shows the update prompt only when a user isn't on any of the below mentioned screens,
+    // so as to not disturb while inputting something
     if (!listOf("web", "login", "calculator").contains(currentScreen)) Updater()
 }

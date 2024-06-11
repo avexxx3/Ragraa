@@ -2,7 +2,6 @@ package com.avex.ragraa.ui.updater
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import com.avex.ragraa.context
@@ -45,8 +44,7 @@ open class UpdateViewModel : ViewModel() {
     fun updateApp() {
 
         val browserIntent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse(updateURL)
+            Intent.ACTION_VIEW, Uri.parse(updateURL)
         ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(context, browserIntent, null)
     }

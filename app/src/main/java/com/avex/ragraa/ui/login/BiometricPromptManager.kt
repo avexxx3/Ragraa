@@ -19,8 +19,7 @@ class BiometricPromptManager(
     var promptResults = resultChannel.receiveAsFlow()
 
     fun showBiometricPrompt(
-        title: String,
-        description: String
+        title: String, description: String
     ) {
         val manager = BiometricManager.from(activity)
 
@@ -28,11 +27,9 @@ class BiometricPromptManager(
             BIOMETRIC_STRONG or DEVICE_CREDENTIAL
         } else BIOMETRIC_STRONG
 
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(title)
-            .setDescription(description)
-            .setAllowedAuthenticators(authenticators)
-            .setConfirmationRequired(false)
+        val promptInfo =
+            BiometricPrompt.PromptInfo.Builder().setTitle(title).setDescription(description)
+                .setAllowedAuthenticators(authenticators).setConfirmationRequired(false)
 
         if (Build.VERSION.SDK_INT < 30) promptInfo.setNegativeButtonText("Cancel")
 
@@ -65,29 +62,26 @@ class BiometricPromptManager(
             else -> Unit
         }
 
-        val prompt = BiometricPrompt(
-            activity,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Log.d("Dev", "Auth failed")
-                    resultChannel.trySend(BiometricResult.AuthenticationFailed)
-                }
-
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    Log.d("Dev", "Auth success")
-                    resultChannel.trySend(BiometricResult.AuthenticationSuccess)
-                }
-
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    Log.d("Dev", "Auth success")
-                    resultChannel.trySend(BiometricResult.AuthenticationSuccess)
-                }
-
+        val prompt = BiometricPrompt(activity, object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationFailed() {
+                super.onAuthenticationFailed()
+                Log.d("Dev", "Auth failed")
+                resultChannel.trySend(BiometricResult.AuthenticationFailed)
             }
-        )
+
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                super.onAuthenticationSucceeded(result)
+                Log.d("Dev", "Auth success")
+                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+            }
+
+            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                super.onAuthenticationError(errorCode, errString)
+                Log.d("Dev", "Auth success")
+                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+            }
+
+        })
 
         prompt.authenticate(promptInfo.build())
     }

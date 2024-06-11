@@ -1,9 +1,11 @@
 package com.avex.ragraa.ui.calculator
 
-fun mcaLookup(mca: Int, obtained: Int) :String {
-    val grade = when(mca) {
+//This was a pain to write.
+
+fun mcaLookup(mca: Int, obtained: Int): String {
+    val grade = when (mca) {
         in 30..32 -> {
-            when(obtained) {
+            when (obtained) {
                 in 30..<mca + 3 -> "C+"
                 in mca + 3..<mca + 8 -> "B-"
                 in mca + 8..<mca + 13 -> "B"
@@ -15,7 +17,7 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 33..37 -> {
-            when(obtained) {
+            when (obtained) {
                 in 30..<mca - 2 -> "C"
                 in mca - 2..<mca + 3 -> "C+"
                 in mca + 3..<mca + 8 -> "B-"
@@ -29,7 +31,7 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 38..42 -> {
-            when(obtained) {
+            when (obtained) {
                 in 30..<mca - 7 -> "C-"
                 in mca - 7..<mca - 2 -> "C"
                 in mca - 2..<mca + 3 -> "C+"
@@ -44,8 +46,8 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 43..47 -> {
-            when(obtained) {
-                in 30..< mca -13 -> "D+"
+            when (obtained) {
+                in 30..<mca - 13 -> "D+"
                 in mca - 13..<mca - 7 -> "C-"
                 in mca - 7..<mca - 2 -> "C"
                 in mca - 2..<mca + 3 -> "C+"
@@ -60,9 +62,9 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 48..49 -> {
-            when(obtained) {
+            when (obtained) {
                 in 30..mca - 18 -> "D"
-                in mca -18 ..< mca -13 -> "D+"
+                in mca - 18..<mca - 13 -> "D+"
                 in mca - 13..<mca - 7 -> "C-"
                 in mca - 7..<mca - 2 -> "C"
                 in mca - 2..<mca + 3 -> "C+"
@@ -77,8 +79,8 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 50..52 -> {
-            when(obtained) {
-                in 30..< mca - 17 -> "D+"
+            when (obtained) {
+                in 30..<mca - 17 -> "D+"
                 in mca - 17..<mca - 12 -> "C-"
                 in mca - 12..<mca - 7 -> "C"
                 in mca - 7..<mca - 2 -> "C+"
@@ -93,9 +95,9 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 53..57 -> {
-            when(obtained) {
-                in 30..< mca - 22 -> "D"
-                in mca - 22 ..< mca - 17 -> "D+"
+            when (obtained) {
+                in 30..<mca - 22 -> "D"
+                in mca - 22..<mca - 17 -> "D+"
                 in mca - 17..<mca - 12 -> "C-"
                 in mca - 12..<mca - 7 -> "C"
                 in mca - 7..<mca - 2 -> "C+"
@@ -110,9 +112,9 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 58..64 -> {
-            when(obtained) {
-                in mca - 27..< mca - 22 -> "D"
-                in mca - 22 ..< mca - 17 -> "D+"
+            when (obtained) {
+                in mca - 27..<mca - 22 -> "D"
+                in mca - 22..<mca - 17 -> "D+"
                 in mca - 17..<mca - 12 -> "C-"
                 in mca - 12..<mca - 7 -> "C"
                 in mca - 7..<mca - 2 -> "C+"
@@ -127,9 +129,9 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 65..76 -> {
-            when(obtained) {
-                in mca - 32..< mca - 27 -> "D"
-                in mca - 27 ..< mca - 22 -> "D+"
+            when (obtained) {
+                in mca - 32..<mca - 27 -> "D"
+                in mca - 27..<mca - 22 -> "D+"
                 in mca - 22..<mca - 17 -> "C-"
                 in mca - 17..<mca - 12 -> "C"
                 in mca - 12..<mca - 7 -> "C+"
@@ -144,11 +146,11 @@ fun mcaLookup(mca: Int, obtained: Int) :String {
         }
 
         in 77..91 -> {
-            when(obtained) {
+            when (obtained) {
                 in 95..100 -> "A+"
                 in 90..<95 -> "A"
-                in mca - 32..< mca - 27 -> "D"
-                in mca - 27 ..< mca - 22 -> "D+"
+                in mca - 32..<mca - 27 -> "D"
+                in mca - 27..<mca - 22 -> "D+"
                 in mca - 22..<mca - 17 -> "C-"
                 in mca - 17..<mca - 12 -> "C"
                 in mca - 12..<mca - 7 -> "C+"

@@ -26,15 +26,26 @@ lateinit var AppCompatActivity: AppCompatActivity
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //Used to send out biometric verification request
         AppCompatActivity = this
+
+        //Used to check for LaunchedEffects
         context = applicationContext
-        if (!::store.isInitialized) sharedPreferences = getSharedPreferences("main", MODE_PRIVATE)
+
+        //Initializes global instances of sharedPreferences and local SQLite, so it isn't re-declared
+        if (!::sharedPreferences.isInitialized) sharedPreferences =
+            getSharedPreferences("main", MODE_PRIVATE)
         if (!::store.isInitialized) store = MyObjectBox.builder().androidContext(context).build()
+
+        //Extend background to behind status and navbar
         enableEdgeToEdge()
+
+        //Launching app gives splash screen according to the background color of logo
         installSplashScreen()
+
+        //Using the SplashScreen android:theme makes the action bar pop up so it is explicitly disabled
         actionBar?.hide()
-
-
 
         setContent {
             FlexTheme {

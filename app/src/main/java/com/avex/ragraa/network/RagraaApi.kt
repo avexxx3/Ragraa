@@ -52,8 +52,7 @@ object RagraaApi {
                 if (!response.body?.string().toString().contains("\"status\":\"done\"")) {
                     updateStatus(
                         Pair(
-                            "Error: Invalid credentials or recaptcha. Please login again",
-                            0
+                            "Error: Invalid credentials or recaptcha. Please login again", 0
                         )
                     )
                     return

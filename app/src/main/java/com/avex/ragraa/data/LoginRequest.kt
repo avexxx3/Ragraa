@@ -8,5 +8,5 @@ data class LoginRequest(
     var rollNo: String = "",
     var password: String = "",
     var g_recaptcha_response: String = "",
-    @Id var Id:Long = 0
+    @Id var Id: Long = 0
 )

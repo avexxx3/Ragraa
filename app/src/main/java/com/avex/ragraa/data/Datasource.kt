@@ -9,8 +9,6 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.avex.ragraa.sharedPreferences
 import com.avex.ragraa.store
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
 import io.objectbox.kotlin.boxFor
 import okhttp3.Response
 import org.jsoup.Jsoup
@@ -21,63 +19,6 @@ import java.util.Locale
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-
-data class Marks(
-    val weightage: Float,
-    val obtained: Float,
-    val total: Float,
-    val average: Float,
-    val minimum: Float,
-    val maximum: Float,
-    var new: Boolean = false
-)
-
-data class Section(
-    val name: String,
-    val listOfMarks: List<Marks>,
-    val obtained: Float,
-    val total: Float,
-    val average: Float,
-    var new: Boolean = false,
-)
-
-data class Course(
-    val courseName: String,
-    val courseMarks: List<Section>,
-    var new: Boolean = false,
-    val grandTotalExists: Boolean,
-)
-
-data class Attendance(val date: String, val present: Char)
-
-data class CourseAttendance(
-    val courseName: String,
-    var percentage: Float,
-    val attendance: List<Attendance>,
-    val absents: Int
-)
-
-data class TranscriptCourse(
-    val courseID: String,
-    val courseName: String,
-    val creditHours: Int,
-    val grade: String,
-    val gpa: Float
-)
-
-data class Semester(val cgpa: Float, val session: String, val courses: List<TranscriptCourse>)
-
-data class Transcript(val sgpa: Float, val semesters: List<Semester>)
-
-@Entity
-data class marksHTML(val html: String = "", @Id var id: Long = 0)
-
-@Entity
-data class attendanceHTML(val html: String = "", @Id var id: Long = 0)
-
-@Entity
-data class transcriptHTML(val html: String = "", @Id var id: Long = 0)
-
 
 object Datasource {
     var marksResponse = ""
@@ -233,11 +174,9 @@ object Datasource {
                     average += item.average / item.total * item.weightage
                 }
                 val obtained =
-                    course.getElementsByClass("text-center totalColObtMarks")[i].text()
-                        .toFloat()
+                    course.getElementsByClass("text-center totalColObtMarks")[i].text().toFloat()
                 val total =
-                    course.getElementsByClass("text-center totalColweightage")[i].text()
-                        .toFloat()
+                    course.getElementsByClass("text-center totalColweightage")[i].text().toFloat()
 
                 projectedAvg += average
                 projectedTotal += total
@@ -245,11 +184,7 @@ object Datasource {
 
                 listOfItems.add(
                     Section(
-                        courseWork.text(),
-                        listOfMarks,
-                        obtained,
-                        total,
-                        average
+                        courseWork.text(), listOfMarks, obtained, total, average
                     )
                 )
 
@@ -403,10 +338,11 @@ object Datasource {
         for (semester in htmlFile.getElementsByClass("col-md-6")) {
             val courseList: MutableList<TranscriptCourse> = mutableListOf()
 
+
             val semesterName = semester.getElementsByTag("h5").text()
 
             for (course in semester.getElementsByTag("tr")) {
-                if (course.html().contains("th")) continue
+                if (course.getElementsByTag("th").isNotEmpty()) continue
 
                 val grade = course.getElementsByTag("td")[4].text()
 

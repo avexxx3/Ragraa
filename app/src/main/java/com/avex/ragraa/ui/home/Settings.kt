@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -20,8 +19,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.avex.ragraa.R
 
 @Composable
 fun Settings(viewModel: HomeViewModel) {
@@ -37,16 +38,15 @@ fun Settings(viewModel: HomeViewModel) {
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()
-                .padding(20.dp),
-            shape = CutCornerShape(topStart = 32f, bottomEnd = 32f)
+                .padding(20.dp)
         ) {
-            Column() {
+            Column {
                 Row(verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(vertical = 10.dp)
                         .clickable { viewModel.toggleImage() }) {
                     Text(
-                        "Show profile picture",
+                        stringResource(R.string.show_profile_picture),
                         Modifier
                             .padding(start = 12.dp)
                             .clickable { viewModel.toggleImage() },
@@ -66,7 +66,7 @@ fun Settings(viewModel: HomeViewModel) {
                         .padding(top = 6.dp, bottom = 10.dp)
                         .clickable { viewModel.toggleStartupRefresh() }) {
                     Text(
-                        "Refresh on startup",
+                        stringResource(R.string.refresh_on_startup),
                         Modifier
                             .padding(start = 12.dp)
                             .clickable { viewModel.toggleStartupRefresh() },

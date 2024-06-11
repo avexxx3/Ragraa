@@ -89,6 +89,7 @@ class HomeViewModel : ViewModel() {
     }
 
 
+    @Suppress("DEPRECATION")
     fun vibrate() {
         val v: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

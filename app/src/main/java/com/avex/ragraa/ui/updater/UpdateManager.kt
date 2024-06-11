@@ -1,7 +1,6 @@
 package com.avex.ragraa.ui.updater
 
 import android.util.Log
-import com.avex.ragraa.context
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -25,9 +24,9 @@ object UpdateManager {
         val client = OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(5, TimeUnit.MINUTES).readTimeout(5, TimeUnit.MINUTES).build()
 
-        val request = Request.Builder()
-            .url("https://api.github.com/repos/avexxx3/Ragraa/releases/latest")
-            .build()
+        val request =
+            Request.Builder().url("https://api.github.com/repos/avexxx3/Ragraa/releases/latest")
+                .build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: java.io.IOException) {
@@ -44,13 +43,11 @@ object UpdateManager {
 
                 compareRelease()
             }
-        }
-        )
+        })
     }
 
     fun compareRelease() {
-        if (currentVersion >= newVersion)
-            return
+        if (currentVersion >= newVersion) return
         Log.d("Dev", "New version found: $newVersion")
         updateUI(Pair(newVersion, updateURL))
     }

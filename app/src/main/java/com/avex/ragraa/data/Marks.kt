@@ -1,0 +1,11 @@
+package com.avex.ragraa.data
+
+data class Marks(
+    val weightage: Float,
+    val obtained: Float,
+    val total: Float,
+    val average: Float,
+    val minimum: Float,
+    val maximum: Float,
+    var new: Boolean = false
+)

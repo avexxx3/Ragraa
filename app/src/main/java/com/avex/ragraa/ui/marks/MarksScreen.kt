@@ -49,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -65,7 +66,7 @@ import com.avex.ragraa.data.Course
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.Marks
 import com.avex.ragraa.data.Section
-import com.avex.ragraa.ui.home.drawRainbowBorder
+import com.avex.ragraa.ui.misc.drawRainbowBorder
 import com.avex.ragraa.ui.theme.monteserratFamily
 import com.avex.ragraa.ui.theme.sweetie_pie
 import java.text.NumberFormat
@@ -74,7 +75,7 @@ import java.text.NumberFormat
 @Composable
 fun MarksScreen(
     navController: NavHostController,
-    marksViewModel: DataViewModel = viewModel(),
+    marksViewModel: MarksViewModel = viewModel(),
     newNavController: NavHostController = rememberNavController()
 ) {
     BackHandler {
@@ -99,7 +100,7 @@ fun MarksScreen(
         }
 
         composable("course") {
-            CourseDetails(course = uiState.currentMarksCourse!!)
+            CourseDetails(course = uiState.currentCourse!!)
         }
     }
 }
@@ -123,7 +124,11 @@ fun CourseDetails(course: Course) {
                     .padding(horizontal = 20.dp)
             )
 
-            if(course.courseMarks.isEmpty()) Image(painter = painterResource(id = R.drawable.cat), contentDescription = null, contentScale = ContentScale.FillBounds)
+            if (course.courseMarks.isEmpty()) Image(
+                painter = painterResource(id = R.drawable.cat),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds
+            )
 
             for (courseItem in course.courseMarks) {
                 if (courseItem.listOfMarks.isNotEmpty() || courseItem.name.contains("Total")) CourseItem(
@@ -172,33 +177,34 @@ fun CourseItem(courseItem: Section) {
     ) {
 
         if (isExpanded.value) {
-            if(courseItem.listOfMarks.isNotEmpty()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = dimensionResource(id = R.dimen.padding_medium)), horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                val style = TextStyle(
-                    fontFamily = monteserratFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 18.sp
-                )
-                Box(
-                    Modifier.weight(1f)
-                ) { Text("#", style = style, modifier = Modifier.align(Alignment.Center)) }
-                Box(
-                    Modifier.weight(1f)
-                ) { Text("Obt", style = style, modifier = Modifier.align(Alignment.Center)) }
-                Box(
-                    Modifier.weight(1f)
-                ) { Text("Avg", style = style, modifier = Modifier.align(Alignment.Center)) }
-                Box(
-                    Modifier.weight(1f)
-                ) { Text("Min", style = style, modifier = Modifier.align(Alignment.Center)) }
-                Box(
-                    Modifier.weight(1f)
-                ) { Text("Max", style = style, modifier = Modifier.align(Alignment.Center)) }
-            }
+            if (courseItem.listOfMarks.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = dimensionResource(id = R.dimen.padding_medium)),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    val style = TextStyle(
+                        fontFamily = monteserratFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 18.sp
+                    )
+                    Box(
+                        Modifier.weight(1f)
+                    ) { Text("#", style = style, modifier = Modifier.align(Alignment.Center)) }
+                    Box(
+                        Modifier.weight(1f)
+                    ) { Text("Obt", style = style, modifier = Modifier.align(Alignment.Center)) }
+                    Box(
+                        Modifier.weight(1f)
+                    ) { Text("Avg", style = style, modifier = Modifier.align(Alignment.Center)) }
+                    Box(
+                        Modifier.weight(1f)
+                    ) { Text("Min", style = style, modifier = Modifier.align(Alignment.Center)) }
+                    Box(
+                        Modifier.weight(1f)
+                    ) { Text("Max", style = style, modifier = Modifier.align(Alignment.Center)) }
+                }
             }
 
             Spacer(modifier = Modifier.padding(top = 4.dp))
@@ -213,7 +219,11 @@ fun CourseItem(courseItem: Section) {
                 modifier = Modifier.padding(bottom = 20.dp)
             ) {
                 Spacer(modifier = Modifier.weight(1f))
-                Text("Total: ", style = MaterialTheme.typography.displaySmall, fontSize = 22.sp)
+                Text(
+                    "${stringResource(R.string.total)}: ",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontSize = 22.sp
+                )
 
                 Text(
                     formatMarks(courseItem.obtained),
@@ -225,7 +235,7 @@ fun CourseItem(courseItem: Section) {
                 )
 
                 Text(
-                    '/' + formatMarks(courseItem.total),
+                    "/${formatMarks(courseItem.total)}",
                     color = Color.Gray,
                     style = TextStyle(
                         fontFamily = monteserratFamily,
@@ -237,7 +247,7 @@ fun CourseItem(courseItem: Section) {
                 Spacer(modifier = Modifier.weight(0.3f))
 
                 Text(
-                    "Average: " + formatMarks(courseItem.average),
+                    "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
                     style = TextStyle(
                         fontFamily = monteserratFamily,
                         fontWeight = FontWeight.SemiBold,
@@ -258,7 +268,8 @@ fun formatMarks(marks: Float): String {
 @Composable
 fun CourseMarks(marks: Marks, index: String) {
     Row(
-        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
             .padding(start = dimensionResource(id = R.dimen.padding_medium))
             .fillMaxWidth()
@@ -284,7 +295,7 @@ fun CourseMarks(marks: Marks, index: String) {
                     )
 
                     Text(
-                        '/' + formatMarks(marks.total),
+                        "/${formatMarks(marks.total)}",
                         color = Color.Gray,
                         style = TextStyle(
                             fontFamily = monteserratFamily,

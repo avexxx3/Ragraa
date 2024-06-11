@@ -29,7 +29,7 @@ class CalculatorViewModel : ViewModel() {
 
     fun init() {
         val transcript =
-            if (Datasource.transcriptDatabase != null) Datasource.transcriptDatabase!!.semesters.last().courses.map { it.courseID } else listOf(
+            if (transcriptDatabase != null) transcriptDatabase!!.semesters.last().courses.map { it.courseID } else listOf(
                 ""
             )
         val marks = Datasource.marksDatabase.map { it.courseName }
@@ -48,36 +48,39 @@ class CalculatorViewModel : ViewModel() {
                 locked = transcriptCourse?.grade!!.isNotEmpty()
             }
 
+            // If the course exists in the transcript and it has a grade uploaded,
+            // then it'll be preferred over the data from the marks
+            // Otherwise data is filled from the marks uploaded on Flex
+
             if (index == -1) {
                 courses.add(
                     CalculatorCourse(
-                        marksCourse.courseName.substring(7),
-                        "0",
-                        Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().average.roundToInt()
+                        name = marksCourse.courseName.substring(7),
+                        credits = "0",
+                        mca = Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().average.roundToInt()
                             .toString(),
-                        Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().obtained.roundToInt()
+                        obtained = Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().obtained.roundToInt()
                             .toString(),
-                        0f,
-                        "",
-                        false,
-                        false
+                        gpa = 0f,
+                        grade = "",
+                        isRelative = false,
+                        locked = false
                     )
                 )
-            } else
-                courses.add(
-                    CalculatorCourse(
-                        marksCourse.courseName,
-                        if (locked) transcriptCourse?.creditHours.toString() else "0",
-                        Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().average.roundToInt()
-                            .toString(),
-                        Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().obtained.roundToInt()
-                            .toString(),
-                        if (locked) transcriptCourse!!.gpa else 0f,
-                        if (locked) transcriptCourse!!.grade else "",
-                        false,
-                        locked
-                    )
+            } else courses.add(
+                CalculatorCourse(
+                    name = marksCourse.courseName.substring(7),
+                    credits = transcriptCourse?.creditHours.toString(),
+                    mca = Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().average.roundToInt()
+                        .toString(),
+                    obtained = Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().obtained.roundToInt()
+                        .toString(),
+                    gpa = if (locked) transcriptCourse!!.gpa else 0f,
+                    grade = if (locked) transcriptCourse!!.grade else "",
+                    isRelative = false,
+                    locked = locked
                 )
+            )
         }
 
         calculateGPA()
@@ -100,8 +103,12 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun editCourse(course: CalculatorCourse? = null) {
+        if (course != null) {
+            if (course.locked) return
+        }
+
         editingCourse = course
-        val index = courses.indexOf(course)
+        index = courses.indexOf(course)
         currentCourse = if (index >= 0) Datasource.marksDatabase[index] else null
         updateUI()
     }
@@ -142,7 +149,6 @@ class CalculatorViewModel : ViewModel() {
         calculateGrade()
         courses[index] = editingCourse!!
         calculateGPA()
-
         editingCourse = null
         updateUI()
     }
@@ -167,12 +173,13 @@ class CalculatorViewModel : ViewModel() {
         totalGPA = 0f
 
         for (course in courses) {
-            if (course.credits.isNotEmpty())
+            if (course.credits.isNotEmpty() && course.grade.isNotEmpty()) {
                 totalCredits += course.credits.toInt()
+            }
         }
 
         for (course in courses) {
-            if (course.credits.isNotEmpty()) {
+            if (course.credits.isNotEmpty() && course.grade.isNotEmpty()) {
                 totalGPA += course.gpa * course.credits.toInt() / totalCredits
             }
         }
