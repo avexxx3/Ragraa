@@ -58,6 +58,7 @@ import com.avex.ragraa.ui.marks.MarksScreen
 import com.avex.ragraa.ui.misc.NavShape
 import com.avex.ragraa.ui.theme.sweetie_pie
 import com.avex.ragraa.ui.transcript.TranscriptScreen
+import com.avex.ragraa.ui.transcript.TranscriptViewModel
 import com.avex.ragraa.ui.updater.Updater
 import kotlinx.coroutines.launch
 
@@ -66,6 +67,7 @@ fun FlexApp(
     loginViewModel: LoginViewModel = viewModel(),
     homeViewModel: HomeViewModel = viewModel(),
     calculatorViewModel: CalculatorViewModel = viewModel(),
+    transcriptViewModel: TranscriptViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     //The view-models are initialized here for a cheap dependency injection
