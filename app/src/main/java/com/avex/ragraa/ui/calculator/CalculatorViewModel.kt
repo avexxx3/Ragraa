@@ -28,14 +28,19 @@ class CalculatorViewModel : ViewModel() {
     private var viewingCourseMarks = false
 
     fun init() {
+        Datasource.updateCalculatorUI = { updateUI() }
+
         val transcript =
             if (transcriptDatabase != null) transcriptDatabase!!.semesters.last().courses.map { it.courseID } else listOf(
                 ""
             )
+
         val marks = Datasource.marksDatabase.map { it.courseName }
 
+        courses.clear()
 
         for (course in marks) {
+
             var locked = false
 
             val index = transcript.indexOf(course.substring(0..5))
@@ -103,10 +108,6 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun editCourse(course: CalculatorCourse? = null) {
-        if (course != null) {
-            if (course.locked) return
-        }
-
         editingCourse = course
         index = courses.indexOf(course)
         currentCourse = if (index >= 0) Datasource.marksDatabase[index] else null

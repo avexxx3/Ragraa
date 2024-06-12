@@ -40,7 +40,7 @@ fun SemesterItem(semester: Semester) {
             )
 
             Text(
-                text = "${stringResource(R.string.cgpa)}: ${semester.cgpa}",
+                text = "${stringResource(R.string.sgpa)}: ${semester.sgpa}",
                 style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.W900),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(end = 8.dp),

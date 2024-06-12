@@ -51,11 +51,11 @@ fun TranscriptScreen(navBar: @Composable () -> Unit, navController: NavHostContr
         ) {
             item {
                 Text(
-                    "${stringResource(R.string.sgpa)}: ${transcriptDatabase?.sgpa}",
+                    "${stringResource(R.string.cgpa)}: ${transcriptDatabase?.cgpa}",
                     Modifier.padding(bottom = 8.dp),
                     style = MaterialTheme.typography.displayMedium
                 )
-                for (semester in transcriptDatabase!!.semesters) {
+                if (transcriptDatabase != null) for (semester in transcriptDatabase!!.semesters) {
                     SemesterItem(semester)
                 }
             }

@@ -1,3 +1,3 @@
 package com.avex.ragraa.data
 
-data class Transcript(val sgpa: Float, val semesters: List<Semester>)
+data class Transcript(val cgpa: Float, val semesters: List<Semester>)

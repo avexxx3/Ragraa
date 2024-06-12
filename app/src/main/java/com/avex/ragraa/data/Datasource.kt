@@ -39,6 +39,8 @@ object Datasource {
 
     var updateLoginUI: () -> Unit = {}
     var updateHomeUI: () -> Unit = {}
+    var updateCalculatorUI: () -> Unit = {}
+    var updateTranscriptUI: () -> Unit = {}
 
     fun cacheData() {
         val attendanceBox = store.boxFor<attendanceHTML>().all
@@ -70,7 +72,7 @@ object Datasource {
         }
 
         date = sharedPreferences.getString("date", "").toString()
-        Log.d("Dev", date)
+
         showImage = sharedPreferences.getBoolean("showImage", true)
 
         semId = sharedPreferences.getString("semId", "241").toString()
@@ -281,7 +283,6 @@ object Datasource {
         updateHomeUI()
 
         box.put(imageByteArray(bArray, rollNo, 0))
-        Log.d("Dev", "Creating user")
     }
 
     fun parseAttendance() {
@@ -333,11 +334,12 @@ object Datasource {
         val htmlFile = Jsoup.parse(transcriptResponse).body()
 
         val semesterList: MutableList<Semester> = mutableListOf()
-        var sgpa = 0f
+        var cgpa = 0f
+
+        Log.d("Dev", htmlFile.html())
 
         for (semester in htmlFile.getElementsByClass("col-md-6")) {
             val courseList: MutableList<TranscriptCourse> = mutableListOf()
-
 
             val semesterName = semester.getElementsByTag("h5").text()
 
@@ -360,16 +362,18 @@ object Datasource {
             val dataList = semester.getElementsByClass("pull-right")[0].html()
 
             val cData = dataList.substring(dataList.indexOf("CGPA"))
-            val cgpa = cData.substring(5, cData.indexOf('<')).toFloat()
+            cgpa = cData.substring(5, cData.indexOf('<')).toFloat()
 
             val sData = dataList.substring(dataList.indexOf("SGPA"))
-            sgpa = sData.substring(5, sData.indexOf('<')).toFloat()
+            val sgpa = sData.substring(5, sData.indexOf('<')).toFloat()
 
-
-            semesterList.add(Semester(cgpa, semesterName, courseList))
+            semesterList.add(Semester(sgpa, semesterName, courseList))
         }
 
-        transcriptDatabase = Transcript(sgpa, semesterList)
+        transcriptDatabase = Transcript(cgpa, semesterList)
+
+        updateCalculatorUI()
+        updateTranscriptUI()
 
         val box = store.boxFor<transcriptHTML>()
         box.removeAll()
