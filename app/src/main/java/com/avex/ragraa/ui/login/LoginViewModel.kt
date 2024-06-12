@@ -1,6 +1,5 @@
 package com.avex.ragraa.ui.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.avex.ragraa.data.Datasource
@@ -226,7 +225,6 @@ class LoginViewModel : ViewModel() {
 
     fun showMenu(expandedNew: Boolean = !expanded) {
         expanded = expandedNew
-        Log.d("Dev", "Expanded: $expanded")
         updateUI()
     }
 

@@ -26,11 +26,11 @@ fun ShowPasswordIcon(viewModel: LoginViewModel) {
             }
 
             BiometricPromptManager.BiometricResult.AuthenticationSuccess -> {
-                viewModel.changePasswordVisibility();Log.d("Dev", "Authentication Success")
+                viewModel.changePasswordVisibility()
             }
 
             null -> {
-                viewModel.flipPassword(); Log.d("Dev", "Null")
+                viewModel.flipPassword()
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.avex.ragraa.ui.login
 
 import android.os.Build
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
@@ -65,19 +64,16 @@ class BiometricPromptManager(
         val prompt = BiometricPrompt(activity, object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
-                Log.d("Dev", "Auth failed")
                 resultChannel.trySend(BiometricResult.AuthenticationFailed)
             }
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                Log.d("Dev", "Auth success")
                 resultChannel.trySend(BiometricResult.AuthenticationSuccess)
             }
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                Log.d("Dev", "Auth success")
                 resultChannel.trySend(BiometricResult.AuthenticationSuccess)
             }
 

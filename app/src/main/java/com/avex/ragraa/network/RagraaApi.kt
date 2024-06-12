@@ -1,6 +1,5 @@
 package com.avex.ragraa.network
 
-import android.util.Log
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.Datasource.marksResponse
 import com.avex.ragraa.data.Datasource.saveImage
@@ -193,8 +192,6 @@ object RagraaApi {
         updateStatus(Pair("Fetching transcript..", 4))
 
         val url = "https://flexstudent.nu.edu.pk$transcriptURL"
-
-        Log.d("Dev", url)
 
         val request = Request.Builder().url(url).build()
 

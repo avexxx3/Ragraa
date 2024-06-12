@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,8 +28,7 @@ fun ViewMarksButton(viewModel: CalculatorViewModel) {
                 .fillMaxWidth()
                 .clickable { viewModel.viewMarks() }
                 .animateContentSize()
-                .padding(horizontal = 20.dp, vertical = 40.dp),
-            shape = CutCornerShape(topStart = 64f, bottomEnd = 64f),
+                .padding(horizontal = 20.dp, vertical = 40.dp)
         ) {
             BackHandler {
                 viewModel.viewMarks()
