@@ -25,12 +25,16 @@ import com.avex.ragraa.R
 
 @Composable
 fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
-    Card(colors = if (course.grade.isNotEmpty()) CardDefaults.cardColors(containerColor = Color.DarkGray) else CardDefaults.cardColors(),
+    Card(colors = if (course.locked) CardDefaults.cardColors(containerColor = Color.Gray) else CardDefaults.cardColors(
+        containerColor = Color.DarkGray
+    ),
         modifier = Modifier
             .clickable { editCourse() }
             .fillMaxWidth()
             .padding(20.dp),
-        shape = CutCornerShape(topStart = 48f, bottomEnd = 48f)) {
+        shape = CutCornerShape(topStart = 48f, bottomEnd = 48f),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
         Column {
             Text(
                 text = course.name,

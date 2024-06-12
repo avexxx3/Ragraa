@@ -54,7 +54,6 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 .clickable {}
                 .animateContentSize()
                 .padding(20.dp),
-            shape = CutCornerShape(topStart = 64f, bottomEnd = 64f),
         ) {
             Text(
                 stringResource(R.string.editing),
