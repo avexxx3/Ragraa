@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +31,7 @@ fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
             .clickable { editCourse() }
             .fillMaxWidth()
             .padding(20.dp),
-        shape = CutCornerShape(topStart = 48f, bottomEnd = 48f),
+        //    shape = CutCornerShape(topStart = 48f, bottomEnd = 48f),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column {
