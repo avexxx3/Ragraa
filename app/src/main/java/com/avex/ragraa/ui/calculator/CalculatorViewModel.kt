@@ -30,10 +30,7 @@ class CalculatorViewModel : ViewModel() {
     fun init() {
         Datasource.updateCalculatorUI = { updateUI() }
 
-        val transcript =
-            if (transcriptDatabase != null) transcriptDatabase!!.semesters.last().courses.map { it.courseID } else listOf(
-                ""
-            )
+        val transcript = transcriptDatabase.semesters.last().courses.map { it.courseID }
 
         val marks = Datasource.marksDatabase.map { it.courseName }
 
@@ -50,9 +47,9 @@ class CalculatorViewModel : ViewModel() {
 
             val marksCourse = Datasource.marksDatabase[marks.indexOf(course)]
 
-            if (index != -1) {
+            if (index != -1)
                 locked = transcriptCourse?.grade!!.isNotEmpty()
-            }
+
 
             // If the course exists in the transcript and it has a grade uploaded,
             // then it'll be preferred over the data from the marks
