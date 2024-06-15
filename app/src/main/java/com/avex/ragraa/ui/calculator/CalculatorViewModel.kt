@@ -46,7 +46,8 @@ class CalculatorViewModel : ViewModel() {
             val index = transcript.indexOf(course.substring(0..5))
 
             val transcriptCourse =
-                if (index != -1) transcriptDatabase!!.semesters.last().courses[index] else null
+                if (index != -1) transcriptDatabase.semesters.last().courses[index] else null
+
             val marksCourse = Datasource.marksDatabase[marks.indexOf(course)]
 
             if (index != -1) {
@@ -82,7 +83,7 @@ class CalculatorViewModel : ViewModel() {
                         .toString(),
                     gpa = if (locked) transcriptCourse!!.gpa else 0f,
                     grade = if (locked) transcriptCourse!!.grade else "",
-                    isRelative = false,
+                    isRelative = transcriptCourse!!.isRelative,
                     locked = locked
                 )
             )

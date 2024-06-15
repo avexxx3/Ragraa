@@ -33,7 +33,7 @@ object Datasource {
     var bitmap: ImageBitmap? = null
     var marksDatabase: MutableList<Course> = mutableListOf()
     var attendanceDatabase: MutableList<CourseAttendance> = mutableListOf()
-    var transcriptDatabase: Transcript? = null
+    var transcriptDatabase: Transcript = Transcript(0f, listOf())
 
     var semId: String = ""
 
@@ -353,7 +353,8 @@ object Datasource {
                     courseName = course.getElementsByTag("td")[1].text(),
                     creditHours = course.getElementsByTag("td")[3].text().toInt(),
                     grade = if (grade == "I") "" else grade,
-                    gpa = course.getElementsByTag("td")[5].text().toFloat()
+                    gpa = course.getElementsByTag("td")[5].text().toFloat(),
+                    isRelative = course.html().contains("underline")
                 )
 
                 courseList.add(tempCourse)

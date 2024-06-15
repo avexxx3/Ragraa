@@ -5,5 +5,6 @@ data class TranscriptCourse(
     val courseName: String,
     val creditHours: Int,
     val grade: String,
-    val gpa: Float
+    val gpa: Float,
+    val isRelative: Boolean
 )
