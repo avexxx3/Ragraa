@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,10 +23,16 @@ import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource.transcriptDatabase
 
 @Composable
-fun TranscriptScreen(navBar: @Composable () -> Unit, navController: NavHostController) {
+fun TranscriptScreen(
+    transcriptViewModel: TranscriptViewModel,
+    navBar: @Composable () -> Unit,
+    navController: NavHostController
+) {
     BackHandler {
         navController.navigate("home")
     }
+
+    val uiState by transcriptViewModel.uiState.collectAsState()
 
     Column {
         Row(
@@ -51,11 +59,11 @@ fun TranscriptScreen(navBar: @Composable () -> Unit, navController: NavHostContr
         ) {
             item {
                 Text(
-                    "${stringResource(R.string.cgpa)}: ${transcriptDatabase?.cgpa}",
+                    "${stringResource(R.string.cgpa)}: ${uiState.transcript.cgpa}",
                     Modifier.padding(bottom = 8.dp),
                     style = MaterialTheme.typography.displayMedium
                 )
-                if (transcriptDatabase != null) for (semester in transcriptDatabase!!.semesters) {
+                if (transcriptDatabase != null) for (semester in uiState.transcript.semesters) {
                     SemesterItem(semester)
                 }
             }

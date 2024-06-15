@@ -39,8 +39,9 @@ object Datasource {
 
     var updateLoginUI: () -> Unit = {}
     var updateHomeUI: () -> Unit = {}
-    var updateCalculatorUI: () -> Unit = {}
+    var initCalculator: () -> Unit = {}
     var updateTranscriptUI: () -> Unit = {}
+
 
     fun cacheData() {
         val attendanceBox = store.boxFor<attendanceHTML>().all
@@ -373,7 +374,7 @@ object Datasource {
 
         transcriptDatabase = Transcript(cgpa, semesterList)
 
-        updateCalculatorUI()
+        initCalculator()
         updateTranscriptUI()
 
         val box = store.boxFor<transcriptHTML>()

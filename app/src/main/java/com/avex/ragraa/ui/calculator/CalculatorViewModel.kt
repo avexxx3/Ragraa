@@ -28,7 +28,7 @@ class CalculatorViewModel : ViewModel() {
     private var viewingCourseMarks = false
 
     fun init() {
-        Datasource.updateCalculatorUI = { updateUI() }
+        Datasource.initCalculator = { updateUI() }
 
         val transcript = transcriptDatabase.semesters.last().courses.map { it.courseID }
 

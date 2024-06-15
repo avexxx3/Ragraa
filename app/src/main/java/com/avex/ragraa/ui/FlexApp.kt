@@ -236,7 +236,11 @@ fun FlexApp(
 
             composable("transcript") {
                 currentScreen = "transcript"
-                TranscriptScreen(navBar = navBar, navController = navController)
+                TranscriptScreen(
+                    transcriptViewModel,
+                    navBar = navBar,
+                    navController = navController
+                )
             }
         }
     }
