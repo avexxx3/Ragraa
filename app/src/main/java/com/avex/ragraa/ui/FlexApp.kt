@@ -79,8 +79,10 @@ fun FlexApp(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    val tempScreen = if (Datasource.rollNo.isEmpty()) "login" else "home"
+
     //If the user doesn't have a saved login then it'll keep you at the login screen until logged in (i hate the word login)
-    var currentScreen by remember { mutableStateOf(if (Datasource.rollNo.isEmpty()) "login" else "home") }
+    var currentScreen by remember { mutableStateOf(tempScreen) }
 
     ModalNavigationDrawer(drawerState = drawerState,
         gesturesEnabled = !(currentScreen == "web" || (Datasource.rollNo.isEmpty() && currentScreen == "login")),
