@@ -9,16 +9,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.ui.misc.drawRainbowBorder
 
 @Composable
-fun ProfilePicture() {
+fun ProfilePicture(bitmap: ImageBitmap = Datasource.bitmap!!) {
     Box(Modifier.padding(bottom = 10.dp)) {
         Image(
-            bitmap = Datasource.bitmap!!,
+            bitmap = bitmap,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier

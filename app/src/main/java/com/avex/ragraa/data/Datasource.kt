@@ -337,8 +337,6 @@ object Datasource {
         val semesterList: MutableList<Semester> = mutableListOf()
         var cgpa = 0f
 
-        Log.d("Dev", htmlFile.html())
-
         for (semester in htmlFile.getElementsByClass("col-md-6")) {
             val courseList: MutableList<TranscriptCourse> = mutableListOf()
 

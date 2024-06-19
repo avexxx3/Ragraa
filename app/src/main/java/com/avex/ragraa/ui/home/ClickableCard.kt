@@ -2,8 +2,8 @@ package com.avex.ragraa.ui.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -32,7 +32,8 @@ fun ClickableCard(
     Card(modifier = modifier
         .clickable { onClick() }
         .drawRainbowBorder(
-            2.dp, if (updated || danger) 1000 else 12500, 100f, if (updated) listOf(
+            2.dp, if (updated || danger) 1000 else 12500, 4f,
+            if (updated) listOf(
                 Color(0xFFFF685D),
                 Color(0xFFFF64F0),
                 Color(0xFF5155FF),
@@ -43,12 +44,14 @@ fun ClickableCard(
             ) else if (danger) listOf(Color.Red, Color.LightGray, Color.Red)
             else listOf(
                 Color(0xFF659999), Color(0xFF6BE585), Color(0xFF659999)
-            )
+            ),
         ), colors = CardDefaults.cardColors(Color(0, 0, 0, 0))) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
         ) {
-            Spacer(Modifier.weight(1f))
             Icon(imageVector = icon, contentDescription = null)
             Text(
                 text, Modifier.align(Alignment.CenterHorizontally), style = TextStyle(
@@ -58,7 +61,6 @@ fun ClickableCard(
                     letterSpacing = 0.5.sp
                 )
             )
-            Spacer(Modifier.weight(1f))
         }
     }
 }

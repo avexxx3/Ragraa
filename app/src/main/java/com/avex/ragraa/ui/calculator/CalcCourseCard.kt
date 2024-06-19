@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,14 +25,14 @@ import com.avex.ragraa.R
 
 @Composable
 fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
-    Card(colors = if (course.locked) CardDefaults.cardColors(containerColor = Color.Gray) else CardDefaults.cardColors(
-        containerColor = Color.DarkGray
-    ),
+    Card(
+        colors = if (course.locked) CardDefaults.cardColors(containerColor = Color.Gray) else CardDefaults.cardColors(
+            containerColor = Color.DarkGray
+        ),
         modifier = Modifier
-            .clickable { editCourse() }
             .fillMaxWidth()
-            .padding(20.dp),
-        //    shape = CutCornerShape(topStart = 48f, bottomEnd = 48f),
+            .padding(dimensionResource(id = R.dimen.padding_medium))
+            .clickable { editCourse() },
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column {

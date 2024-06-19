@@ -86,4 +86,8 @@ class BiometricPromptManager(
         data object AuthenticationFailed : BiometricResult
         data object AuthenticationSuccess : BiometricResult
     }
+
+    fun reset() {
+        resultChannel.trySend(BiometricResult.AuthenticationFailed)
+    }
 }

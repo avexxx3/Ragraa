@@ -229,5 +229,4 @@ object RagraaApi {
         return Cookie.Builder().domain("flexstudent.nu.edu.pk").path("/").name("ASP.NET_SessionId")
             .value(sessionID).httpOnly().build()
     }
-
 }

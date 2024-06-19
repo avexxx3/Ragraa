@@ -30,7 +30,8 @@ class CalculatorViewModel : ViewModel() {
     fun init() {
         Datasource.initCalculator = { updateUI() }
 
-        val transcript = transcriptDatabase.semesters.last().courses.map { it.courseID }
+        val transcript =
+            if (transcriptDatabase.semesters.isNotEmpty()) transcriptDatabase.semesters.last().courses.map { it.courseID } else listOf()
 
         val marks = Datasource.marksDatabase.map { it.courseName }
 
@@ -172,13 +173,13 @@ class CalculatorViewModel : ViewModel() {
         totalGPA = 0f
 
         for (course in courses) {
-            if (course.credits.isNotEmpty() && course.grade.isNotEmpty()) {
+            if (course.credits.isNotEmpty() && course.grade.isNotEmpty() && course.grade != "S") {
                 totalCredits += course.credits.toInt()
             }
         }
 
         for (course in courses) {
-            if (course.credits.isNotEmpty() && course.grade.isNotEmpty()) {
+            if (course.credits.isNotEmpty() && course.grade.isNotEmpty() && course.grade != "S") {
                 totalGPA += course.gpa * course.credits.toInt() / totalCredits
             }
         }
