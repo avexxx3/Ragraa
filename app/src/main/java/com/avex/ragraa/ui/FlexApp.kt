@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
@@ -34,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,6 +58,7 @@ import com.avex.ragraa.ui.login.LoginViewModel
 import com.avex.ragraa.ui.login.WebViewScreen
 import com.avex.ragraa.ui.marks.MarksScreen
 import com.avex.ragraa.ui.misc.NavShape
+import com.avex.ragraa.ui.pastpapers.PastPaperScreen
 import com.avex.ragraa.ui.theme.sweetie_pie
 import com.avex.ragraa.ui.transcript.TranscriptScreen
 import com.avex.ragraa.ui.transcript.TranscriptViewModel
@@ -93,78 +96,66 @@ fun FlexApp(
                     contentDescription = null,
                     modifier = Modifier.padding(top = 4.dp)
                 )
-                NavigationDrawerItem(label = { Text(text = stringResource(R.string.home)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Home, contentDescription = null
-                        )
-                    },
-                    selected = currentScreen == "home",
-                    onClick = {
-                        scope.launch { drawerState.apply { close() } }; navController.navigate(
-                        "home"
-                    )
-                    })
-                NavigationDrawerItem(label = { Text(text = stringResource(R.string.login)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Login, contentDescription = null
-                        )
-                    },
-                    selected = currentScreen == "login",
-                    onClick = {
-                        scope.launch { drawerState.apply { close() } }; navController.navigate(
-                        "login"
-                    )
-                    })
-                NavigationDrawerItem(label = { Text(text = stringResource(R.string.marks)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Percent, contentDescription = null
-                        )
-                    },
-                    selected = currentScreen == "marks",
-                    onClick = {
-                        scope.launch { drawerState.apply { close() } }; navController.navigate(
-                        "marks"
-                    )
-                    })
-                NavigationDrawerItem(label = { Text(text = stringResource(R.string.attendance)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Checklist, contentDescription = null
-                        )
-                    },
-                    selected = currentScreen == "attendance",
-                    onClick = {
-                        scope.launch { drawerState.apply { close() } }; navController.navigate(
-                        "attendance"
-                    )
-                    })
-                NavigationDrawerItem(label = { Text(text = stringResource(R.string.calculator)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Grade, contentDescription = null
-                        )
-                    },
-                    selected = currentScreen == "calculator",
-                    onClick = {
-                        scope.launch { drawerState.apply { close() } }; navController.navigate(
-                        "calculator"
-                    )
-                    })
-                NavigationDrawerItem(label = { Text(text = stringResource(R.string.transcript)) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Notes, contentDescription = null
-                        )
-                    },
-                    selected = currentScreen == "transcript",
-                    onClick = {
-                        scope.launch { drawerState.apply { close() } }; navController.navigate(
-                        "transcript"
-                    )
-                    })
+
+                NavigationDrawerItem(
+                    R.string.home, Icons.Filled.Home, currentScreen, "home"
+                ) {
+                    scope.launch { drawerState.apply { close() } }; navController.navigate(
+                    "home"
+                )
+                }
+
+                NavigationDrawerItem(
+                    R.string.login, Icons.AutoMirrored.Filled.Login, currentScreen, "login"
+                ) {
+                    scope.launch { drawerState.apply { close() } }; navController.navigate(
+                    "login"
+                )
+                }
+
+                NavigationDrawerItem(
+                    R.string.marks, Icons.Filled.Percent, currentScreen, "marks"
+                ) {
+                    scope.launch { drawerState.apply { close() } }; navController.navigate(
+                    "marks"
+                )
+                }
+
+
+                NavigationDrawerItem(
+                    R.string.attendance, Icons.Filled.Checklist, currentScreen, "attendance"
+                ) {
+                    scope.launch { drawerState.apply { close() } }; navController.navigate(
+                    "attendance"
+                )
+                }
+
+                NavigationDrawerItem(
+                    R.string.calculator, Icons.Filled.Grade, currentScreen, "calculator"
+                ) {
+                    scope.launch { drawerState.apply { close() } }; navController.navigate(
+                    "calculator"
+                )
+                }
+
+                NavigationDrawerItem(
+                    R.string.past_papers, Icons.Filled.Map, currentScreen, "pastpapers"
+                ) {
+                    scope.launch { drawerState.apply { close() } }; navController.navigate(
+                    "pastpapers"
+                )
+                }
+
+                NavigationDrawerItem(
+                    R.string.transcript,
+                    Icons.AutoMirrored.Filled.Notes,
+                    currentScreen,
+                    "transcript"
+                ) {
+                    scope.launch { drawerState.apply { close() } }; navController.navigate(
+                    "transcript"
+                )
+                }
             }
 
         }) {
@@ -237,9 +228,14 @@ fun FlexApp(
             composable("transcript") {
                 currentScreen = "transcript"
                 TranscriptScreen(
-                    transcriptViewModel,
-                    navBar = navBar,
-                    navController = navController
+                    transcriptViewModel, navBar = navBar, navController = navController
+                )
+            }
+
+            composable("pastpapers") {
+                currentScreen = "pastpapers"
+                PastPaperScreen(
+                    navBar = navBar
                 )
             }
         }
@@ -248,4 +244,17 @@ fun FlexApp(
     //Shows the update prompt only when a user isn't on any of the below mentioned screens,
     // so as to not disturb while inputting something
     if (!listOf("web", "login", "calculator").contains(currentScreen)) Updater()
+}
+
+@Composable
+fun NavigationDrawerItem(
+    label: Int, icon: ImageVector, currentScreen: String, screen: String, onClick: () -> Unit
+) {
+    NavigationDrawerItem(label = { Text(text = stringResource(label)) }, icon = {
+        Icon(
+            imageVector = icon, contentDescription = null
+        )
+    }, selected = currentScreen == screen, onClick = {
+        onClick()
+    })
 }
