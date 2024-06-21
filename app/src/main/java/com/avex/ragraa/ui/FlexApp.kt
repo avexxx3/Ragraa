@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,13 +17,12 @@ import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Percent
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,14 +30,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -53,11 +47,14 @@ import com.avex.ragraa.ui.calculator.CalculatorScreen
 import com.avex.ragraa.ui.calculator.CalculatorViewModel
 import com.avex.ragraa.ui.home.HomeScreen
 import com.avex.ragraa.ui.home.HomeViewModel
+import com.avex.ragraa.ui.home.SettingsButton
 import com.avex.ragraa.ui.login.LoginScreen
 import com.avex.ragraa.ui.login.LoginViewModel
 import com.avex.ragraa.ui.login.WebViewScreen
 import com.avex.ragraa.ui.marks.MarksScreen
+import com.avex.ragraa.ui.misc.NavBarHeader
 import com.avex.ragraa.ui.misc.NavShape
+import com.avex.ragraa.ui.misc.NavigationDrawerItem
 import com.avex.ragraa.ui.pastpapers.PastPaperScreen
 import com.avex.ragraa.ui.theme.sweetie_pie
 import com.avex.ragraa.ui.transcript.TranscriptScreen
@@ -82,13 +79,14 @@ fun FlexApp(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val tempScreen = if (Datasource.rollNo.isEmpty()) "login" else "home"
+    val tempScreen = if (Datasource.rollNo.isEmpty()) Screens.Login else Screens.Home
 
     //If the user doesn't have a saved login then it'll keep you at the login screen until logged in (i hate the word login)
-    var currentScreen by remember { mutableStateOf(tempScreen) }
+    var CurrentScreen: Screens by remember { mutableStateOf(tempScreen) }
+
 
     ModalNavigationDrawer(drawerState = drawerState,
-        gesturesEnabled = !(currentScreen == "web" || (Datasource.rollNo.isEmpty() && currentScreen == "login")),
+        gesturesEnabled = !(CurrentScreen == Screens.Web || (Datasource.rollNo.isEmpty() && CurrentScreen == Screens.Login)),
         drawerContent = {
             ModalDrawerSheet(drawerShape = NavShape(0.dp, 0.8f)) {
                 Image(
@@ -97,72 +95,35 @@ fun FlexApp(
                     modifier = Modifier.padding(top = 4.dp)
                 )
 
-                NavigationDrawerItem(
-                    R.string.home, Icons.Filled.Home, currentScreen, "home"
-                ) {
-                    scope.launch { drawerState.apply { close() } }; navController.navigate(
-                    "home"
+                val listOfItems = listOf(
+                    Screens.Home,
+                    Screens.Login,
+                    Screens.Marks,
+                    Screens.Attendance,
+                    Screens.Calculator,
+                    Screens.PastPapers,
+                    Screens.Transcript
                 )
-                }
 
-                NavigationDrawerItem(
-                    R.string.login, Icons.AutoMirrored.Filled.Login, currentScreen, "login"
-                ) {
-                    scope.launch { drawerState.apply { close() } }; navController.navigate(
-                    "login"
-                )
-                }
-
-                NavigationDrawerItem(
-                    R.string.marks, Icons.Filled.Percent, currentScreen, "marks"
-                ) {
-                    scope.launch { drawerState.apply { close() } }; navController.navigate(
-                    "marks"
-                )
-                }
-
-
-                NavigationDrawerItem(
-                    R.string.attendance, Icons.Filled.Checklist, currentScreen, "attendance"
-                ) {
-                    scope.launch { drawerState.apply { close() } }; navController.navigate(
-                    "attendance"
-                )
-                }
-
-                NavigationDrawerItem(
-                    R.string.calculator, Icons.Filled.Grade, currentScreen, "calculator"
-                ) {
-                    scope.launch { drawerState.apply { close() } }; navController.navigate(
-                    "calculator"
-                )
-                }
-
-                NavigationDrawerItem(
-                    R.string.past_papers, Icons.Filled.Map, currentScreen, "pastpapers"
-                ) {
-                    scope.launch { drawerState.apply { close() } }; navController.navigate(
-                    "pastpapers"
-                )
-                }
-
-                NavigationDrawerItem(
-                    R.string.transcript,
-                    Icons.AutoMirrored.Filled.Notes,
-                    currentScreen,
-                    "transcript"
-                ) {
-                    scope.launch { drawerState.apply { close() } }; navController.navigate(
-                    "transcript"
-                )
+                for (screenItem in listOfItems) {
+                    NavigationDrawerItem(
+                        screenItem.stringRes, screenItem.icon, CurrentScreen.Title, screenItem.Title
+                    ) {
+                        scope.launch { drawerState.apply { close() } }; navController.navigate(
+                        screenItem.Title
+                    )
+                    }
                 }
             }
 
         }) {
+
         val navBar = @Composable {
             Box(modifier = Modifier
                 .padding(top = 8.dp, start = 12.dp)
-                .border(1.dp, Color.White, shape = RoundedCornerShape(8.dp))
+                .border(
+                    1.dp, MaterialTheme.colorScheme.onBackground, shape = RoundedCornerShape(8.dp)
+                )
                 .padding(8.dp)
                 .clickable { scope.launch { drawerState.apply { open() } } }) {
                 Icon(
@@ -180,81 +141,90 @@ fun FlexApp(
                 )
             ) "web" else if (Datasource.rollNo.isEmpty()) "login" else "home"
         ) {
-            composable("home") {
-                currentScreen = "home"
-                HomeScreen(viewModel = homeViewModel, navBar = navBar)
+
+            composable(Screens.Home.Title) {
+                CurrentScreen = Screens.Home
+                Column {
+                    NavBarHeader(R.string.home,
+                        trailingIcon = { SettingsButton { homeViewModel.toggleSettings() } }) { navBar() }
+                    HomeScreen(viewModel = homeViewModel)
+                }
             }
 
-            composable("marks") {
-                currentScreen = "marks"
+            composable(Screens.Marks.Title) {
+                CurrentScreen = Screens.Marks
                 Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    ) {
-                        navBar();Text(
-                        stringResource(R.string.marks),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontSize = 24.sp,
-                        modifier = Modifier.padding(top = 4.dp, start = 12.dp)
-                    )
-                    }
+                    NavBarHeader(R.string.marks) { navBar() }
                     MarksScreen(navController)
                 }
             }
 
-            composable("login") {
-                currentScreen = "login"
-                LoginScreen(loginViewModel, navBar)
+            composable(Screens.Login.Title) {
+                CurrentScreen = Screens.Login
+                Column {
+                    NavBarHeader(R.string.login) { navBar() }
+                    LoginScreen(loginViewModel)
+                }
             }
 
-            composable("web") {
-                currentScreen = "web"
+            composable(Screens.Web.Title) {
+                CurrentScreen = Screens.Web
                 WebViewScreen(
                     { loginViewModel.updateCaptcha(it) },
                     { navController.navigate("login") })
             }
 
-            composable("attendance") {
-                currentScreen = "attendance"
-                AttendanceScreen(navBar = navBar)
+            composable(Screens.Attendance.Title) {
+                CurrentScreen = Screens.Attendance
+                Column {
+                    NavBarHeader(R.string.attendance) { navBar() }
+                    AttendanceScreen()
+                }
             }
 
-            composable("calculator") {
-                currentScreen = "calculator"
-                CalculatorScreen(calculatorViewModel, navBar = navBar)
+            composable(Screens.Calculator.Title) {
+                CurrentScreen = Screens.Calculator
+                Column {
+                    NavBarHeader(R.string.calculator) { navBar() }
+                    CalculatorScreen(calculatorViewModel)
+                }
             }
 
-            composable("transcript") {
-                currentScreen = "transcript"
-                TranscriptScreen(
-                    transcriptViewModel, navBar = navBar, navController = navController
-                )
+            composable(Screens.Transcript.Title) {
+                CurrentScreen = Screens.Transcript
+                Column {
+                    NavBarHeader(R.string.transcript) { navBar() }
+                    TranscriptScreen(transcriptViewModel)
+                }
             }
 
-            composable("pastpapers") {
-                currentScreen = "pastpapers"
-                PastPaperScreen(
-                    navBar = navBar
-                )
+            composable(Screens.PastPapers.Title) {
+                CurrentScreen = Screens.PastPapers
+                Column {
+                    NavBarHeader(R.string.past_papers) { navBar() }
+                    PastPaperScreen()
+                }
             }
         }
     }
 
     //Shows the update prompt only when a user isn't on any of the below mentioned screens,
     // so as to not disturb while inputting something
-    if (!listOf("web", "login", "calculator").contains(currentScreen)) Updater()
+    if (!listOf(Screens.Web, Screens.Login, Screens.Calculator).contains(CurrentScreen)) Updater()
 }
 
-@Composable
-fun NavigationDrawerItem(
-    label: Int, icon: ImageVector, currentScreen: String, screen: String, onClick: () -> Unit
-) {
-    NavigationDrawerItem(label = { Text(text = stringResource(label)) }, icon = {
-        Icon(
-            imageVector = icon, contentDescription = null
-        )
-    }, selected = currentScreen == screen, onClick = {
-        onClick()
-    })
+enum class Screens(val Title: String, val stringRes: Int, val icon: ImageVector) {
+    Home("home", R.string.home, Icons.Filled.Home), Marks(
+        "marks", R.string.marks, Icons.Filled.Percent
+    ),
+    Login("login", R.string.login, Icons.AutoMirrored.Filled.Login), Web(
+        "web", R.string.refresh, Icons.Filled.Refresh
+    ),
+    Attendance("attendance", R.string.attendance, Icons.Filled.Checklist), Calculator(
+        "calculator", R.string.calculator, Icons.Filled.Grade
+    ),
+    Transcript(
+        "transcript", R.string.transcript, Icons.AutoMirrored.Filled.Notes
+    ),
+    PastPapers("pastpapers", R.string.past_papers, Icons.Filled.Map)
 }

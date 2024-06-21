@@ -14,6 +14,7 @@ class TranscriptViewModel : ViewModel() {
 
     init {
         Datasource.updateTranscriptUI = { updateUI() }
+        updateUI()
     }
 
     fun updateUI() {

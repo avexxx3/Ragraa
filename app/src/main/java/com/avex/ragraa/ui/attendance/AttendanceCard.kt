@@ -15,10 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.CourseAttendance
 import com.avex.ragraa.ui.misc.drawRainbowBorder
@@ -47,19 +45,16 @@ fun AttendanceCard(course: CourseAttendance, showCourse: () -> Unit) {
 
         Text(
             text = course.courseName.substring(7),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Black,
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Start,
             softWrap = true,
-            modifier = Modifier.padding(start = 12.dp, top = 12.dp),
+            modifier = Modifier.padding(start = 12.dp, top = 4.dp),
         )
 
         Row {
             Text(
                 text = course.courseName.substring(0, 6),
                 style = MaterialTheme.typography.headlineSmall,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(start = 12.dp, bottom = 12.dp, top = 4.dp)
             )
@@ -69,8 +64,6 @@ fun AttendanceCard(course: CourseAttendance, showCourse: () -> Unit) {
             Text(
                 text = "${stringResource(R.string.absents)}: ${course.absents}",
                 style = MaterialTheme.typography.headlineSmall,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 4.dp)
             )
@@ -80,8 +73,6 @@ fun AttendanceCard(course: CourseAttendance, showCourse: () -> Unit) {
             Text(
                 text = "${course.percentage}%",
                 style = MaterialTheme.typography.headlineSmall,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Black,
                 modifier = Modifier.padding(end = 16.dp)
             )
         }

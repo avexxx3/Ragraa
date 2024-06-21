@@ -39,14 +39,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel, navBar: @Composable () -> Unit
+    viewModel: LoginViewModel
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
@@ -63,19 +62,6 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        if (Datasource.rollNo.isNotEmpty() && (uiState.status.isEmpty() || uiState.status.contains("Error"))) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                navBar();androidx.compose.material3.Text(
-                stringResource(R.string.login),
-                style = MaterialTheme.typography.displaySmall,
-                fontSize = 24.sp,
-                modifier = Modifier.padding(top = 4.dp, start = 12.dp)
-            );Spacer(Modifier.weight(1f))
-            }
-        }
-
-        Spacer(modifier = Modifier.weight(0.2f))
-
         //Logo
         Logo()
 
@@ -102,9 +88,9 @@ fun LoginScreen(
             label = { Text(text = stringResource(R.string.roll_number)) },
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = Color.DarkGray,
-                unfocusedLabelColor = Color.Gray,
-                textColor = Color.White
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                textColor = MaterialTheme.colorScheme.onBackground
             )
         )
 
@@ -135,9 +121,9 @@ fun LoginScreen(
             },
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = Color.DarkGray,
-                unfocusedLabelColor = Color.Gray,
-                textColor = Color.White
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                textColor = MaterialTheme.colorScheme.onBackground
             )
         )
 
@@ -159,8 +145,9 @@ fun LoginScreen(
 
             Text(
                 stringResource(R.string.remember_login_info),
-                color = Color.White,
-                modifier = Modifier.clickable { viewModel.updatePreference() })
+                modifier = Modifier.clickable { viewModel.updatePreference() },
+                color = MaterialTheme.colorScheme.onBackground
+            )
 
             Spacer(Modifier.weight(1f))
         }
@@ -174,7 +161,7 @@ fun LoginScreen(
             color = if (status.contains("successfully")) sweetie_pie else if (status.contains(
                     "Error"
                 )
-            ) Color.Red else Color.White,
+            ) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(4.dp),
             textAlign = TextAlign.Center
         )
@@ -186,6 +173,7 @@ fun LoginScreen(
             .fillMaxWidth(), onClick = { viewModel.navController.navigate("web") }) {
             Text(
                 stringResource(R.string.login),
+                color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(vertical = 6.dp)
             )

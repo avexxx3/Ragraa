@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -21,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
 
 @Composable
@@ -31,7 +29,6 @@ fun Settings(viewModel: HomeViewModel) {
     }
 
     Box(modifier = Modifier
-        .fillMaxSize()
         .background(Color(0, 0, 0, 230))
         .clickable { viewModel.toggleSettings() }) {
         Card(
@@ -41,46 +38,38 @@ fun Settings(viewModel: HomeViewModel) {
                 .padding(20.dp)
         ) {
             Column {
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(vertical = 10.dp)
-                        .clickable { viewModel.toggleImage() }) {
-                    Text(
-                        stringResource(R.string.show_profile_picture),
-                        Modifier
-                            .padding(start = 12.dp)
-                            .clickable { viewModel.toggleImage() },
-                        style = MaterialTheme.typography.displaySmall,
-                        fontSize = 16.sp
-                    )
-                    Spacer(Modifier.weight(1f))
-                    Switch(
-                        checked = viewModel.uiState.collectAsState().value.showImage,
-                        onCheckedChange = { viewModel.toggleImage() },
-                        modifier = Modifier.padding(end = 12.dp)
-                    )
-                }
+                SettingItem(
+                    R.string.refresh_on_startup,
+                    viewModel.uiState.collectAsState().value.startupRefresh
+                ) { viewModel.toggleStartupRefresh() }
 
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(top = 6.dp, bottom = 10.dp)
-                        .clickable { viewModel.toggleStartupRefresh() }) {
-                    Text(
-                        stringResource(R.string.refresh_on_startup),
-                        Modifier
-                            .padding(start = 12.dp)
-                            .clickable { viewModel.toggleStartupRefresh() },
-                        style = MaterialTheme.typography.displaySmall,
-                        fontSize = 16.sp
-                    )
-                    Spacer(Modifier.weight(1f))
-                    Switch(
-                        checked = viewModel.uiState.collectAsState().value.startupRefresh,
-                        onCheckedChange = { viewModel.toggleStartupRefresh() },
-                        modifier = Modifier.padding(end = 12.dp)
-                    )
-                }
+                SettingItem(
+                    R.string.show_profile_picture,
+                    viewModel.uiState.collectAsState().value.showImage
+                ) { viewModel.toggleImage() }
             }
         }
+    }
+}
+
+@Composable
+fun SettingItem(text: Int, checked: Boolean, onClick: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(top = 6.dp, bottom = 10.dp)
+            .clickable { onClick() }) {
+        Text(
+            stringResource(text),
+            Modifier
+                .padding(start = 12.dp)
+                .clickable { onClick() },
+            style = MaterialTheme.typography.titleLarge
+        )
+        Spacer(Modifier.weight(1f))
+        Switch(
+            checked = checked,
+            onCheckedChange = { onClick() },
+            modifier = Modifier.padding(end = 12.dp)
+        )
     }
 }

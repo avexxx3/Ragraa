@@ -8,10 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
 import com.avex.ragraa.ui.theme.sweetie_pie
 
@@ -27,10 +26,8 @@ fun Logo(
         Text(
             text = "agraa",
             color = sweetie_pie,
-            style = MaterialTheme.typography.headlineLarge,
-            fontSize = 40.sp,
-            modifier = Modifier.offset(x = (-37).dp, y = 7.dp),
-            fontWeight = FontWeight.W900,
+            style = MaterialTheme.typography.displaySmall.copy(shadow = Shadow(blurRadius = 4f)),
+            modifier = Modifier.offset(x = (-37).dp, y = 5.dp)
         )
     }
 }

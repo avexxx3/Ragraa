@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,11 +44,9 @@ fun SemesterMenu(viewModel: LoginViewModel) {
             textStyle = MaterialTheme.typography.bodyLarge,
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.DarkGray,
-                focusedLabelColor = Color.Gray,
-                unfocusedBorderColor = Color.DarkGray,
-                unfocusedLabelColor = Color.Gray,
-                textColor = Color.White
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                textColor = MaterialTheme.colorScheme.onBackground
             ),
             onValueChange = {},
             readOnly = true,
@@ -66,17 +63,17 @@ fun SemesterMenu(viewModel: LoginViewModel) {
                     (Calendar.getInstance().time.year + i).toString().substring(1, 3)
                 DropdownMenuItem(onClick = { viewModel.select("${year}1") }) {
                     Text(
-                        "Spring $year", color = Color.White
+                        "Spring $year", color = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 DropdownMenuItem(onClick = { viewModel.select("${year}2") }) {
                     Text(
-                        "Summer $year", color = Color.White
+                        "Summer $year", color = MaterialTheme.colorScheme.onBackground
                     )
                 }
                 DropdownMenuItem(onClick = { viewModel.select("${year}3") }) {
                     Text(
-                        "Fall $year", color = Color.White
+                        "Fall $year", color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }

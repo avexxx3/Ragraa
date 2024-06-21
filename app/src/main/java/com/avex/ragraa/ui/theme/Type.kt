@@ -1,92 +1,56 @@
-package com.avex.ragraa.ui.theme
+package com.example.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.avex.ragraa.R
 
-val monteserratFamily = FontFamily(
-    Font(R.font.monteserrat_bold),
-    Font(R.font.monteserrat_extrabold),
-    Font(R.font.monteserrat_semibold)
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
 )
 
-val opensansFamily = FontFamily(
-    Font(R.font.opensans_medium),
-    Font(R.font.opensans_regular)
-)
-
-val ralewayFamily = FontFamily(
-    Font(R.font.raleway_extralight),
-    Font(R.font.raleway_regular),
-    Font(R.font.raleway_thin)
-)
-
-val Typography = Typography(
-    displayLarge = TextStyle(
-        fontFamily = monteserratFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 57.sp,
-        lineHeight = 64.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    displayMedium = TextStyle(
-        fontFamily = monteserratFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 45.sp,
-        lineHeight = 38.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    displaySmall = TextStyle(
-        fontFamily = monteserratFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 38.sp,
-        lineHeight = 32.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    headlineLarge = TextStyle(
-        fontFamily = ralewayFamily,
-        fontWeight = FontWeight.Thin,
-        fontSize = 40.sp,
-        lineHeight = 40.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    headlineMedium = TextStyle(
-        fontFamily = ralewayFamily,
-        fontWeight = FontWeight.ExtraLight,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    headlineSmall = TextStyle(
-        fontFamily = ralewayFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    bodyLarge = TextStyle(
-        fontFamily = opensansFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    bodyMedium = TextStyle(
-        fontFamily = opensansFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.5.sp
+val labelFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Open Sans"),
+        fontProvider = provider,
     )
 )
+
+val bodyFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Montserrat"),
+        fontProvider = provider,
+    )
+)
+
+val displayFontFamily = FontFamily(
+    Font(
+        googleFont = GoogleFont("Raleway"),
+        fontProvider = provider,
+    )
+)
+
+// Default Material 3 typography values
+val baseline = Typography()
+
+val AppTypography = Typography(
+    displayLarge = baseline.displayLarge.copy(fontFamily = displayFontFamily),
+    displayMedium = baseline.displayMedium.copy(fontFamily = displayFontFamily),
+    displaySmall = baseline.displaySmall.copy(fontFamily = displayFontFamily),
+    headlineLarge = baseline.headlineLarge.copy(fontFamily = displayFontFamily),
+    headlineMedium = baseline.headlineMedium.copy(fontFamily = displayFontFamily),
+    headlineSmall = baseline.headlineSmall.copy(fontFamily = displayFontFamily),
+    titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily),
+    titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily),
+    titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily),
+    bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
+    bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily),
+    bodySmall = baseline.bodySmall.copy(fontFamily = bodyFontFamily),
+    labelLarge = baseline.labelLarge.copy(fontFamily = labelFontFamily),
+    labelMedium = baseline.labelMedium.copy(fontFamily = labelFontFamily),
+    labelSmall = baseline.labelSmall.copy(fontFamily = labelFontFamily),
+)
+

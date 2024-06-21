@@ -2,8 +2,6 @@ package com.avex.ragraa.ui.calculator
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,7 +26,7 @@ import com.avex.ragraa.context
 import java.util.Locale
 
 @Composable
-fun CalculatorScreen(viewModel: CalculatorViewModel, navBar: @Composable () -> Unit) {
+fun CalculatorScreen(viewModel: CalculatorViewModel) {
     val uiState = viewModel.uiState.collectAsState().value
 
     BackHandler { viewModel.navController.navigate("home") }
@@ -37,59 +35,44 @@ fun CalculatorScreen(viewModel: CalculatorViewModel, navBar: @Composable () -> U
         if (uiState.courses.isEmpty()) viewModel.init()
     }
 
-    Column {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 8.dp)
-        ) {
-            navBar()
+    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+        item {
+            Text(
+                text = String.format(Locale.getDefault(), "%.2f", uiState.overallGpa),
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier.padding(4.dp)
+            )
+
+            Divider(
+                thickness = 2.dp,
+                modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .padding(horizontal = 32.dp)
+            )
 
             Text(
-                stringResource(R.string.calculator),
+                stringResource(R.string.projected_gpa),
                 style = MaterialTheme.typography.displaySmall,
-                fontSize = 24.sp,
-                modifier = Modifier.padding(top = 4.dp, start = 12.dp)
+                fontSize = 30.sp,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
-        }
-        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-            item {
-                Text(
-                    text = String.format(Locale.getDefault(), "%.2f", uiState.overallGpa),
-                    style = MaterialTheme.typography.displayMedium,
-                    modifier = Modifier.padding(4.dp)
-                )
 
-                Divider(
-                    thickness = 2.dp,
+            for (course in uiState.courses) {
+                CalcCourseCard(course) { viewModel.editCourse(course) }
+            }
+
+            Card(modifier = Modifier
+                .clickable { viewModel.addCourse() }
+                .fillMaxWidth()
+                .padding(end = 20.dp, start = 20.dp, top = 20.dp, bottom = 32.dp),
+                shape = CutCornerShape(topStart = 48f, bottomEnd = 48f)) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = null,
                     modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .padding(horizontal = 32.dp)
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
-
-                Text(
-                    stringResource(R.string.projected_gpa),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontSize = 30.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                for (course in uiState.courses) {
-                    CalcCourseCard(course) { viewModel.editCourse(course) }
-                }
-
-                Card(modifier = Modifier
-                    .clickable { viewModel.addCourse() }
-                    .fillMaxWidth()
-                    .padding(end = 20.dp, start = 20.dp, top = 20.dp, bottom = 32.dp),
-                    shape = CutCornerShape(topStart = 48f, bottomEnd = 48f)) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                }
             }
         }
     }
