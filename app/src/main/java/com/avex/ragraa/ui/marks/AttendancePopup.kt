@@ -1,4 +1,4 @@
-package com.avex.ragraa.ui.attendance
+package com.avex.ragraa.ui.marks
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -6,26 +6,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.avex.ragraa.R
 import com.avex.ragraa.data.Attendance
-import com.avex.ragraa.data.CourseAttendance
-import com.avex.ragraa.ui.theme.sweetie_pie
+import com.avex.ragraa.data.Course
 
 @Composable
-fun AttendanceDetails(course: CourseAttendance, hideCourse: () -> Unit) {
+fun AttendancePopup(course: Course, hideCourse: () -> Unit) {
     BackHandler {
         hideCourse()
     }
@@ -36,38 +35,24 @@ fun AttendanceDetails(course: CourseAttendance, hideCourse: () -> Unit) {
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(40.dp)
                 .clickable { },
         ) {
-            LazyColumn {
+            LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
                 item {
                     Text(
-                        course.courseName.substring(7),
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(vertical = 12.dp, horizontal = 16.dp)
-                            .padding(top = 8.dp),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontSize = 28.sp,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Divider(
-                        thickness = 2.dp,
-                        modifier = Modifier
-                            .padding(horizontal = 32.dp)
-                            .padding(bottom = 20.dp),
-                        color = Color.White
+                        text = "${course.attendancePercentage}%  ${stringResource(R.string.absents)}: ${course.attendanceAbsents}",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(vertical = 16.dp)
                     )
 
                     course.attendance.forEachIndexed { index: Int, attendance: Attendance ->
-                        val color =
-                            if (attendance.present == 'P') sweetie_pie else (if (attendance.present == 'A') Color(
-                                221,
-                                24,
-                                24
-                            ) else Color.Yellow)
+                        val color = when (attendance.present) {
+                            'P' -> MaterialTheme.colorScheme.primary
+                            'A' -> MaterialTheme.colorScheme.error
+                            else -> Color.Yellow
+                        }
 
                         Row(
                             modifier = Modifier

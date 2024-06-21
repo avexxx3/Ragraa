@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,15 +14,14 @@ import com.avex.ragraa.data.Datasource
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun MarksScreen(
-    navController: NavHostController,
-    marksViewModel: MarksViewModel = viewModel(),
+    viewModel: MarksViewModel,
     newNavController: NavHostController = rememberNavController()
 ) {
     BackHandler {
-        navController.navigate("home")
+        viewModel.navController.navigate("home")
     }
 
-    val uiState = marksViewModel.uiState.collectAsState().value
+    val uiState = viewModel.uiState.collectAsState().value
 
     NavHost(
         newNavController, "marks"
@@ -31,17 +29,19 @@ fun MarksScreen(
         composable("marks") {
             LazyColumn {
                 item {
-                    for (course in Datasource.marksDatabase) {
+                    for (course in Datasource.courses) {
                         CourseCard(
                             course,
-                            { newNavController.navigate("course") }) { marksViewModel.showCourse(it) }
+                            { newNavController.navigate("course") }) { viewModel.showCourse(it) }
                     }
                 }
             }
         }
 
         composable("course") {
-            CourseDetails(course = uiState.currentCourse!!)
+            CourseDetails(course = uiState.currentCourse!!) { viewModel.showAttendance() }
         }
+
+
     }
 }

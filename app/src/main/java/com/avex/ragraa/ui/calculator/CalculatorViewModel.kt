@@ -33,7 +33,7 @@ class CalculatorViewModel : ViewModel() {
         val transcript =
             if (transcriptDatabase.semesters.isNotEmpty()) transcriptDatabase.semesters.last().courses.map { it.courseID } else listOf()
 
-        val marks = Datasource.marksDatabase.map { it.courseName }
+        val marks = Datasource.courses.map { it.name }
 
         courses.clear()
 
@@ -46,10 +46,9 @@ class CalculatorViewModel : ViewModel() {
             val transcriptCourse =
                 if (index != -1) transcriptDatabase.semesters.last().courses[index] else null
 
-            val marksCourse = Datasource.marksDatabase[marks.indexOf(course)]
+            val marksCourse = Datasource.courses[marks.indexOf(course)]
 
-            if (index != -1)
-                locked = transcriptCourse?.grade!!.isNotEmpty()
+            if (index != -1) locked = transcriptCourse?.grade!!.isNotEmpty()
 
 
             // If the course exists in the transcript and it has a grade uploaded,
@@ -59,11 +58,11 @@ class CalculatorViewModel : ViewModel() {
             if (index == -1) {
                 courses.add(
                     CalculatorCourse(
-                        name = marksCourse.courseName.substring(7),
+                        name = marksCourse.name.substring(7),
                         credits = "0",
-                        mca = Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().average.roundToInt()
+                        mca = Datasource.courses[marks.indexOf(course)].marks.last().average.roundToInt()
                             .toString(),
-                        obtained = Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().obtained.roundToInt()
+                        obtained = Datasource.courses[marks.indexOf(course)].marks.last().obtained.roundToInt()
                             .toString(),
                         gpa = 0f,
                         grade = "",
@@ -73,11 +72,11 @@ class CalculatorViewModel : ViewModel() {
                 )
             } else courses.add(
                 CalculatorCourse(
-                    name = marksCourse.courseName.substring(7),
+                    name = marksCourse.name.substring(7),
                     credits = transcriptCourse?.creditHours.toString(),
-                    mca = Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().average.roundToInt()
+                    mca = Datasource.courses[marks.indexOf(course)].marks.last().average.roundToInt()
                         .toString(),
-                    obtained = Datasource.marksDatabase[marks.indexOf(course)].courseMarks.last().obtained.roundToInt()
+                    obtained = Datasource.courses[marks.indexOf(course)].marks.last().obtained.roundToInt()
                         .toString(),
                     gpa = if (locked) transcriptCourse!!.gpa else 0f,
                     grade = if (locked) transcriptCourse!!.grade else "",
@@ -109,7 +108,8 @@ class CalculatorViewModel : ViewModel() {
     fun editCourse(course: CalculatorCourse? = null) {
         editingCourse = course
         index = courses.indexOf(course)
-        currentCourse = if (index >= 0) Datasource.marksDatabase[index] else null
+        currentCourse =
+            if (index >= 0) if (!course!!.isCustom) Datasource.courses[index] else null else null
         updateUI()
     }
 
@@ -154,7 +154,8 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun addCourse() {
-        courses.add(CalculatorCourse())
+        index = courses.size
+        courses.add(CalculatorCourse(isCustom = true))
         editingCourse = courses.last()
         updateUI()
     }
@@ -238,8 +239,9 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun deleteCourse() {
-        courses.remove(editingCourse)
+        courses.removeAt(index)
         editingCourse = null
+        calculateGPA()
         updateUI()
     }
 }

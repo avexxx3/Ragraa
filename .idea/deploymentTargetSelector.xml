@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="APK">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-06-17T10:23:40.354225807Z">
+        <DropdownSelection timestamp="2024-06-21T19:58:06.478660707Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/home/avex/.android/avd/Resizable_A14_.avd" />
+              <DeviceId pluginId="Default" identifier="serial=192.168.240.112:5555;connection=897c0fc6" />
             </handle>
           </Target>
         </DropdownSelection>

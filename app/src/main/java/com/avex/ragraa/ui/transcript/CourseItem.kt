@@ -10,40 +10,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.TranscriptCourse
 
 
 @Composable
 fun CourseItem(course: TranscriptCourse) {
+
+    val textColor = MaterialTheme.colorScheme.onSecondaryContainer
+    val textStyle = MaterialTheme.typography.titleMedium
+
     Text(
         course.courseName,
-        style = MaterialTheme.typography.headlineMedium,
+        style = MaterialTheme.typography.headlineSmall,
         textAlign = TextAlign.Center,
+        color = textColor,
         modifier = Modifier
             .padding(horizontal = 36.dp)
-            .padding(top = 8.dp, bottom = 2.dp)
+            .padding(top = 8.dp)
     )
-    Row(Modifier.padding(bottom = 8.dp)) {
+    Row(Modifier.padding(bottom = 8.dp, top = 4.dp)) {
         Spacer(Modifier.weight(1f))
         Text(
             "${stringResource(R.string.credits)}: ${course.creditHours}",
-            style = MaterialTheme.typography.displaySmall,
-            fontSize = 20.sp
+            style = textStyle,
+            color = textColor,
         )
         if (course.grade.isNotEmpty()) {
             Spacer(Modifier.weight(0.5f))
             Text(
                 "${stringResource(R.string.gpa)}: ${course.gpa}",
-                style = MaterialTheme.typography.displaySmall,
-                fontSize = 20.sp
+                style = textStyle,
+                color = textColor,
             )
             Spacer(Modifier.weight(0.5f))
             Text(
                 "${stringResource(R.string.grade)}: ${course.grade}",
-                style = MaterialTheme.typography.displaySmall,
-                fontSize = 20.sp
+                style = textStyle,
+                color = textColor,
             )
         }
         Spacer(Modifier.weight(1f))

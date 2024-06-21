@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.filled.Notes
-import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
@@ -25,6 +24,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,16 +42,19 @@ import androidx.navigation.compose.rememberNavController
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.sharedPreferences
-import com.avex.ragraa.ui.attendance.AttendanceScreen
 import com.avex.ragraa.ui.calculator.CalculatorScreen
 import com.avex.ragraa.ui.calculator.CalculatorViewModel
+import com.avex.ragraa.ui.calculator.EditCourse
 import com.avex.ragraa.ui.home.HomeScreen
 import com.avex.ragraa.ui.home.HomeViewModel
+import com.avex.ragraa.ui.home.Settings
 import com.avex.ragraa.ui.home.SettingsButton
 import com.avex.ragraa.ui.login.LoginScreen
 import com.avex.ragraa.ui.login.LoginViewModel
 import com.avex.ragraa.ui.login.WebViewScreen
+import com.avex.ragraa.ui.marks.AttendancePopup
 import com.avex.ragraa.ui.marks.MarksScreen
+import com.avex.ragraa.ui.marks.MarksViewModel
 import com.avex.ragraa.ui.misc.NavBarHeader
 import com.avex.ragraa.ui.misc.NavShape
 import com.avex.ragraa.ui.misc.NavigationDrawerItem
@@ -68,6 +71,7 @@ fun FlexApp(
     homeViewModel: HomeViewModel = viewModel(),
     calculatorViewModel: CalculatorViewModel = viewModel(),
     transcriptViewModel: TranscriptViewModel = viewModel(),
+    marksViewModel: MarksViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     //The view-models are initialized here for a cheap dependency injection
@@ -75,6 +79,7 @@ fun FlexApp(
     loginViewModel.navController = navController
     homeViewModel.navController = navController
     calculatorViewModel.navController = navController
+    marksViewModel.navController = navController
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -99,7 +104,6 @@ fun FlexApp(
                     Screens.Home,
                     Screens.Login,
                     Screens.Marks,
-                    Screens.Attendance,
                     Screens.Calculator,
                     Screens.PastPapers,
                     Screens.Transcript
@@ -149,14 +153,20 @@ fun FlexApp(
                         trailingIcon = { SettingsButton { homeViewModel.toggleSettings() } }) { navBar() }
                     HomeScreen(viewModel = homeViewModel)
                 }
+                if (homeViewModel.uiState.collectAsState().value.showSettings) Settings(
+                    homeViewModel
+                )
             }
 
             composable(Screens.Marks.Title) {
                 CurrentScreen = Screens.Marks
+                val marksUiState by marksViewModel.uiState.collectAsState()
                 Column {
                     NavBarHeader(R.string.marks) { navBar() }
-                    MarksScreen(navController)
+                    MarksScreen(marksViewModel)
                 }
+
+                if (marksUiState.viewingAttendance) AttendancePopup(marksUiState.currentCourse!!) { marksViewModel.showAttendance() }
             }
 
             composable(Screens.Login.Title) {
@@ -174,19 +184,14 @@ fun FlexApp(
                     { navController.navigate("login") })
             }
 
-            composable(Screens.Attendance.Title) {
-                CurrentScreen = Screens.Attendance
-                Column {
-                    NavBarHeader(R.string.attendance) { navBar() }
-                    AttendanceScreen()
-                }
-            }
-
             composable(Screens.Calculator.Title) {
                 CurrentScreen = Screens.Calculator
                 Column {
                     NavBarHeader(R.string.calculator) { navBar() }
                     CalculatorScreen(calculatorViewModel)
+                }
+                if (calculatorViewModel.uiState.collectAsState().value.editingCourse != null) {
+                    EditCourse(viewModel = calculatorViewModel)
                 }
             }
 
@@ -220,7 +225,7 @@ enum class Screens(val Title: String, val stringRes: Int, val icon: ImageVector)
     Login("login", R.string.login, Icons.AutoMirrored.Filled.Login), Web(
         "web", R.string.refresh, Icons.Filled.Refresh
     ),
-    Attendance("attendance", R.string.attendance, Icons.Filled.Checklist), Calculator(
+    Calculator(
         "calculator", R.string.calculator, Icons.Filled.Grade
     ),
     Transcript(

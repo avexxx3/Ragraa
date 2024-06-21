@@ -31,8 +31,12 @@ object Datasource {
     var date: String = ""
 
     var bitmap: ImageBitmap? = null
-    var marksDatabase: MutableList<Course> = mutableListOf()
-    var attendanceDatabase: MutableList<CourseAttendance> = mutableListOf()
+
+    var courses: MutableList<Course> = mutableListOf()
+
+    private var marksDatabase: MutableList<CourseMarks> = mutableListOf()
+    private var attendanceDatabase: MutableList<CourseAttendance> = mutableListOf()
+
     var transcriptDatabase: Transcript = Transcript(0f, listOf())
 
     var semId: String = ""
@@ -41,7 +45,6 @@ object Datasource {
     var updateHomeUI: () -> Unit = {}
     var initCalculator: () -> Unit = {}
     var updateTranscriptUI: () -> Unit = {}
-
 
     fun cacheData() {
         val attendanceBox = store.boxFor<attendanceHTML>().all
@@ -105,6 +108,50 @@ object Datasource {
         editor.apply()
     }
 
+    var marksParsed = false
+    var attendanceParsed = false
+
+    private fun combineMarksAndAttendance() {
+        if (!marksParsed || !attendanceParsed) return
+
+        val attendancesName = attendanceDatabase.map { it.courseName }
+        val marksName = marksDatabase.map { it.courseName }
+
+        for (marks in marksName) {
+            val indexMarks = marksName.indexOf(marks)
+            val indexAttendance = attendancesName.indexOf(marks)
+
+            var listAttendance: List<Attendance> = listOf()
+            var percentage = 100f
+            var absents = 0
+
+            Log.d(
+                "Dev",
+                "courseName: $marks, indexMarks: $indexMarks, indexAttendance: $indexAttendance"
+            )
+
+            if (indexAttendance != -1) {
+                listAttendance = attendanceDatabase[indexAttendance].attendance
+                percentage = attendanceDatabase[indexAttendance].percentage
+                absents = attendanceDatabase[indexAttendance].absents
+            }
+
+            courses.add(
+                Course(
+                    name = marksDatabase[indexMarks].courseName,
+                    marks = marksDatabase[indexMarks].courseMarks,
+                    newMarks = marksDatabase[indexMarks].new,
+                    grandTotalExists = marksDatabase[indexMarks].grandTotalExists,
+                    attendance = listAttendance,
+                    attendancePercentage = percentage,
+                    attendanceAbsents = absents
+                )
+            )
+        }
+
+        updateHomeUI()
+    }
+
     fun parseMarks() {
         if (marksResponse.isEmpty()) {
             Log.d("Dev", "Flex data has not been fetched yet")
@@ -112,13 +159,12 @@ object Datasource {
 
         val htmlFile = Jsoup.parse(marksResponse).body()
 
-        val newDatabase: MutableList<Course> = mutableListOf()
+        val newDatabase: MutableList<CourseMarks> = mutableListOf()
 
         //Divide into courses
         val totalCourses = htmlFile.getElementsByAttributeValue("id", "accordion")
 
         for (course in totalCourses) {
-
             val listOfItems: MutableList<Section> = mutableListOf()
             var totalWeightage = 0f
 
@@ -170,7 +216,6 @@ object Datasource {
                     )
                 }
 
-
                 var average = 0f
 
                 for (item in listOfMarks) {
@@ -205,7 +250,7 @@ object Datasource {
             )
 
             newDatabase.add(
-                Course(
+                CourseMarks(
                     course.getElementsByTag("h5")[0].text(),
                     listOfItems,
                     grandTotalExists = grandTotalExists
@@ -221,11 +266,12 @@ object Datasource {
         box.removeAll()
         box.put(marksHTML(marksResponse))
 
-        updateHomeUI()
+        marksParsed = true
+        combineMarksAndAttendance()
     }
 
     //This is the greatest piece of code i've ever written
-    private fun checkAdditions(newDatabase: MutableList<Course>) {
+    private fun checkAdditions(newDatabase: MutableList<CourseMarks>) {
         if (marksDatabase.isEmpty()) {
             return
         }
@@ -329,6 +375,9 @@ object Datasource {
         val box = store.boxFor<attendanceHTML>()
         box.removeAll()
         box.put(attendanceHTML(attendanceResponse))
+
+        attendanceParsed = true
+        combineMarksAndAttendance()
     }
 
     fun parseTranscript() {

@@ -27,6 +27,8 @@ fun CourseMarks(marks: Marks, index: String) {
             .padding(start = dimensionResource(id = R.dimen.padding_medium))
             .fillMaxWidth()
     ) {
+
+
         Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
             CustomerCircularProgressBar(
                 marks.obtained,
@@ -36,19 +38,21 @@ fun CourseMarks(marks: Marks, index: String) {
             )
         }
 
+        val style = MaterialTheme.typography.titleMedium
+
         Box(Modifier.weight(1f)) {
             Row(Modifier.align(Alignment.Center)) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         formatMarks(marks.obtained),
                         color = if (marks.new) sweetie_pie else Color.Unspecified,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = style
                     )
 
                     Text(
                         "/${formatMarks(marks.total)}",
                         color = Color.Gray,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = style
                     )
                 }
             }
@@ -60,13 +64,13 @@ fun CourseMarks(marks: Marks, index: String) {
             formatMarks(marks.maximum)
         )
 
-        for (marks in listMarks) {
+        for (marksName in listMarks) {
             Box(Modifier.weight(1f)) {
                 Text(
-                    marks,
+                    marksName,
                     modifier = Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = style
                 )
             }
         }

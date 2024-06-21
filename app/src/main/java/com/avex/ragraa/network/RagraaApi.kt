@@ -61,6 +61,8 @@ object RagraaApi {
 
                 Datasource.rollNo = loginRequest.rollNo
                 Datasource.password = loginRequest.password
+                Datasource.marksParsed = false
+                Datasource.attendanceParsed = false
                 fetchImage(loginRequest.rollNo)
                 fetchAttendance()
                 fetchMarks()

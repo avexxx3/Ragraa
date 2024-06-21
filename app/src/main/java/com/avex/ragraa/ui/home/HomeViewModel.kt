@@ -40,23 +40,13 @@ class HomeViewModel : ViewModel() {
         } else {
             navController.navigate("web")
         }
-
     }
 
     private fun updateUI() {
         if (!updated) {
-            for (course in Datasource.marksDatabase) {
-                if (course.new) {
+            for (course in Datasource.courses) {
+                if (course.newMarks) {
                     updated = true
-                    break
-                }
-            }
-        }
-
-        if (!danger) {
-            for (course in Datasource.attendanceDatabase) {
-                if (course.percentage <= 80) {
-                    danger = true
                     break
                 }
             }

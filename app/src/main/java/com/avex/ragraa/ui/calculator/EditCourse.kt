@@ -14,10 +14,10 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,9 +30,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
-import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun EditCourse(viewModel: CalculatorViewModel) {
@@ -58,14 +56,13 @@ fun EditCourse(viewModel: CalculatorViewModel) {
             Text(
                 stringResource(R.string.editing),
                 style = MaterialTheme.typography.displaySmall,
-                fontSize = 32.sp,
                 modifier = Modifier
                     .padding(top = 16.dp, bottom = 4.dp)
                     .align(Alignment.CenterHorizontally)
             )
 
             OutlinedTextField(
-                label = { stringResource(R.string.course) },
+                label = { Text(stringResource(R.string.course)) },
                 value = uiState.editingCourse!!.name,
                 onValueChange = { viewModel.updateName(it) },
                 modifier = Modifier
@@ -77,9 +74,11 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
                 colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = Color.Gray,
-                    unfocusedLabelColor = Color.LightGray,
-                    textColor = Color.White
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    textColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
@@ -97,9 +96,11 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
                 colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = Color.Gray,
-                    unfocusedLabelColor = Color.LightGray,
-                    textColor = Color.White
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    textColor = MaterialTheme.colorScheme.onBackground
                 )
             )
             OutlinedTextField(
@@ -116,9 +117,11 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
                 colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = Color.Gray,
-                    unfocusedLabelColor = Color.LightGray,
-                    textColor = Color.White
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    textColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
@@ -131,8 +134,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                     Modifier
                         .padding(start = 16.dp)
                         .clickable { viewModel.toggleRelative() },
-                    style = MaterialTheme.typography.displaySmall,
-                    fontSize = 16.sp
+                    style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1f))
                 Switch(
@@ -156,44 +158,55 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
                 colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = Color.Gray,
-                    unfocusedLabelColor = Color.LightGray,
-                    textColor = Color.White
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    textColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
-
-            OutlinedButton(colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
+            if (!uiState.editingCourse.isCustom) Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 8.dp, end = 16.dp, top = 12.dp, bottom = 16.dp),
+                    .padding(16.dp),
                 onClick = {
                     viewModel.viewMarks()
                 }) {
                 Text(
                     stringResource(R.string.show_marks),
                     modifier = Modifier.padding(vertical = 8.dp),
-                    color = sweetie_pie
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             }
 
             Row {
-                OutlinedButton(modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .padding(start = 16.dp, end = 8.dp, top = 12.dp),
+                Button(
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(start = 16.dp, end = 8.dp, top = 4.dp),
                     onClick = { viewModel.saveCourse() }) {
                     Text(
-                        "Done", modifier = Modifier.padding(vertical = 8.dp)
+                        "Done",
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
 
-                OutlinedButton(colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
+                Button(
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 16.dp, top = 12.dp, bottom = 16.dp),
+                        .padding(start = 8.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
                     onClick = { viewModel.deleteCourse() }) {
                     Text(
-                        "Delete", modifier = Modifier.padding(vertical = 8.dp), color = Color.Red
+                        "Delete",
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
             }

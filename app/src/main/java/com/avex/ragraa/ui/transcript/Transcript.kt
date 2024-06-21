@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
-import com.avex.ragraa.data.Datasource.transcriptDatabase
 
 @Composable
 fun TranscriptScreen(
@@ -33,10 +32,11 @@ fun TranscriptScreen(
         item {
             Text(
                 "${stringResource(R.string.cgpa)}: ${uiState.transcript.cgpa}",
-                Modifier.padding(bottom = 8.dp),
+                Modifier.padding(bottom = 16.dp),
                 style = MaterialTheme.typography.displayMedium
             )
-            if (transcriptDatabase != null) for (semester in uiState.transcript.semesters) {
+
+            for (semester in uiState.transcript.semesters) {
                 SemesterItem(semester)
             }
         }

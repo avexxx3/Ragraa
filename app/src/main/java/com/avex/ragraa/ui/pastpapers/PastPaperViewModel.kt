@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -17,8 +18,19 @@ class PastPaperViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(PastPaperUiState())
     val uiState: StateFlow<PastPaperUiState> = _uiState.asStateFlow()
 
+    private val courses: MutableList<PastPaperCourse> = mutableListOf()
+
     init {
         fetchPastPapers()
+    }
+
+    private fun updateUI() {
+        _uiState.update {
+            PastPaperUiState(
+                courses = courses,
+                completed = true
+            )
+        }
     }
 
     private fun fetchPastPapers() {
@@ -44,6 +56,7 @@ class PastPaperViewModel : ViewModel() {
     }
 
     private fun parseRequest(response: Response) {
-
+        updateUI()
+        TODO("Parse ${response.code}")
     }
 }

@@ -13,23 +13,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.avex.ragraa.R
+import com.avex.ragraa.ui.Screens
 import com.avex.ragraa.ui.misc.drawRainbowBorder
 
 @Composable
 fun ClickableCard(
-    icon: ImageVector,
-    text: String,
+    Screen: Screens,
     onClick: () -> Unit,
     modifier: Modifier,
-    updated: Boolean = false,
-    danger: Boolean = false
+    updated: Boolean = false
 ) {
     Card(modifier = modifier
+        .padding(
+            start = dimensionResource(id = R.dimen.padding_medium),
+            end = dimensionResource(id = R.dimen.padding_small)
+        )
         .clickable { onClick() }
         .drawRainbowBorder(
-            2.dp, if (updated || danger) 1000 else 12500, 4f,
+            2.dp, if (updated) 1000 else 12500, 4f,
             if (updated) listOf(
                 Color(0xFFFF685D),
                 Color(0xFFFF64F0),
@@ -38,7 +44,7 @@ fun ClickableCard(
                 Color(0xFF5BFF7B),
                 Color(0xFFFDFF59),
                 Color(0xFFFFCA55),
-            ) else if (danger) listOf(Color.Red, Color.LightGray, Color.Red)
+            )
             else listOf(
                 Color(0xFF659999), Color(0xFF6BE585), Color(0xFF659999)
             ),
@@ -49,11 +55,12 @@ fun ClickableCard(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         ) {
-            Icon(imageVector = icon, contentDescription = null)
+            Icon(imageVector = Screen.icon, contentDescription = null)
             Text(
-                text,
+                stringResource(Screen.stringRes),
                 Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center
             )
         }
     }

@@ -8,7 +8,8 @@ data class CalculatorCourse(
     val gpa: Float = 0f,
     val grade: String = "",
     val isRelative: Boolean = false,
-    val locked: Boolean = false
+    val locked: Boolean = false,
+    val isCustom: Boolean = false
 )
 
 data class CalculatorUiState(

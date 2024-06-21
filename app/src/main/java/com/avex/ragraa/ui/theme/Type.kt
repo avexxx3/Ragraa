@@ -19,7 +19,7 @@ val labelFontFamily = FontFamily(
     )
 )
 
-val bodyFontFamily = FontFamily(
+val titleFontFamily = FontFamily(
     Font(
         googleFont = GoogleFont("Montserrat"),
         fontProvider = provider,
@@ -43,12 +43,12 @@ val AppTypography = Typography(
     headlineLarge = baseline.headlineLarge.copy(fontFamily = displayFontFamily),
     headlineMedium = baseline.headlineMedium.copy(fontFamily = displayFontFamily),
     headlineSmall = baseline.headlineSmall.copy(fontFamily = displayFontFamily),
-    titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily),
-    titleMedium = baseline.titleMedium.copy(fontFamily = displayFontFamily),
-    titleSmall = baseline.titleSmall.copy(fontFamily = displayFontFamily),
-    bodyLarge = baseline.bodyLarge.copy(fontFamily = bodyFontFamily),
-    bodyMedium = baseline.bodyMedium.copy(fontFamily = bodyFontFamily),
-    bodySmall = baseline.bodySmall.copy(fontFamily = bodyFontFamily),
+    titleLarge = baseline.titleLarge.copy(fontFamily = titleFontFamily),
+    titleMedium = baseline.titleMedium.copy(fontFamily = titleFontFamily),
+    titleSmall = baseline.titleSmall.copy(fontFamily = titleFontFamily),
+    bodyLarge = baseline.bodyLarge.copy(fontFamily = titleFontFamily),
+    bodyMedium = baseline.bodyMedium.copy(fontFamily = titleFontFamily),
+    bodySmall = baseline.bodySmall.copy(fontFamily = titleFontFamily),
     labelLarge = baseline.labelLarge.copy(fontFamily = labelFontFamily),
     labelMedium = baseline.labelMedium.copy(fontFamily = labelFontFamily),
     labelSmall = baseline.labelSmall.copy(fontFamily = labelFontFamily),

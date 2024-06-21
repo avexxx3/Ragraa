@@ -100,30 +100,31 @@ fun CourseItem(courseItem: Section) {
 
             Spacer(modifier = Modifier.padding(top = 4.dp))
 
-
             courseItem.listOfMarks.forEachIndexed { index, marks ->
                 CourseMarks(marks, (index + 1).toString())
             }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 20.dp)
+                modifier = Modifier.padding(bottom = 28.dp)
             ) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}/${
-                        formatMarks(
-                            courseItem.total
-                        )
-                    }",
-                    style = MaterialTheme.typography.bodyLarge
+                    "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Text(
+                    "/${formatMarks(courseItem.total)}",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.Gray
                 )
 
                 Spacer(modifier = Modifier.weight(0.3f))
 
                 Text(
                     "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 Spacer(modifier = Modifier.weight(1f))

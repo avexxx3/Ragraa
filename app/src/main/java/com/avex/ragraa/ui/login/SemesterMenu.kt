@@ -46,6 +46,8 @@ fun SemesterMenu(viewModel: LoginViewModel) {
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
                 textColor = MaterialTheme.colorScheme.onBackground
             ),
             onValueChange = {},

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -30,12 +31,14 @@ fun Settings(viewModel: HomeViewModel) {
 
     Box(modifier = Modifier
         .background(Color(0, 0, 0, 230))
+        .fillMaxSize()
         .clickable { viewModel.toggleSettings() }) {
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()
                 .padding(20.dp)
+                .clickable {}
         ) {
             Column {
                 SettingItem(

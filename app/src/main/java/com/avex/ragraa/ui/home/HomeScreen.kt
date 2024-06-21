@@ -11,11 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Login
-import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,13 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
+import com.avex.ragraa.ui.Screens
 import com.avex.ragraa.ui.login.Logo
 import com.avex.ragraa.ui.misc.drawRainbowBorder
 
@@ -85,60 +80,37 @@ fun HomeScreen(
 
             Row(Modifier.padding(vertical = 8.dp)) {
                 ClickableCard(
-                    icon = Icons.AutoMirrored.Filled.Login,
-                    text = stringResource(R.string.login),
-                    onClick = { viewModel.navController.navigate("login") },
+                    Screen = Screens.Login,
+                    onClick = { viewModel.navController.navigate(Screens.Login.Title) },
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .padding(
-                            start = dimensionResource(id = R.dimen.padding_medium),
-                            end = dimensionResource(id = R.dimen.padding_small)
-                        )
                 )
 
                 ClickableCard(
-                    icon = Icons.Filled.Map,
-                    text = stringResource(R.string.past_papers),
-                    onClick = { viewModel.navController.navigate("pastpapers") },
+                    Screen = Screens.Web,
+                    onClick = { viewModel.refresh() },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(
-                            end = dimensionResource(id = R.dimen.padding_medium),
-                            start = dimensionResource(id = R.dimen.padding_small)
-                        )
                 )
             }
 
             Row(Modifier.padding(vertical = 8.dp)) {
                 ClickableCard(
-                    icon = Icons.Filled.Percent,
-                    text = stringResource(R.string.marks),
-                    onClick = { viewModel.navController.navigate("marks") },
+                    Screen = Screens.Marks,
+                    onClick = { viewModel.navController.navigate(Screens.Marks.Title) },
                     updated = uiState.updated,
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .padding(
-                            start = dimensionResource(id = R.dimen.padding_medium),
-                            end = dimensionResource(id = R.dimen.padding_small)
-                        )
                 )
 
                 ClickableCard(
-                    icon = Icons.Filled.Checklist,
-                    text = stringResource(R.string.attendance),
-                    onClick = { viewModel.navController.navigate("attendance") },
+                    Screen = Screens.PastPapers,
+                    onClick = { viewModel.navController.navigate(Screens.PastPapers.Title) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(
-                            end = dimensionResource(id = R.dimen.padding_medium),
-                            start = dimensionResource(id = R.dimen.padding_small)
-                        ),
-                    danger = uiState.danger
                 )
             }
 
         }
-
-        if (uiState.showSettings) Settings(viewModel)
     }
 }
