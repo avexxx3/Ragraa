@@ -2,6 +2,10 @@ package com.avex.ragraa.ui.pastpapers
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +22,7 @@ class PastPaperViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(PastPaperUiState())
     val uiState: StateFlow<PastPaperUiState> = _uiState.asStateFlow()
 
-    private val courses: MutableList<PastPaperCourse> = mutableListOf()
+    private val courses: MutableList<PastPaperDirectory> = mutableListOf()
 
     init {
         fetchPastPapers()
@@ -49,14 +53,47 @@ class PastPaperViewModel : ViewModel() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                Log.d("Dev", response.body?.string().toString())
-                parseRequest(response)
+                parseRequest(response.body?.string().toString())
             }
         })
     }
 
-    private fun parseRequest(response: Response) {
+    private fun parseRequest(response: String) {
+        val gson = Gson()
+
+        val listType = object : TypeToken<ArrayList<JsonObject>>() {}.type
+
+        val list: ArrayList<JsonObject> = GsonBuilder().create().fromJson(response, listType)
+
+        for (item in list) {
+            courses.add(
+                PastPaperDirectory(
+                    name = item.name!!,
+                    url = item.url!!,
+                    type = Type.Directory
+                )
+            )
+        }
+
         updateUI()
-        TODO("Parse ${response.code}")
     }
 }
+
+data class JsonObject(
+    @SerializedName("name") var name: String? = null,
+    @SerializedName("path") var path: String? = null,
+    @SerializedName("sha") var sha: String? = null,
+    @SerializedName("size") var size: Int? = null,
+    @SerializedName("url") var url: String? = null,
+    @SerializedName("html_url") var htmlUrl: String? = null,
+    @SerializedName("git_url") var gitUrl: String? = null,
+    @SerializedName("download_url") var downloadUrl: String? = null,
+    @SerializedName("type") var type: String? = null,
+    @SerializedName("_links") var Links: Links? = Links()
+)
+
+data class Links(
+    @SerializedName("self") var self: String? = null,
+    @SerializedName("git") var git: String? = null,
+    @SerializedName("html") var html: String? = null
+)
