@@ -69,6 +69,7 @@ fun SemesterItem(semester: Semester) {
         }
     }
 
+    if (isExpanded.value)
     Card(
         backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -80,11 +81,9 @@ fun SemesterItem(semester: Semester) {
                 .padding(bottom = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (isExpanded.value) {
                 for (course in semester.courses) {
                     CourseItem(course)
                 }
-            }
         }
     }
 

@@ -38,15 +38,15 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
             modifier = Modifier.padding(start = 12.dp, top = 4.dp),
         )
 
-        val footerStyle = MaterialTheme.typography.headlineSmall
+        val footerStyle = MaterialTheme.typography.titleMedium
 
-        Row {
+        Row(modifier = Modifier.padding(top = 8.dp, bottom = 12.dp)) {
             Text(
                 text = course.name.substring(0, 6),
                 style = footerStyle,
                 color = textColor,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(start = 12.dp, bottom = 12.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 12.dp)
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -55,8 +55,7 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
                 text = "${stringResource(R.string.absents)}: ${course.attendanceAbsents}",
                 style = footerStyle,
                 color = textColor,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 4.dp)
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.weight(1f))

@@ -7,6 +7,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,13 +49,18 @@ fun CustomerCircularProgressBar(
     }
 
     Box(modifier = Modifier.padding()) {
-        Text(index, modifier = Modifier.align(Alignment.Center))
+        Text(
+            index,
+            modifier = Modifier.align(Alignment.Center),
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
         Text(
             weightage,
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(top = 48.dp),
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
         )
 
         Canvas(modifier = Modifier.size(size)) {

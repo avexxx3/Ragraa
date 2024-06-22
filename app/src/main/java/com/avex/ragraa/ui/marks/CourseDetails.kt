@@ -35,30 +35,30 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
                 text = course.name.substring(7),
                 style = MaterialTheme.typography.displayMedium,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .padding(top = 16.dp, bottom = 16.dp)
                     .padding(horizontal = 16.dp)
             )
+
+
+            if (showAttendance != null) Button(
+                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
+                onClick = { showAttendance() },
+            ) {
+                Text(
+                    stringResource(R.string.view_attendance),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+            }
 
             if (course.marks.isEmpty()) Image(
                 painter = painterResource(id = R.drawable.cat),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds
             )
-
-            if (showAttendance != null) Button(
-                modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
-                onClick = { showAttendance() },
-            ) {
-                Text(
-                    stringResource(R.string.view_attendance),
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(bottom = 4.dp)
-                )
-            }
 
             for (courseItem in course.marks) {
                 if (courseItem.listOfMarks.isNotEmpty() || courseItem.name.contains("Total")) CourseItem(

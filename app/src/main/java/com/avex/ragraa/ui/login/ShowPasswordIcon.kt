@@ -1,5 +1,6 @@
 package com.avex.ragraa.ui.login
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -20,10 +21,12 @@ fun ShowPasswordIcon(viewModel: LoginViewModel) {
 
     when (results) {
         BiometricPromptManager.BiometricResult.AuthenticationFailed -> {
-            if (uiState.flipPassword) viewModel.flipPassword()
+            Log.d("Dev", "Failed")
+            viewModel.flipPassword(false)
         }
 
         BiometricPromptManager.BiometricResult.AuthenticationSuccess -> {
+            Log.d("Dev", "Not Failed, ${uiState.flipPassword.toString()}")
             if (uiState.flipPassword) viewModel.changePasswordVisibility()
         }
 
@@ -33,10 +36,10 @@ fun ShowPasswordIcon(viewModel: LoginViewModel) {
     }
 
     IconButton(onClick = {
+        viewModel.flipPassword(true)
         promptManager.showBiometricPrompt(
             "Authenticate", "Please authenticate to view the saved password"
         )
-        viewModel.flipPassword()
     }) {
         Icon(
             imageVector = if (uiState.passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,

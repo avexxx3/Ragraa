@@ -22,6 +22,7 @@ import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -174,10 +175,12 @@ fun LoginScreen(
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_large)
             )
-            .fillMaxWidth(), onClick = { viewModel.navController.navigate("web") }) {
+            .fillMaxWidth(), onClick = { viewModel.navController.navigate("web") },
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+        ) {
             Text(
                 stringResource(R.string.login),
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(vertical = 6.dp)
             )

@@ -21,7 +21,6 @@ fun TranscriptScreen(
     transcriptViewModel: TranscriptViewModel,
 ) {
     val uiState by transcriptViewModel.uiState.collectAsState()
-
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.animateContentSize(
             animationSpec = spring(

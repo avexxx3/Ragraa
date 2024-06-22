@@ -28,7 +28,6 @@ fun CourseMarks(marks: Marks, index: String) {
             .fillMaxWidth()
     ) {
 
-
         Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
             CustomerCircularProgressBar(
                 marks.obtained,
@@ -45,7 +44,7 @@ fun CourseMarks(marks: Marks, index: String) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         formatMarks(marks.obtained),
-                        color = if (marks.new) sweetie_pie else Color.Unspecified,
+                        color = if (marks.new) sweetie_pie else MaterialTheme.colorScheme.onSecondaryContainer,
                         style = style
                     )
 
@@ -70,7 +69,8 @@ fun CourseMarks(marks: Marks, index: String) {
                     marksName,
                     modifier = Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center,
-                    style = style
+                    style = style,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
         }

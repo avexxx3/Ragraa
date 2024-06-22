@@ -5,10 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -65,13 +65,16 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
                     .clickable { viewModel.addCourse() }
                     .fillMaxWidth()
                     .padding(end = 20.dp, start = 20.dp, top = 20.dp, bottom = 32.dp),
-                    shape = CutCornerShape(topStart = 32f, bottomEnd = 32f)) {
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+                    //shape = CutCornerShape(topStart = 32f, bottomEnd = 32f)
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Add,
                         contentDescription = null,
                         modifier = Modifier
                             .padding(16.dp)
-                            .align(Alignment.CenterHorizontally)
+                            .align(Alignment.CenterHorizontally),
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                 }
             }

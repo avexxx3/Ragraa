@@ -56,11 +56,11 @@ fun HomeScreen(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .fillMaxWidth(0.35f)
+                        .fillMaxWidth(0.4f)
                         .aspectRatio(1f)
+                        .clip(CircleShape)
                         .drawRainbowBorder(2.dp, 1200, 10000f)
                         .padding(3.dp)
-                        .clip(CircleShape)
                 )
             }
 
@@ -82,15 +82,13 @@ fun HomeScreen(
                 ClickableCard(
                     Screen = Screens.Login,
                     onClick = { viewModel.navController.navigate(Screens.Login.Title) },
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
+                    modifier = Modifier.fillMaxWidth(0.5f)
                 )
 
                 ClickableCard(
                     Screen = Screens.Web,
                     onClick = { viewModel.refresh() },
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
@@ -99,15 +97,13 @@ fun HomeScreen(
                     Screen = Screens.Marks,
                     onClick = { viewModel.navController.navigate(Screens.Marks.Title) },
                     updated = uiState.updated,
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
+                    modifier = Modifier.fillMaxWidth(0.5f)
                 )
 
                 ClickableCard(
                     Screen = Screens.PastPapers,
                     onClick = { viewModel.navController.navigate(Screens.PastPapers.Title) },
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 

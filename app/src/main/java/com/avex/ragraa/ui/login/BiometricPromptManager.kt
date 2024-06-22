@@ -44,7 +44,7 @@ class BiometricPromptManager(
             }
 
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+                resultChannel.trySend(BiometricResult.AuthenticationFailed)
                 return
             }
 

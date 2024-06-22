@@ -11,12 +11,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,100 +39,161 @@ import java.text.NumberFormat
 fun CourseItem(courseItem: Section) {
     val isExpanded = remember { mutableStateOf(true) }
 
-    Row(verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable { isExpanded.value = !isExpanded.value }) {
-
-        Text(
-            text = courseItem.name,
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center,
-            color = if (courseItem.new) sweetie_pie else Color.Unspecified,
-            modifier = Modifier.padding(end = 8.dp),
-        )
-
-
-        Icon(
-            imageVector = if (isExpanded.value) Icons.AutoMirrored.Outlined.KeyboardArrowRight else Icons.Outlined.KeyboardArrowDown,
-            tint = if (courseItem.new) sweetie_pie else LocalContentColor.current,
-            contentDescription = null
-        )
-    }
-
-    Divider(
-        thickness = 2.dp,
-        modifier = Modifier.padding(top = 8.dp, bottom = 16.dp, start = 68.dp, end = 68.dp),
-        color = if (courseItem.new) sweetie_pie else Color.White
-    )
-
-    Column(
-        modifier = Modifier.animateContentSize(
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow
-            )
-        )
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+            .clickable { isExpanded.value = !isExpanded.value },
+        shape = RoundedCornerShape(topStart = 48f, topEnd = 48f, bottomStart = 0f, bottomEnd = 0f),
     ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
+        ) {
 
-        if (isExpanded.value) {
-            if (courseItem.listOfMarks.isNotEmpty()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = dimensionResource(id = R.dimen.padding_medium)),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    val style = MaterialTheme.typography.titleLarge
-                    Box(
-                        Modifier.weight(1f)
-                    ) { Text("#", style = style, modifier = Modifier.align(Alignment.Center)) }
-                    Box(
-                        Modifier.weight(1f)
-                    ) { Text("Obt", style = style, modifier = Modifier.align(Alignment.Center)) }
-                    Box(
-                        Modifier.weight(1f)
-                    ) { Text("Avg", style = style, modifier = Modifier.align(Alignment.Center)) }
-                    Box(
-                        Modifier.weight(1f)
-                    ) { Text("Min", style = style, modifier = Modifier.align(Alignment.Center)) }
-                    Box(
-                        Modifier.weight(1f)
-                    ) { Text("Max", style = style, modifier = Modifier.align(Alignment.Center)) }
-                }
-            }
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = courseItem.name,
+                style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
+                color = if (courseItem.new) sweetie_pie else MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.padding(end = 8.dp),
+            )
 
-            Spacer(modifier = Modifier.padding(top = 4.dp))
+            Icon(
+                imageVector = if (isExpanded.value) Icons.AutoMirrored.Outlined.KeyboardArrowRight else Icons.Outlined.KeyboardArrowDown,
+                tint = if (courseItem.new) sweetie_pie else MaterialTheme.colorScheme.onPrimaryContainer,
+                contentDescription = null
+            )
 
-            courseItem.listOfMarks.forEachIndexed { index, marks ->
-                CourseMarks(marks, (index + 1).toString())
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 28.dp)
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}",
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                Text(
-                    "/${formatMarks(courseItem.total)}",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.Gray
-                )
-
-                Spacer(modifier = Modifier.weight(0.3f))
-
-                Text(
-                    "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-            }
-
+            Spacer(Modifier.weight(1f))
         }
     }
+
+
+    if (isExpanded.value) {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f)
+        ) {
+    Column(
+        modifier = Modifier
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMediumLow
+                )
+            )
+            .padding(top = 8.dp)
+    ) {
+        val textColor = MaterialTheme.colorScheme.onSecondaryContainer
+
+        if (courseItem.listOfMarks.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.padding_medium)),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+
+                val style = MaterialTheme.typography.titleLarge
+
+                Box(
+                    Modifier.weight(1f)
+                ) {
+                    Text(
+                        "#",
+                        style = style,
+                        color = textColor,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                Box(
+                    Modifier.weight(1f)
+                ) {
+                    Text(
+                        "Obt",
+                        style = style,
+                        color = textColor,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                Box(
+                    Modifier.weight(1f)
+                ) {
+                    Text(
+                        "Avg",
+                        style = style,
+                        color = textColor,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                Box(
+                    Modifier.weight(1f)
+                ) {
+                    Text(
+                        "Min",
+                        style = style,
+                        color = textColor,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                Box(
+                    Modifier.weight(1f)
+                ) {
+                    Text(
+                        "Max",
+                        style = style,
+                        color = textColor,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.padding(top = 4.dp))
+
+        courseItem.listOfMarks.forEachIndexed { index, marks ->
+            CourseMarks(marks, (index + 1).toString())
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 16.dp)
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}",
+                color = textColor,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Text(
+                "/${formatMarks(courseItem.total)}",
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.weight(0.3f))
+
+            Text(
+                "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
+                style = MaterialTheme.typography.titleLarge,
+                color = textColor,
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+        }
+
+    }
+        }
+    }
+
+    Spacer(modifier = Modifier.padding(vertical = 8.dp))
 }
 
 fun formatMarks(marks: Float): String {

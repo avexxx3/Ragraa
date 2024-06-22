@@ -112,14 +112,14 @@ class LoginViewModel : ViewModel() {
         updateUI()
     }
 
-    fun flipPassword() {
-        flipPassword = !flipPassword
+    fun flipPassword(newPassword: Boolean = !flipPassword) {
+        flipPassword = newPassword
         updateUI()
     }
 
     fun changePasswordVisibility() {
         passwordVisible = !passwordVisible
-        flipPassword()
+        flipPassword(false)
     }
 
     //A bit vague but there's a whole lot going on in the usernames

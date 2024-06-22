@@ -17,13 +17,13 @@ import com.avex.ragraa.ui.misc.drawRainbowBorder
 
 @Composable
 fun ProfilePicture(bitmap: ImageBitmap = Datasource.bitmap!!) {
-    Box(Modifier.padding(bottom = 10.dp)) {
+    Box(Modifier.padding(bottom = 8.dp)) {
         Image(
             bitmap = bitmap,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .fillMaxWidth(0.35f)
+                .fillMaxWidth(0.4f)
                 .aspectRatio(1f)
                 .drawRainbowBorder(2.dp, 1200, 10000f)
                 .padding(3.dp)
