@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.avex.ragraa.data.MyObjectBox
 import com.avex.ragraa.ui.FlexApp
 import com.avex.ragraa.ui.theme.FlexTheme
 import io.objectbox.BoxStore

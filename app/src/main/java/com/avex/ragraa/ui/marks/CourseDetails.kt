@@ -50,7 +50,9 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
                     stringResource(R.string.view_attendance),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 4.dp, bottom = 8.dp)
                 )
             }
 

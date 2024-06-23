@@ -44,8 +44,18 @@ fun CourseItem(courseItem: Section) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
+                )
+            )
             .clickable { isExpanded.value = !isExpanded.value },
-        shape = RoundedCornerShape(topStart = 48f, topEnd = 48f, bottomStart = 0f, bottomEnd = 0f),
+        shape = RoundedCornerShape(
+            topStart = 24f,
+            topEnd = 24f,
+            bottomStart = if (isExpanded.value) 0f else 24f,
+            bottomEnd = if (isExpanded.value) 0f else 24f
+        ),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -77,7 +87,13 @@ fun CourseItem(courseItem: Section) {
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
             modifier = Modifier
                 .padding(horizontal = 8.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessMedium
+                    )
+                ),
             shape = RoundedCornerShape(topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f)
         ) {
     Column(
