@@ -1,6 +1,7 @@
 package com.avex.ragraa.ui.marks
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ fun MarksScreen(
     viewModel: MarksViewModel,
     newNavController: NavHostController = rememberNavController()
 ) {
+
     BackHandler {
         viewModel.navController.navigate("home")
     }
@@ -29,7 +31,10 @@ fun MarksScreen(
         composable("marks") {
             LazyColumn {
                 item {
+                    Log.d("Dev", Datasource.courses.toString())
                     for (course in Datasource.courses) {
+                        Log.d("Dev", course.toString())
+
                         CourseCard(
                             course,
                             { newNavController.navigate("course") }) { viewModel.showCourse(it) }

@@ -35,7 +35,11 @@ object UpdateManager {
 
             override fun onResponse(call: Call, response: Response) {
                 val response = response.body?.string().toString()
+
                 val version = response.substring(response.indexOf("tag_name") + 12)
+
+                if (version.substring(0, version.indexOf("\"")).isEmpty()) return
+
                 newVersion = version.substring(0, version.indexOf("\"")).toFloat()
 
                 updateURL = response.substring(response.indexOf("browser_download_url") + 23)
