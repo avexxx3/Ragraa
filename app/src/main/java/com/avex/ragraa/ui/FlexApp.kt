@@ -208,7 +208,7 @@ fun FlexApp(
                 CurrentScreen = Screens.PastPapers
                 Column {
                     NavBarHeader(R.string.past_papers) { navBar() }
-                    PastPaperScreen()
+                    PastPaperScreen { navController.navigate(Screens.Home.Title) }
                 }
             }
         }

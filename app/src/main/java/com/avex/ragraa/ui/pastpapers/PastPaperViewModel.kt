@@ -1,11 +1,14 @@
 package com.avex.ragraa.ui.pastpapers
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.google.gson.Gson
+import com.avex.ragraa.context
+import com.avex.ragraa.store
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
+import io.objectbox.kotlin.boxFor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,65 +19,122 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
+import java.io.File
 import java.util.concurrent.TimeUnit
 
-class PastPaperViewModel : ViewModel() {
+
+class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : ViewModel() {
     private val _uiState = MutableStateFlow(PastPaperUiState())
     val uiState: StateFlow<PastPaperUiState> = _uiState.asStateFlow()
 
-    private val courses: MutableList<PastPaperDirectory> = mutableListOf()
+    private var selfDir = paramDir
+    private var viewingDir: PastPaperDirectory? = null
+    private var returnFunction: Boolean = false
+    private var rateLimited: Boolean = false
+
+    private var jsonResponse: String = ""
 
     init {
-        fetchPastPapers()
+        updateUI()
     }
 
     private fun updateUI() {
         _uiState.update {
             PastPaperUiState(
-                courses = courses,
-                completed = true
+                selfDir = selfDir,
+                viewingDir = viewingDir,
+                returnFunction = returnFunction,
+                rateLimited = rateLimited
             )
         }
     }
 
-    private fun fetchPastPapers() {
-        val request = Request.Builder()
-            .url("https://api.github.com/repos/saleha-muzammil/Academic-Time-Machine/contents")
-            .build()
+
+    fun fetchContents() {
+        if (!fetchLocal() || selfDir.sha.isEmpty()) fetchOnline()
+    }
+
+    private fun fetchLocal(): Boolean {
+        val shaBox = store.boxFor<CachedDirectory>().all
+        val mapSHA = shaBox.map { it.sha }
+        val index = mapSHA.indexOf(selfDir.sha)
+        if (index == -1) return false
+        jsonResponse = shaBox[index].json
+        parseRequest()
+
+        val file = File(context.filesDir, "Wahoo")
+
+        return true
+    }
+
+
+    private fun fetchOnline() {
+        val request = Request.Builder().url(selfDir.url).build()
 
         val client = OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(5, TimeUnit.MINUTES).readTimeout(5, TimeUnit.MINUTES).build()
 
-        Log.d("Dev", "Pov")
-
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-
-            }
+            override fun onFailure(call: Call, e: IOException) {}
 
             override fun onResponse(call: Call, response: Response) {
-                parseRequest(response.body?.string().toString())
+                jsonResponse = response.body?.string().toString()
+
+                if (isRateLimited()) return
+
+                removeCache()
+                store.boxFor<CachedDirectory>().put(CachedDirectory(selfDir.sha, jsonResponse))
+
+                parseRequest()
             }
         })
     }
 
-    private fun parseRequest(response: String) {
-        val gson = Gson()
+    private fun isRateLimited(): Boolean {
+        rateLimited = jsonResponse.contains("API rate limit exceeded")
+        updateUI()
+        return rateLimited
+    }
 
+    private fun removeCache() {
+        val mapSHA = store.boxFor<CachedDirectory>().all.map { it.sha }
+
+        val index = mapSHA.indexOf(selfDir.sha)
+
+        if (index != -1) {
+            store.boxFor<CachedDirectory>().remove(store.boxFor<CachedDirectory>().all[index].id)
+        }
+    }
+
+    private fun parseRequest() {
         val listType = object : TypeToken<ArrayList<JsonObject>>() {}.type
 
-        val list: ArrayList<JsonObject> = GsonBuilder().create().fromJson(response, listType)
+        val list: ArrayList<JsonObject> = GsonBuilder().create().fromJson(jsonResponse, listType)
+
+        val listOfDir: MutableList<PastPaperDirectory> = mutableListOf()
+        val listOfFiles: MutableList<PastPaperFile> = mutableListOf()
 
         for (item in list) {
-            courses.add(
+            if (item.type == "dir") listOfDir.add(
                 PastPaperDirectory(
-                    name = item.name!!,
-                    url = item.url!!,
-                    type = Type.Directory
+                    name = item.name!!, url = item.url!!, sha = item.sha!!
+                )
+            ) else listOfFiles.add(
+                PastPaperFile(
+                    name = item.name!!, url = item.downloadUrl!!, sha = item.sha!!
                 )
             )
         }
 
+        selfDir = selfDir.copy(
+            contents = Contents(listOfDir, listOfFiles), completed = true
+        )
+
+        updateUI()
+    }
+
+    fun setDirectory(viewDir: PastPaperDirectory?) {
+        viewingDir = viewDir
         updateUI()
     }
 }
@@ -89,11 +149,16 @@ data class JsonObject(
     @SerializedName("git_url") var gitUrl: String? = null,
     @SerializedName("download_url") var downloadUrl: String? = null,
     @SerializedName("type") var type: String? = null,
-    @SerializedName("_links") var Links: Links? = Links()
+    @SerializedName("_links") var links: Links? = Links()
 )
 
 data class Links(
     @SerializedName("self") var self: String? = null,
     @SerializedName("git") var git: String? = null,
     @SerializedName("html") var html: String? = null
+)
+
+@Entity
+data class CachedDirectory(
+    val sha: String, val json: String, @Id var id: Long = 0
 )

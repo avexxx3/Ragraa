@@ -112,9 +112,33 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "10:443012631484862297",
+      "lastPropertyId": "3:8161561400989026195",
+      "name": "CachedDirectory",
+      "properties": [
+        {
+          "id": "1:6686216042260222227",
+          "name": "sha",
+          "type": 9
+        },
+        {
+          "id": "2:5124571507150831295",
+          "name": "json",
+          "type": 9
+        },
+        {
+          "id": "3:8161561400989026195",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "9:4609483855752613864",
+  "lastEntityId": "10:443012631484862297",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
