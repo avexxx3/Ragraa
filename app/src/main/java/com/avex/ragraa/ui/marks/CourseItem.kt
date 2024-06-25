@@ -56,6 +56,7 @@ fun CourseItem(courseItem: Section) {
             bottomStart = if (isExpanded.value) 0f else 24f,
             bottomEnd = if (isExpanded.value) 0f else 24f
         ),
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -94,118 +95,119 @@ fun CourseItem(courseItem: Section) {
                         stiffness = Spring.StiffnessMedium
                     )
                 ),
+            elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation)),
             shape = RoundedCornerShape(topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f)
         ) {
-    Column(
-        modifier = Modifier
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy,
-                    stiffness = Spring.StiffnessMediumLow
-                )
-            )
-            .padding(top = 8.dp)
-    ) {
-        val textColor = MaterialTheme.colorScheme.onSecondaryContainer
-
-        if (courseItem.listOfMarks.isNotEmpty()) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = dimensionResource(id = R.dimen.padding_medium)),
-                horizontalArrangement = Arrangement.SpaceAround
+                    .animateContentSize(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioNoBouncy,
+                            stiffness = Spring.StiffnessMediumLow
+                        )
+                    )
+                    .padding(top = 8.dp)
             ) {
+                val textColor = MaterialTheme.colorScheme.onSecondaryContainer
 
-                val style = MaterialTheme.typography.titleLarge
+                if (courseItem.listOfMarks.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = dimensionResource(id = R.dimen.padding_medium)),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
 
-                Box(
-                    Modifier.weight(1f)
-                ) {
-                    Text(
-                        "#",
-                        style = style,
-                        color = textColor,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                        val style = MaterialTheme.typography.titleLarge
+
+                        Box(
+                            Modifier.weight(1f)
+                        ) {
+                            Text(
+                                "#",
+                                style = style,
+                                color = textColor,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        Box(
+                            Modifier.weight(1f)
+                        ) {
+                            Text(
+                                "Obt",
+                                style = style,
+                                color = textColor,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        Box(
+                            Modifier.weight(1f)
+                        ) {
+                            Text(
+                                "Avg",
+                                style = style,
+                                color = textColor,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        Box(
+                            Modifier.weight(1f)
+                        ) {
+                            Text(
+                                "Min",
+                                style = style,
+                                color = textColor,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        Box(
+                            Modifier.weight(1f)
+                        ) {
+                            Text(
+                                "Max",
+                                style = style,
+                                color = textColor,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    }
                 }
-                Box(
-                    Modifier.weight(1f)
-                ) {
-                    Text(
-                        "Obt",
-                        style = style,
-                        color = textColor,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+
+                Spacer(modifier = Modifier.padding(top = 4.dp))
+
+                courseItem.listOfMarks.forEachIndexed { index, marks ->
+                    CourseMarks(marks, (index + 1).toString())
                 }
-                Box(
-                    Modifier.weight(1f)
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 ) {
+                    Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        "Avg",
-                        style = style,
+                        "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}",
                         color = textColor,
-                        modifier = Modifier.align(Alignment.Center)
+                        style = MaterialTheme.typography.titleLarge
                     )
-                }
-                Box(
-                    Modifier.weight(1f)
-                ) {
+
                     Text(
-                        "Min",
-                        style = style,
-                        color = textColor,
-                        modifier = Modifier.align(Alignment.Center)
+                        "/${formatMarks(courseItem.total)}",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.Gray
                     )
-                }
-                Box(
-                    Modifier.weight(1f)
-                ) {
+
+                    Spacer(modifier = Modifier.weight(0.3f))
+
                     Text(
-                        "Max",
-                        style = style,
+                        "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
+                        style = MaterialTheme.typography.titleLarge,
                         color = textColor,
-                        modifier = Modifier.align(Alignment.Center)
                     )
+
+                    Spacer(modifier = Modifier.weight(1f))
                 }
+
             }
-        }
-
-        Spacer(modifier = Modifier.padding(top = 4.dp))
-
-        courseItem.listOfMarks.forEachIndexed { index, marks ->
-            CourseMarks(marks, (index + 1).toString())
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 16.dp)
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}",
-                color = textColor,
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Text(
-                "/${formatMarks(courseItem.total)}",
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.weight(0.3f))
-
-            Text(
-                "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
-                style = MaterialTheme.typography.titleLarge,
-                color = textColor,
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-        }
-
-    }
         }
     }
 

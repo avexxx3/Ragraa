@@ -17,8 +17,8 @@ class TranscriptViewModel : ViewModel() {
         updateUI()
     }
 
-    fun updateUI() {
-        _uiState.update { TranscriptUiState(Datasource.transcriptDatabase!!) }
+    private fun updateUI() {
+        _uiState.update { TranscriptUiState(Datasource.transcriptDatabase) }
     }
 }
 

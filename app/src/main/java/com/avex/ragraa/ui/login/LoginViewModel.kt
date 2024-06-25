@@ -27,7 +27,8 @@ class LoginViewModel : ViewModel() {
     private var rememberLogin: Boolean = true
     private var expanded: Boolean = false
     private var passwordVisible: Boolean = false
-    private var flipPassword: Boolean = false
+
+    var flipPassword: Boolean = false
 
     init {
         Datasource.cacheData()
@@ -96,8 +97,7 @@ class LoginViewModel : ViewModel() {
                 isCompleted = isCompleted,
                 rememberLogin = rememberLogin,
                 expanded = expanded,
-                passwordVisible = passwordVisible,
-                flipPassword = flipPassword
+                passwordVisible = passwordVisible
             )
         }
     }
@@ -112,14 +112,9 @@ class LoginViewModel : ViewModel() {
         updateUI()
     }
 
-    fun flipPassword(newPassword: Boolean = !flipPassword) {
-        flipPassword = newPassword
-        updateUI()
-    }
-
     fun changePasswordVisibility() {
         passwordVisible = !passwordVisible
-        flipPassword(false)
+        updateUI()
     }
 
     //A bit vague but there's a whole lot going on in the usernames

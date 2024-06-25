@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
@@ -65,9 +66,8 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
                     .clickable { viewModel.addCourse() }
                     .fillMaxWidth()
                     .padding(end = 20.dp, start = 20.dp, top = 20.dp, bottom = 32.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
-                    //shape = CutCornerShape(topStart = 32f, bottomEnd = 32f)
-                ) {
+                    elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation)),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)) {
                     Icon(
                         imageVector = Icons.Filled.Add,
                         contentDescription = null,

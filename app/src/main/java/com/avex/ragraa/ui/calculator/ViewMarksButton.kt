@@ -22,14 +22,12 @@ fun ViewMarksButton(viewModel: CalculatorViewModel) {
         .fillMaxSize()
         .background(Color(0, 0, 0, 230))
         .clickable { viewModel.viewMarks() }) {
-        Card(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth()
-                .clickable { viewModel.viewMarks() }
-                .animateContentSize()
-                .padding(horizontal = 20.dp, vertical = 40.dp)
-        ) {
+        Card(modifier = Modifier
+            .align(Alignment.Center)
+            .fillMaxWidth()
+            .clickable { viewModel.viewMarks() }
+            .animateContentSize()
+            .padding(horizontal = 20.dp, vertical = 40.dp)) {
             BackHandler {
                 viewModel.viewMarks()
             }

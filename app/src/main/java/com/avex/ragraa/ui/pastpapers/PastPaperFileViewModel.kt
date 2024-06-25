@@ -40,9 +40,7 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
     private lateinit var selfFile: File
 
     init {
-        if (fileExists()) {
-            Log.d("Dev", selfFile.absolutePath)
-        }
+        fileExists()
         updateUI()
     }
 
@@ -55,8 +53,8 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
     }
 
     fun clickDownload() {
-        if (fileExists()) {
-            Log.d("Dev", "${file.name} already exists")
+        if (isDownloaded) {
+            deleteFile()
             return
         }
 
@@ -116,9 +114,7 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
 
     private fun openDownloadedFile() {
         val uri = FileProvider.getUriForFile(
-            context,
-            context.applicationContext.packageName + ".provider",
-            selfFile
+            context, context.applicationContext.packageName + ".provider", selfFile
         )
 
         val intent = Intent(Intent.ACTION_VIEW).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -144,7 +140,16 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
         else if (!isDownloading) openUrl()
     }
 
-    fun getMimeType(): String? {
+    private fun deleteFile() {
+        if (!isDownloaded) return
+
+        selfFile.delete()
+        selfFile.parentFile?.delete()
+        isDownloaded = false
+        updateUI()
+    }
+
+    private fun getMimeType(): String? {
         val ext = file.name.reversed().substring(0, file.name.reversed().indexOf('.')).reversed()
         val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
         return mime

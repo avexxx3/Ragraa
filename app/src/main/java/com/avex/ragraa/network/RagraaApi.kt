@@ -108,7 +108,7 @@ object RagraaApi {
                 sharedPreferences.edit().putString("date", Datasource.date).apply()
 
                 if (Jsoup.parse(marksResponse).body().getElementsByClass("GrandtotalColumn")
-                        .isNotEmpty()
+                        .isNotEmpty() || Datasource.transcriptResponse.isEmpty()
                 ) {
                     val menuItems = Jsoup.parse(marksResponse).body()
                         .getElementsByClass("m-menu__item  m-menu__item--submenu").html()

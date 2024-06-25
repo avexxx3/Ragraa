@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -24,10 +25,11 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .clickable { selectCourse(course); navCourse() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
     ) {
 
-        val textColor = MaterialTheme.colorScheme.onSecondaryContainer
+        val textColor = MaterialTheme.colorScheme.onPrimaryContainer
 
         Text(
             text = course.name.substring(7),

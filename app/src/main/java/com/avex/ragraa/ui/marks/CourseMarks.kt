@@ -49,18 +49,14 @@ fun CourseMarks(marks: Marks, index: String) {
                     )
 
                     Text(
-                        "/${formatMarks(marks.total)}",
-                        color = Color.Gray,
-                        style = style
+                        "/${formatMarks(marks.total)}", color = Color.Gray, style = style
                     )
                 }
             }
         }
 
         val listMarks = listOf(
-            formatMarks(marks.average),
-            formatMarks(marks.minimum),
-            formatMarks(marks.maximum)
+            formatMarks(marks.average), formatMarks(marks.minimum), formatMarks(marks.maximum)
         )
 
         for (marksName in listMarks) {

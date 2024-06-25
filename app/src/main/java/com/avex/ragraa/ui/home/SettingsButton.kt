@@ -18,9 +18,7 @@ fun SettingsButton(onClick: () -> Unit) {
     Box(modifier = Modifier
         .padding(top = 8.dp, end = 12.dp)
         .border(
-            1.dp,
-            MaterialTheme.colorScheme.onBackground,
-            shape = RoundedCornerShape(8.dp)
+            1.dp, MaterialTheme.colorScheme.onBackground, shape = RoundedCornerShape(8.dp)
         )
         .padding(8.dp)
         .clickable { onClick() }) {

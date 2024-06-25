@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,7 +30,7 @@ fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .clickable { editCourse() },
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
     ) {
         Column {
             Text(

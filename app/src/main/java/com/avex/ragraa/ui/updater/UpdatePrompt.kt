@@ -22,9 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.avex.ragraa.R
-import com.avex.ragraa.ui.theme.sweetie_pie
 
 
 @Composable
@@ -32,6 +30,8 @@ fun UpdatePrompt(viewModel: UpdateViewModel, uiState: UpdateUIState) {
     BackHandler {
         viewModel.closePrompt()
     }
+
+    val textColor = MaterialTheme.colorScheme.onBackground
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -57,41 +57,47 @@ fun UpdatePrompt(viewModel: UpdateViewModel, uiState: UpdateUIState) {
                     )
                     Text(
                         stringResource(R.string.update),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontSize = 20.sp
+                        style = MaterialTheme.typography.titleLarge,
+                        color = textColor
                     )
                 }
 
                 Text(
                     stringResource(R.string.new_version_available),
                     style = MaterialTheme.typography.bodyLarge,
-                    fontSize = 16.sp,
+                    color = textColor,
                     modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
                 )
 
                 Text(
-                    "${stringResource(R.string.current_version)}: ${UpdateManager.currentVersion}",
-                    style = MaterialTheme.typography.bodyMedium,
+                    "${stringResource(R.string.current_version)}: ${UpdateManager.CURRENT_VERSION}",
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(start = 8.dp),
-                    color = Color.Gray
+                    color = textColor
                 )
                 Text(
                     "${stringResource(R.string.new_version)}: v${uiState.newVersion}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp),
+                    color = textColor
                 )
 
                 Row(modifier = Modifier.padding(bottom = 8.dp, end = 4.dp)) {
                     Spacer(modifier = Modifier.weight(1f))
                     Box(modifier = Modifier
                         .padding(horizontal = 8.dp)
-                        .clickable { viewModel.closePrompt() }) { Text(stringResource(R.string.cancel)) }
+                        .clickable { viewModel.closePrompt() }) {
+                        Text(
+                            stringResource(R.string.cancel),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                     Box(modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .clickable { viewModel.updateApp() }) {
                         Text(
-                            "Update", color = sweetie_pie
+                            "Update",
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }

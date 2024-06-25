@@ -166,16 +166,13 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 )
             )
 
-            if (!uiState.editingCourse.isCustom) Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                onClick = {
-                    viewModel.viewMarks()
-                }) {
+            if (!uiState.editingCourse.isCustom) Button(colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            ), modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp), onClick = {
+                viewModel.viewMarks()
+            }) {
                 Text(
                     stringResource(R.string.show_marks),
                     modifier = Modifier.padding(vertical = 8.dp),

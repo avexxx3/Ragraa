@@ -23,10 +23,7 @@ import com.avex.ragraa.ui.misc.drawRainbowBorder
 
 @Composable
 fun ClickableCard(
-    Screen: Screens,
-    onClick: () -> Unit,
-    modifier: Modifier,
-    updated: Boolean = false
+    Screen: Screens, onClick: () -> Unit, modifier: Modifier, updated: Boolean = false
 ) {
     Card(modifier = modifier
         .padding(

@@ -22,12 +22,10 @@ import androidx.compose.ui.unit.dp
 fun PastPaperFileCard(viewModel: PastPaperFileViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-            .clickable { viewModel.openFile() }
-    ) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 4.dp)
+        .clickable { viewModel.openFile() }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 8.dp)

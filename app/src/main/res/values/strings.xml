@@ -38,4 +38,7 @@
     <string name="update">Update</string>
     <string name="average">Average</string>
     <string name="view_attendance">View Attendance</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="are_you_sure_you_want_to_delete_the_file">"Are you sure you want to delete the file?"</string>
+    <string name="delete">Delete</string>
 </resources>

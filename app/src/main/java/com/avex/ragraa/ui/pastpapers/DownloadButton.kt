@@ -14,12 +14,10 @@ import androidx.compose.ui.unit.dp
 fun DownloadButton(viewModel: PastPaperFileViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Icon(
-        imageVector = uiState.downloadIcon,
+    Icon(imageVector = uiState.downloadIcon,
         contentDescription = null,
         modifier = Modifier
             .clickable { viewModel.clickDownload() }
             .padding(8.dp),
-        tint = MaterialTheme.colorScheme.onBackground
-    )
+        tint = MaterialTheme.colorScheme.onBackground)
 }

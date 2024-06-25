@@ -59,7 +59,7 @@ import com.avex.ragraa.ui.marks.MarksViewModel
 import com.avex.ragraa.ui.misc.NavBarHeader
 import com.avex.ragraa.ui.misc.NavShape
 import com.avex.ragraa.ui.misc.NavigationDrawerItem
-import com.avex.ragraa.ui.pastpapers.PastPaperScreen
+import com.avex.ragraa.ui.pastpapers.PastPaperFolder
 import com.avex.ragraa.ui.theme.sweetie_pie
 import com.avex.ragraa.ui.transcript.TranscriptScreen
 import com.avex.ragraa.ui.transcript.TranscriptViewModel
@@ -89,7 +89,6 @@ fun FlexApp(
 
     //If the user doesn't have a saved login then it'll keep you at the login screen until logged in (i hate the word login)
     var CurrentScreen: Screens by remember { mutableStateOf(tempScreen) }
-
 
     ModalNavigationDrawer(drawerState = drawerState,
         gesturesEnabled = !(CurrentScreen == Screens.Web || (Datasource.rollNo.isEmpty() && CurrentScreen == Screens.Login)),
@@ -173,7 +172,7 @@ fun FlexApp(
             composable(Screens.Login.Title) {
                 CurrentScreen = Screens.Login
                 Column {
-                    NavBarHeader(R.string.login) { navBar() }
+                    if (Datasource.rollNo.isNotEmpty()) NavBarHeader(R.string.login) { navBar() }
                     LoginScreen(loginViewModel)
                 }
             }
@@ -206,10 +205,12 @@ fun FlexApp(
 
             composable(Screens.PastPapers.Title) {
                 CurrentScreen = Screens.PastPapers
+
                 Column {
                     NavBarHeader(R.string.past_papers) { navBar() }
-                    PastPaperScreen { navController.navigate(Screens.Home.Title) }
+                    PastPaperFolder { navController.navigate(Screens.Home.Title) }
                 }
+
             }
         }
     }

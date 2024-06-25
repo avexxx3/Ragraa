@@ -35,6 +35,5 @@ open class MarksViewModel : ViewModel() {
 }
 
 data class MarksUiState(
-    val currentCourse: Course? = null,
-    val viewingAttendance: Boolean = false
+    val currentCourse: Course? = null, val viewingAttendance: Boolean = false
 )

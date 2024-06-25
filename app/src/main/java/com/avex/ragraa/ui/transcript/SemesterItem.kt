@@ -1,5 +1,8 @@
 package com.avex.ragraa.ui.transcript
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,10 +10,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,15 +36,27 @@ fun SemesterItem(semester: Semester) {
     val isExpanded = remember { mutableStateOf((false)) }
 
     Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         modifier = Modifier
-            .clickable { isExpanded.value = !isExpanded.value }
-            .padding(horizontal = 16.dp),
-        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-        shape = RoundedCornerShape(topStart = 4f, topEnd = 4f, bottomStart = 0f, bottomEnd = 0f)
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
+                )
+            )
+            .clickable { isExpanded.value = !isExpanded.value },
+        shape = RoundedCornerShape(
+            topStart = 24f,
+            topEnd = 24f,
+            bottomStart = if (isExpanded.value) 0f else 24f,
+            bottomEnd = if (isExpanded.value) 0f else 24f
+        ),
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+            modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 12.dp, end = 8.dp)
         ) {
             val textColor = MaterialTheme.colorScheme.onPrimaryContainer
             val textStyle = MaterialTheme.typography.titleLarge
@@ -69,21 +86,28 @@ fun SemesterItem(semester: Semester) {
         }
     }
 
-    if (isExpanded.value)
-    Card(
-        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-        modifier = Modifier.padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(topStart = 0f, topEnd = 0f, bottomStart = 4f, bottomEnd = 4f)
+    if (isExpanded.value) Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .fillMaxWidth()
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
+                )
+            ),
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation)),
+        shape = RoundedCornerShape(topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 4.dp),
+                .padding(bottom = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-                for (course in semester.courses) {
-                    CourseItem(course)
-                }
+            for (course in semester.courses) {
+                CourseItem(course)
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ fun PastPaperFolderCard(folder: PastPaperDirectory, setDir: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable { setDir() },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -31,11 +33,11 @@ fun PastPaperFolderCard(folder: PastPaperDirectory, setDir: () -> Unit) {
                 imageVector = Icons.Filled.FolderOpen,
                 contentDescription = null,
                 modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Text(
                 folder.name,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = MaterialTheme.typography.titleLarge
             )
         }

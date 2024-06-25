@@ -1,7 +1,6 @@
 package com.avex.ragraa.ui.pastpapers
 
 import androidx.lifecycle.ViewModel
-import com.avex.ragraa.context
 import com.avex.ragraa.store
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
@@ -19,7 +18,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 
@@ -35,6 +33,7 @@ class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : 
     private var jsonResponse: String = ""
 
     init {
+        fetchContents()
         updateUI()
     }
 
@@ -49,8 +48,7 @@ class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : 
         }
     }
 
-
-    fun fetchContents() {
+    private fun fetchContents() {
         if (!fetchLocal() || selfDir.sha.isEmpty()) fetchOnline()
     }
 
@@ -61,9 +59,6 @@ class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : 
         if (index == -1) return false
         jsonResponse = shaBox[index].json
         parseRequest()
-
-        val file = File(context.filesDir, "Wahoo")
-
         return true
     }
 
@@ -119,7 +114,7 @@ class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : 
                 PastPaperDirectory(
                     name = item.name!!, url = item.url!!, sha = item.sha!!
                 )
-            ) else listOfFiles.add(
+            ) else if (item.name!! != "README.md") listOfFiles.add(
                 PastPaperFile(
                     name = item.name!!, url = item.downloadUrl!!, sha = item.sha!!
                 )

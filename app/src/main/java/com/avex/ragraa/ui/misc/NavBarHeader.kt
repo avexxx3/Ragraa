@@ -13,13 +13,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun NavBarHeader(
-    title: Int,
-    trailingIcon: @Composable () -> Unit = {},
-    navBar: @Composable () -> Unit
+    title: Int, trailingIcon: @Composable () -> Unit = {}, navBar: @Composable () -> Unit
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(bottom = 8.dp)
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 8.dp)
     ) {
         navBar()
         Text(

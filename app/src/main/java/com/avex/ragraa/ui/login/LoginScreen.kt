@@ -42,7 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
-import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun LoginScreen(
@@ -163,7 +162,7 @@ fun LoginScreen(
 
         for (status in statusList) if (status.isNotEmpty()) Text(
             text = status,
-            color = if (status.contains("successfully")) sweetie_pie else if (status.contains(
+            color = if (status.contains("successfully")) MaterialTheme.colorScheme.primary else if (status.contains(
                     "Error"
                 )
             ) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground,
@@ -171,11 +170,13 @@ fun LoginScreen(
             textAlign = TextAlign.Center
         )
 
-        if (uiState.showButtons && !uiState.isCompleted) Button(modifier = Modifier
-            .padding(
-                horizontal = dimensionResource(id = R.dimen.padding_large)
-            )
-            .fillMaxWidth(), onClick = { viewModel.navController.navigate("web") },
+        if (uiState.showButtons && !uiState.isCompleted) Button(
+            modifier = Modifier
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.padding_large)
+                )
+                .fillMaxWidth(),
+            onClick = { viewModel.navController.navigate("web") },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
         ) {
             Text(

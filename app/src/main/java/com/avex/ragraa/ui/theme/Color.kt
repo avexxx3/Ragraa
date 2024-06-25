@@ -1,4 +1,5 @@
 package com.avex.ragraa.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF446732)

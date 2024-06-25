@@ -58,9 +58,9 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.4f)
                         .aspectRatio(1f)
-                        .clip(CircleShape)
                         .drawRainbowBorder(2.dp, 1200, 10000f)
                         .padding(3.dp)
+                        .clip(CircleShape)
                 )
             }
 

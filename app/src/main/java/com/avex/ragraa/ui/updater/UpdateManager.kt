@@ -9,7 +9,7 @@ import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
 object UpdateManager {
-    val currentVersion = 1.2
+    const val CURRENT_VERSION = 1.2
     var newVersion = 0f
     var updateURL = ""
 
@@ -34,15 +34,16 @@ object UpdateManager {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val response = response.body?.string().toString()
+                val responseString = response.body?.string().toString()
 
-                val version = response.substring(response.indexOf("tag_name") + 12)
+                val version = responseString.substring(responseString.indexOf("tag_name") + 12)
 
                 if (version.substring(0, version.indexOf("\"")).isEmpty()) return
 
                 newVersion = version.substring(0, version.indexOf("\"")).toFloat()
 
-                updateURL = response.substring(response.indexOf("browser_download_url") + 23)
+                updateURL =
+                    responseString.substring(responseString.indexOf("browser_download_url") + 23)
                 updateURL = updateURL.substring(0, updateURL.indexOf("\""))
 
                 compareRelease()
@@ -51,7 +52,7 @@ object UpdateManager {
     }
 
     fun compareRelease() {
-        if (currentVersion >= newVersion) return
+        if (CURRENT_VERSION >= newVersion) return
         Log.d("Dev", "New version found: $newVersion")
         updateUI(Pair(newVersion, updateURL))
     }
