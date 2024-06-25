@@ -1,24 +1,21 @@
 package com.avex.ragraa.ui.login
 
 import android.os.Build
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import com.avex.ragraa.AppCompatActivity
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 
 class BiometricPromptManager(
     private val activity: AppCompatActivity = AppCompatActivity
 ) {
-
-    private val resultChannel = Channel<BiometricResult>()
-    var promptResults = resultChannel.receiveAsFlow()
-
     fun showBiometricPrompt(
-        title: String, description: String
+        title: String = "Authenticate",
+        description: String = "Please authenticate to view the saved password",
+        changePasswordVisibility: () -> Unit
     ) {
         val manager = BiometricManager.from(activity)
 
@@ -34,27 +31,32 @@ class BiometricPromptManager(
 
         when (manager.canAuthenticate(authenticators)) {
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+                Log.d("Dev", "HW_UNAVAILABLE")
+                changePasswordVisibility()
                 return
             }
 
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+                Log.d("Dev", "NO_HARDWARE")
+                changePasswordVisibility()
                 return
             }
 
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                resultChannel.trySend(BiometricResult.AuthenticationFailed)
+                Log.d("Dev", "NONE_ENROLLED")
+                changePasswordVisibility()
                 return
             }
 
             BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED -> {
-                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+                Log.d("Dev", "UNSUPPORTED")
+                changePasswordVisibility()
                 return
             }
 
             BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
-                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+                Log.d("Dev", "SECURITY_UPDATE_REQUIRED")
+                changePasswordVisibility()
                 return
             }
 
@@ -62,32 +64,18 @@ class BiometricPromptManager(
         }
 
         val prompt = BiometricPrompt(activity, object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                resultChannel.trySend(BiometricResult.AuthenticationFailed)
-            }
-
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+                changePasswordVisibility()
             }
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                resultChannel.trySend(BiometricResult.AuthenticationSuccess)
+                Log.d("Dev", "AUTH ERROR")
             }
 
         })
 
         prompt.authenticate(promptInfo.build())
-    }
-
-    sealed interface BiometricResult {
-        data object AuthenticationFailed : BiometricResult
-        data object AuthenticationSuccess : BiometricResult
-    }
-
-    fun reset() {
-        resultChannel.trySend(BiometricResult.AuthenticationFailed)
     }
 }
