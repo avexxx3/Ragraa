@@ -125,11 +125,6 @@ object Datasource {
             var percentage = 100f
             var absents = 0
 
-            Log.d(
-                "Dev",
-                "courseName: $marks, indexMarks: $indexMarks, indexAttendance: $indexAttendance"
-            )
-
             if (indexAttendance != -1) {
                 listAttendance = attendanceDatabase[indexAttendance].attendance
                 percentage = attendanceDatabase[indexAttendance].percentage

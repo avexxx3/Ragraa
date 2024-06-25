@@ -47,7 +47,7 @@ fun PastPaperFileCard(viewModel: PastPaperFileViewModel) {
                 maxLines = 2
             )
 
-            DownloadButton(uiState, viewModel)
+            DownloadButton(viewModel)
         }
     }
 }

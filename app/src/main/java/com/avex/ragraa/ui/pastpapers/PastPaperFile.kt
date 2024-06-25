@@ -1,9 +1,12 @@
 package com.avex.ragraa.ui.pastpapers
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.ui.graphics.vector.ImageVector
+
 data class PastPaperFile(
     val name: String = "",
     val url: String = "",
     val sha: String = "",
-    val isDownloading: Boolean = false,
-    val isDownloaded: Boolean = false
+    val downloadIcon: ImageVector = Icons.Filled.Download
 )
