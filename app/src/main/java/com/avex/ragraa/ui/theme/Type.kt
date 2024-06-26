@@ -1,4 +1,4 @@
-package com.example.ui.theme
+package com.avex.ragraa.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
