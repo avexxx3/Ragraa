@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -50,6 +51,7 @@ import com.avex.ragraa.ui.home.HomeScreen
 import com.avex.ragraa.ui.home.HomeViewModel
 import com.avex.ragraa.ui.home.Settings
 import com.avex.ragraa.ui.home.SettingsButton
+import com.avex.ragraa.ui.login.LoadingScreen
 import com.avex.ragraa.ui.login.LoginScreen
 import com.avex.ragraa.ui.login.LoginViewModel
 import com.avex.ragraa.ui.login.WebViewScreen
@@ -179,9 +181,19 @@ fun FlexApp(
 
             composable(Screens.Web.Title) {
                 CurrentScreen = Screens.Web
-                WebViewScreen(
-                    { loginViewModel.updateCaptcha(it) },
-                    { navController.navigate("login") })
+
+                var showCaptcha by remember { mutableStateOf(false) }
+
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    WebViewScreen({ loginViewModel.updateCaptcha(it) },
+                        { navController.navigate("login") },
+                        {showCaptcha = true},
+                        {showCaptcha = false})
+
+                    if(!showCaptcha) {
+                        LoadingScreen()
+                    }
+                }
             }
 
             composable(Screens.Calculator.Title) {
@@ -197,6 +209,7 @@ fun FlexApp(
 
             composable(Screens.Transcript.Title) {
                 CurrentScreen = Screens.Transcript
+
                 Column {
                     NavBarHeader(R.string.transcript) { navBar() }
                     Surface { TranscriptScreen(transcriptViewModel) }

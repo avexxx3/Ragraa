@@ -5,7 +5,7 @@ import android.webkit.WebViewClient
 
 var captchaLoaded = false
 
-class CustomWebViewClient : WebViewClient() {
+class   CustomWebViewClient(val showCaptcha:() -> Unit) : WebViewClient() {
     override fun onPageFinished(view: WebView?, url: String?) {
         super.onPageFinished(view, url)
         val otherURL =
@@ -31,5 +31,7 @@ class CustomWebViewClient : WebViewClient() {
 
         if (!captchaLoaded) view?.loadDataWithBaseURL(url, otherURL, "text/html", "UTF-8", null)
         captchaLoaded = true
+
+        showCaptcha()
     }
 }
