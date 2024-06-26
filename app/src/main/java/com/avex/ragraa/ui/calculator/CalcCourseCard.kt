@@ -38,7 +38,7 @@ fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Start,
                 softWrap = true,
-                modifier = Modifier.padding(start = 12.dp, top = 8.dp),
+                modifier = Modifier.padding(start = 12.dp, top = 12.dp),
             )
 
             val style = MaterialTheme.typography.titleMedium

@@ -24,7 +24,8 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp)
-            .clickable { selectCourse(course); navCourse() },
+            .clickable { selectCourse(course); navCourse() }
+        ,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
     ) {
@@ -37,7 +38,7 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
             textAlign = TextAlign.Start,
             color = textColor,
             softWrap = true,
-            modifier = Modifier.padding(start = 12.dp, top = 4.dp),
+            modifier = Modifier.padding(start = 12.dp, top = 12.dp),
         )
 
         val footerStyle = MaterialTheme.typography.titleMedium

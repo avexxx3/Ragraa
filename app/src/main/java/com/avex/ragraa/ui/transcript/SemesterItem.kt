@@ -56,7 +56,7 @@ fun SemesterItem(semester: Semester) {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 8.dp, bottom = 12.dp, start = 12.dp, end = 8.dp)
+            modifier = Modifier.padding(12.dp)
         ) {
             val textColor = MaterialTheme.colorScheme.onPrimaryContainer
             val textStyle = MaterialTheme.typography.titleLarge

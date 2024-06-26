@@ -38,7 +38,7 @@ fun Settings(viewModel: HomeViewModel) {
             .fillMaxWidth()
             .padding(20.dp)
             .clickable {}) {
-            Column {
+            Column(modifier = Modifier.padding(vertical = 4.dp)) {
                 SettingItem(
                     R.string.refresh_on_startup,
                     viewModel.uiState.collectAsState().value.startupRefresh
@@ -57,7 +57,7 @@ fun Settings(viewModel: HomeViewModel) {
 fun SettingItem(text: Int, checked: Boolean, onClick: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(top = 6.dp, bottom = 10.dp)
+            .padding(vertical = 4.dp)
             .clickable { onClick() }) {
         Text(
             stringResource(text),
