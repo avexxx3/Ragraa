@@ -1,6 +1,9 @@
 package com.avex.ragraa.ui.calculator
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -37,7 +39,14 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
     }
 
     Surface {
-        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
+                )
+            )
+        ) {
             item {
                 Text(
                     text = String.format(Locale.getDefault(), "%.2f", uiState.overallGpa),
@@ -47,15 +56,8 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
 
                 Text(
                     stringResource(R.string.projected_gpa),
-                    style = MaterialTheme.typography.displaySmall
-                )
-
-                Divider(
-                    thickness = 2.dp,
-                    modifier = Modifier
-                        .padding(vertical = 12.dp)
-                        .padding(horizontal = 48.dp),
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
 
                 for (course in uiState.courses) {
