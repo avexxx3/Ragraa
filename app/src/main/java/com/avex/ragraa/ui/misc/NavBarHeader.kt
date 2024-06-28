@@ -22,7 +22,7 @@ fun NavBarHeader(
         Text(
             stringResource(title),
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(top = 4.dp, start = 12.dp)
+            modifier = Modifier.padding(top = 8.dp, start = 8.dp)
         )
         Spacer(Modifier.weight(1f))
 
