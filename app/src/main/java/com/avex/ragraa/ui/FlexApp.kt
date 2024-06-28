@@ -1,5 +1,8 @@
 package com.avex.ragraa.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -93,7 +96,7 @@ fun FlexApp(
     var CurrentScreen: Screens by remember { mutableStateOf(tempScreen) }
 
     ModalNavigationDrawer(drawerState = drawerState,
-        gesturesEnabled = !(CurrentScreen == Screens.Web || (Datasource.rollNo.isEmpty() && CurrentScreen == Screens.Login)),
+        gesturesEnabled = CurrentScreen != Screens.Web && (Datasource.rollNo.isNotEmpty() && loginViewModel.uiState.collectAsState().value.showButtons && !loginViewModel.uiState.collectAsState().value.isCompleted),
         drawerContent = {
             ModalDrawerSheet(drawerShape = NavShape(0.dp, 0.8f)) {
                 Image(
@@ -155,9 +158,15 @@ fun FlexApp(
                         trailingIcon = { SettingsButton { homeViewModel.toggleSettings() } }) { navBar() }
                     HomeScreen(viewModel = homeViewModel)
                 }
-                if (homeViewModel.uiState.collectAsState().value.showSettings) Settings(
-                    homeViewModel
-                )
+                AnimatedVisibility(
+                    homeViewModel.uiState.collectAsState().value.showSettings,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Settings(
+                        homeViewModel
+                    )
+                }
             }
 
             composable(Screens.Marks.Title) {
@@ -168,13 +177,19 @@ fun FlexApp(
                     MarksScreen(marksViewModel)
                 }
 
-                if (marksUiState.viewingAttendance) AttendancePopup(marksUiState.currentCourse!!) { marksViewModel.showAttendance() }
+                AnimatedVisibility(
+                    visible = marksUiState.viewingAttendance, enter = fadeIn(), exit = fadeOut()
+                ) {
+                    AttendancePopup(marksUiState.currentCourse!!) { marksViewModel.showAttendance() }
+                }
             }
 
             composable(Screens.Login.Title) {
                 CurrentScreen = Screens.Login
                 Column {
-                    if (Datasource.rollNo.isNotEmpty()) NavBarHeader(R.string.login) { navBar() }
+                    if (Datasource.rollNo.isNotEmpty() && loginViewModel.uiState.collectAsState().value.showButtons && !loginViewModel.uiState.collectAsState().value.isCompleted) NavBarHeader(
+                        R.string.login
+                    ) { navBar() }
                     LoginScreen(loginViewModel)
                 }
             }
@@ -187,10 +202,10 @@ fun FlexApp(
                 Surface(modifier = Modifier.fillMaxSize()) {
                     WebViewScreen({ loginViewModel.updateCaptcha(it) },
                         { navController.navigate("login") },
-                        {showCaptcha = true},
-                        {showCaptcha = false})
+                        { showCaptcha = true },
+                        { showCaptcha = false })
 
-                    if(!showCaptcha) {
+                    if (!showCaptcha) {
                         LoadingScreen()
                     }
                 }
