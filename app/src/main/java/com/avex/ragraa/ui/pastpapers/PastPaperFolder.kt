@@ -1,6 +1,10 @@
 package com.avex.ragraa.ui.pastpapers
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.avex.ragraa.ui.misc.CircularLoadingIndicator
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PastPaperFolder(
     viewModel: PastPaperViewModel = viewModel(),
@@ -30,56 +35,68 @@ fun PastPaperFolder(
         returnFunction()
     }
 
-    if (uiState.viewingDir != null) {
+    AnimatedVisibility(
+        uiState.showDir,
+        enter = slideInHorizontally(initialOffsetX = { it }),
+        exit = slideOutHorizontally(targetOffsetX = { it }),
+        modifier = Modifier
+    ) {
         val newViewModel = PastPaperViewModel(uiState.viewingDir!!)
 
         PastPaperFolder(newViewModel, "$dirName/${uiState.selfDir.name}") {
-            viewModel.setDirectory(
-                null
-            )
+            viewModel.hideDir()
         }
-    } else LazyColumn(
-        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+    }
+
+    AnimatedVisibility(
+        !uiState.showDir,
+        enter = slideInHorizontally(initialOffsetX = { -it }),
+        exit = slideOutHorizontally(targetOffsetX = { -it }),
+        modifier = Modifier
     ) {
-        item {
-            if (uiState.selfDir.name.isNotEmpty()) Text(
-                uiState.selfDir.name,
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(vertical = 8.dp),
-                textAlign = TextAlign.Center
-            )
-
-            if (uiState.selfDir.completed) {
-                for (folder in uiState.selfDir.contents.directories) {
-                    PastPaperFolderCard(folder) { viewModel.setDirectory(folder) }
-                }
-
-                for (file in uiState.selfDir.contents.files) {
-                    PastPaperFileCard(
-                        PastPaperFileViewModel(
-                            file, "$dirName/${uiState.selfDir.name}"
-                        )
-                    )
-                }
-            } else if (uiState.rateLimited) {
-                Text(
-                    "You are being rate limited.\nPlease try again in around an hour.",
-                    textAlign = TextAlign.Center,
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            item {
+                if (uiState.selfDir.name.isNotEmpty()) Text(
+                    uiState.selfDir.name,
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(32.dp)
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    textAlign = TextAlign.Center
                 )
-            } else {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Spacer(Modifier.weight(1f))
-                    CircularLoadingIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                    Spacer(Modifier.weight(1f))
-                }
-            }
 
+                if (uiState.selfDir.completed) {
+                    for (folder in uiState.selfDir.contents.directories) {
+                        PastPaperFolderCard(folder) { viewModel.setDirectory(folder) }
+                    }
+
+                    for (file in uiState.selfDir.contents.files) {
+                        PastPaperFileCard(
+                            PastPaperFileViewModel(
+                                file, "$dirName/${uiState.selfDir.name}"
+                            )
+                        )
+                    }
+                } else if (uiState.rateLimited) {
+                    Text(
+                        "You are being rate limited.\nPlease try again in around an hour.",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(32.dp)
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(Modifier.weight(1f))
+                        CircularLoadingIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                        Spacer(Modifier.weight(1f))
+                    }
+                }
+
+            }
         }
     }
 }

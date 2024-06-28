@@ -29,6 +29,7 @@ class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : 
     private var viewingDir: PastPaperDirectory? = null
     private var returnFunction: Boolean = false
     private var rateLimited: Boolean = false
+    private var showDir: Boolean = false
 
     private var jsonResponse: String = ""
 
@@ -43,7 +44,8 @@ class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : 
                 selfDir = selfDir,
                 viewingDir = viewingDir,
                 returnFunction = returnFunction,
-                rateLimited = rateLimited
+                rateLimited = rateLimited,
+                showDir = showDir
             )
         }
     }
@@ -128,8 +130,14 @@ class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : 
         updateUI()
     }
 
+    fun hideDir() {
+        showDir = false
+        updateUI()
+    }
+
     fun setDirectory(viewDir: PastPaperDirectory?) {
         viewingDir = viewDir
+        showDir = true
         updateUI()
     }
 }
