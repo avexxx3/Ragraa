@@ -2,10 +2,11 @@ package com.avex.ragraa.ui.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,13 +17,20 @@ import com.avex.ragraa.ui.misc.CircularLoadingIndicator
 
 @Composable
 fun LoadingScreen() {
-    Column(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.background), horizontalAlignment = Alignment.CenterHorizontally) {
-        Logo(modifier = Modifier.padding(vertical = 48.dp))
-            CircularLoadingIndicator(modifier = Modifier.padding(bottom = 8.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Logo(modifier = Modifier.padding(vertical = 56.dp))
+        Spacer(modifier = Modifier.weight(0.5f))
         Text(
             stringResource(R.string.loading),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.headlineMedium
         )
+        CircularLoadingIndicator(modifier = Modifier.padding(top = 8.dp))
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
