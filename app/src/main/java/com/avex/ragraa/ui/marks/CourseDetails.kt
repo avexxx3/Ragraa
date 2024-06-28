@@ -1,8 +1,5 @@
 package com.avex.ragraa.ui.marks
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,11 +21,7 @@ import com.avex.ragraa.data.Course
 @Composable
 fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
     LazyColumn(
-        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.animateContentSize(
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
-            )
-        )
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
             Text(
@@ -37,13 +30,11 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
-                    .padding(top = 16.dp, bottom = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(16.dp)
             )
 
-
             if (showAttendance != null) Button(
-                modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
+                modifier = Modifier.padding(bottom = 16.dp),
                 onClick = { showAttendance() },
             ) {
                 Text(
@@ -51,8 +42,7 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 4.dp, bottom = 8.dp)
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
                 )
             }
 
