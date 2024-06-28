@@ -34,82 +34,78 @@ import com.avex.ragraa.data.Semester
 @Composable
 fun SemesterItem(semester: Semester) {
     val isExpanded = remember { mutableStateOf((false)) }
-
-    Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
-                )
+    Column(
+        modifier = Modifier.animateContentSize(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
             )
-            .clickable { isExpanded.value = !isExpanded.value },
-        shape = RoundedCornerShape(
-            topStart = 24f,
-            topEnd = 24f,
-            bottomStart = if (isExpanded.value) 0f else 24f,
-            bottomEnd = if (isExpanded.value) 0f else 24f
-        ),
-        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
+        )
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(12.dp)
-        ) {
-            val textColor = MaterialTheme.colorScheme.onPrimaryContainer
-            val textStyle = MaterialTheme.typography.titleLarge
-
-            Text(
-                text = semester.session,
-                style = textStyle,
-                textAlign = TextAlign.Center,
-                color = textColor,
-                modifier = Modifier.padding(end = 8.dp),
-            )
-
-            Spacer(Modifier.weight(1f))
-
-            Text(
-                text = "${stringResource(R.string.sgpa)}: ${semester.sgpa}",
-                style = textStyle,
-                textAlign = TextAlign.Center,
-                color = textColor,
-                modifier = Modifier.padding(end = 8.dp),
-            )
-
-            Icon(
-                imageVector = if (isExpanded.value) Icons.AutoMirrored.Outlined.KeyboardArrowRight else Icons.Outlined.KeyboardArrowDown,
-                contentDescription = null
-            )
-        }
-    }
-
-    if (isExpanded.value) Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
-                )
-            ),
-        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation)),
-        shape = RoundedCornerShape(topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f)
-    ) {
-        Column(
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 8.dp)
+                .clickable { isExpanded.value = !isExpanded.value },
+            shape = RoundedCornerShape(
+                topStart = 24f,
+                topEnd = 24f,
+                bottomStart = if (isExpanded.value) 0f else 24f,
+                bottomEnd = if (isExpanded.value) 0f else 24f
+            ),
+            elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
         ) {
-            for (course in semester.courses) {
-                CourseItem(course)
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(12.dp)
+            ) {
+                val textColor = MaterialTheme.colorScheme.onPrimaryContainer
+                val textStyle = MaterialTheme.typography.titleLarge
+
+                Text(
+                    text = semester.session,
+                    style = textStyle,
+                    textAlign = TextAlign.Center,
+                    color = textColor,
+                    modifier = Modifier.padding(start = 8.dp),
+                )
+
+                Spacer(Modifier.weight(1f))
+
+                Text(
+                    text = "${stringResource(R.string.sgpa)}: ${semester.sgpa}",
+                    style = textStyle,
+                    textAlign = TextAlign.Center,
+                    color = textColor,
+                    modifier = Modifier.padding(end = 8.dp),
+                )
+
+                Icon(
+                    imageVector = if (isExpanded.value) Icons.AutoMirrored.Outlined.KeyboardArrowRight else Icons.Outlined.KeyboardArrowDown,
+                    contentDescription = null
+                )
             }
         }
-    }
 
-    Spacer(Modifier.padding(vertical = 8.dp))
+        if (isExpanded.value) Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation)),
+            shape = RoundedCornerShape(topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                for (course in semester.courses) {
+                    CourseItem(course)
+                }
+            }
+        }
+
+        Spacer(Modifier.padding(vertical = 8.dp))
+    }
 }
