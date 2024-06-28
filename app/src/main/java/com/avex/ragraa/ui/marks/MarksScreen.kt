@@ -1,8 +1,9 @@
 package com.avex.ragraa.ui.marks
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,8 +16,7 @@ import com.avex.ragraa.data.Datasource
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun MarksScreen(
-    viewModel: MarksViewModel,
-    newNavController: NavHostController = rememberNavController()
+    viewModel: MarksViewModel, newNavController: NavHostController = rememberNavController()
 ) {
 
     BackHandler {
@@ -26,27 +26,36 @@ fun MarksScreen(
     val uiState = viewModel.uiState.collectAsState().value
 
     NavHost(
-        newNavController, "marks"
+        navController = newNavController,
+        startDestination = "marks",
     ) {
         composable("marks") {
             LazyColumn {
                 item {
-                    Log.d("Dev", Datasource.courses.toString())
                     for (course in Datasource.courses) {
-                        Log.d("Dev", course.toString())
-
-                        CourseCard(
-                            course,
-                            { newNavController.navigate("course") }) { viewModel.showCourse(it) }
+                        CourseCard(course, { newNavController.navigate("course") }) {
+                            viewModel.showCourse(
+                                it
+                            )
+                        }
                     }
                 }
             }
         }
 
-        composable("course") {
+        composable("course",
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it }
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it }
+                )
+            }
+        ) {
             CourseDetails(course = uiState.currentCourse!!) { viewModel.showAttendance() }
         }
-
-
     }
 }
