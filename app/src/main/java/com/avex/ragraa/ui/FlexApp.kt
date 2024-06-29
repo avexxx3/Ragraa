@@ -90,13 +90,11 @@ fun FlexApp(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val tempScreen = if (Datasource.rollNo.isEmpty()) Screens.Login else Screens.Home
-
     //If the user doesn't have a saved login then it'll keep you at the login screen until logged in (i hate the word login)
-    var CurrentScreen: Screens by remember { mutableStateOf(tempScreen) }
+    var CurrentScreen: Screens by remember { mutableStateOf(Datasource.initScreen) }
 
     ModalNavigationDrawer(drawerState = drawerState,
-        gesturesEnabled = CurrentScreen != Screens.Web && (Datasource.rollNo.isNotEmpty() && loginViewModel.uiState.collectAsState().value.showButtons && !loginViewModel.uiState.collectAsState().value.isCompleted),
+        gesturesEnabled = (CurrentScreen != Screens.Web && CurrentScreen != Screens.Login) || (Datasource.rollNo.isNotEmpty() && loginViewModel.uiState.collectAsState().value.showButtons && !loginViewModel.uiState.collectAsState().value.isCompleted && CurrentScreen == Screens.Login),
         drawerContent = {
             ModalDrawerSheet(drawerShape = NavShape(0.dp, 0.8f)) {
                 Image(
@@ -148,7 +146,7 @@ fun FlexApp(
             navController, if (sharedPreferences.getBoolean(
                     "startupRefresh", false
                 )
-            ) "web" else if (Datasource.rollNo.isEmpty()) "login" else "home"
+            ) Screens.Web.Title else CurrentScreen.Title
         ) {
 
             composable(Screens.Home.Title) {

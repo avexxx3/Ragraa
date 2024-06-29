@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.avex.ragraa.sharedPreferences
 import com.avex.ragraa.store
+import com.avex.ragraa.ui.Screens
 import io.objectbox.kotlin.boxFor
 import okhttp3.Response
 import org.jsoup.Jsoup
@@ -29,6 +30,8 @@ object Datasource {
     var password: String = ""
     var showImage: Boolean = true
     var date: String = ""
+
+    lateinit var initScreen: Screens
 
     var bitmap: ImageBitmap? = null
 
@@ -69,6 +72,8 @@ object Datasource {
         if (rollNo.isNotEmpty()) {
             rollNo = rollNo.decrypt()
         }
+
+        initScreen = if (rollNo.isEmpty()) Screens.Login else Screens.Home
 
         password = sharedPreferences.getString("password", "").toString()
         if (password.isNotEmpty()) {
