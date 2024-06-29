@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.ui.misc.CircularLoadingIndicator
@@ -26,11 +27,12 @@ fun LoadingScreen() {
         Logo(modifier = Modifier.padding(vertical = 56.dp))
         Spacer(modifier = Modifier.weight(0.5f))
         Text(
-            stringResource(R.string.loading),
+            stringResource(R.string.loading_captcha),
             color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Center
         )
-        CircularLoadingIndicator(modifier = Modifier.padding(top = 8.dp))
+        CircularLoadingIndicator(modifier = Modifier.padding(top = 16.dp))
         Spacer(modifier = Modifier.weight(1f))
     }
 }

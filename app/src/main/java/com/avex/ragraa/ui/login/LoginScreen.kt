@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
+import com.avex.ragraa.network.captchaLoaded
 
 @Composable
 fun LoginScreen(
@@ -115,6 +116,7 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             keyboardActions = KeyboardActions {
                 focusManager.clearFocus()
+                captchaLoaded = false
                 viewModel.navController.navigate("web")
             },
             leadingIcon = { Icon(imageVector = Icons.Filled.VpnKey, contentDescription = null) },
@@ -156,7 +158,7 @@ fun LoginScreen(
             Spacer(Modifier.weight(1f))
         }
 
-        Row(Modifier.padding(3.dp)) {}
+        Spacer(Modifier.padding(3.dp))
 
         val statusList = uiState.status.substring(1, uiState.status.length - 1).split(", ")
 
@@ -176,13 +178,16 @@ fun LoginScreen(
                     horizontal = dimensionResource(id = R.dimen.padding_large)
                 )
                 .fillMaxWidth(),
-            onClick = { viewModel.navController.navigate("web") },
+            onClick = {
+                captchaLoaded = false
+                viewModel.navController.navigate("web")
+            },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
         ) {
             Text(
                 stringResource(R.string.login),
                 color = MaterialTheme.colorScheme.onTertiaryContainer,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.padding(vertical = 6.dp)
             )
         }

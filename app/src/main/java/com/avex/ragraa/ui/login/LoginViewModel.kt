@@ -27,8 +27,7 @@ class LoginViewModel : ViewModel() {
     private var rememberLogin: Boolean = true
     private var expanded: Boolean = false
     private var passwordVisible: Boolean = false
-
-    var flipPassword: Boolean = false
+    private var showButtons: Boolean = true
 
     init {
         Datasource.cacheData()
@@ -43,8 +42,10 @@ class LoginViewModel : ViewModel() {
 
     fun resetData() {
         status = mutableListOf("", "", "", "", "")
+        showButtons = true
         response = 0
         isCompleted = false
+        updateUI()
     }
 
     //Login to flex and save the session ID.
@@ -68,8 +69,15 @@ class LoginViewModel : ViewModel() {
             )) || status[index].contains("Fetched transcript successfully")
         ) response++
 
+        showButtons = !(status[0].isNotEmpty() || status[1].isNotEmpty())
+
+        if (status[0].contains("Error", ignoreCase = true)) {
+            showButtons = true
+        }
+
         if (response == 2) {
             isCompleted = true
+
             if (rememberLogin) Datasource.saveLogin()
         }
 
@@ -92,7 +100,7 @@ class LoginViewModel : ViewModel() {
                 password = loginRequest.password,
                 isError = isError,
                 status = status.toString(),
-                showButtons = !(status[0].isNotEmpty() || status[1].isNotEmpty()),
+                showButtons = showButtons,
                 isOnCredential = isOnCredential,
                 isCompleted = isCompleted,
                 rememberLogin = rememberLogin,

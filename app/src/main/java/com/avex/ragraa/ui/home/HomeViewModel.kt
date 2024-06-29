@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.avex.ragraa.context
 import com.avex.ragraa.data.Datasource
+import com.avex.ragraa.network.captchaLoaded
 import com.avex.ragraa.sharedPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +39,7 @@ class HomeViewModel : ViewModel() {
         if (Datasource.rollNo.isEmpty() || Datasource.password.isEmpty()) {
             navController.navigate("login")
         } else {
+            captchaLoaded = false
             navController.navigate("web")
         }
     }
