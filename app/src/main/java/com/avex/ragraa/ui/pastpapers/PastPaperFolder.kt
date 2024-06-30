@@ -2,6 +2,7 @@ package com.avex.ragraa.ui.pastpapers
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -51,6 +52,7 @@ fun PastPaperFolder(
         } else {
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.animateContentSize()
             ) {
                 item {
                     if (uiState.selfDir.name.isNotEmpty()) Text(
