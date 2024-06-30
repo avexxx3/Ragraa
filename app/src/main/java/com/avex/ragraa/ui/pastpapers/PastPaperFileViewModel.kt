@@ -13,7 +13,7 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.DownloadForOffline
+import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.Downloading
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
@@ -47,7 +47,10 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
     private fun updateUI() {
         _uiState.update {
             it.copy(
-                downloadIcon = if (isDownloaded) Icons.Filled.DownloadForOffline else if (isDownloading) Icons.Filled.Downloading else Icons.Filled.Download,
+                downloadIcon =
+                if (isDownloaded) Icons.Filled.DownloadDone else
+                    if (isDownloading) Icons.Default.Downloading else
+                        Icons.Default.Download,
             )
         }
     }
