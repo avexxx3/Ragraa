@@ -154,4 +154,15 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
         val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
         return mime
     }
+
+    fun shareFile() {
+        if (!isDownloaded) return
+
+        val uri = Uri.fromFile(selfFile)
+
+        val share = Intent(Intent.ACTION_SEND).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        share.setDataAndType(uri, getMimeType())
+        startActivity(context, share, null)
+    }
 }
