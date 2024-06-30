@@ -24,7 +24,7 @@ fun TranscriptScreen(
 ) {
 
     BackHandler {
-        navHome
+        navHome()
     }
 
     val uiState by transcriptViewModel.uiState.collectAsState()
