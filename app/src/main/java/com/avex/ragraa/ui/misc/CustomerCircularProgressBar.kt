@@ -78,7 +78,7 @@ fun CustomerCircularProgressBar(
 
             drawArc(
                 color = if (obtained <= 0 || total <= 0) backgroundArcColor else Color.hsl(
-                    ((100.8 * obtained / total).toFloat()), 0.78F, 0.75F
+                    ((100.8 * obtained / total).toFloat()), 0.78F, 0.6F
                 ),
                 startAngle = 135f,
                 sweepAngle = progressAnimation,
