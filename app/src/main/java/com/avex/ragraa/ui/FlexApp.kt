@@ -220,7 +220,9 @@ fun FlexApp(
                 }
             }
 
-            composable(Screens.Transcript.Title) {
+            composable(Screens.Transcript.Title,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }) {
                 CurrentScreen = Screens.Transcript
 
                 Column {
