@@ -52,7 +52,9 @@ fun SemesterMenu(viewModel: LoginViewModel) {
                 unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.primary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
             ),
             onValueChange = {},
             readOnly = true,

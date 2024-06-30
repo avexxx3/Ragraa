@@ -163,8 +163,9 @@ fun LoginScreen(
             }
 
             Text(
-                stringResource(R.string.remember_login_info),
+                text = stringResource(R.string.remember_login_info),
                 modifier = Modifier.clickable { viewModel.updatePreference() },
+                style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
 
@@ -200,7 +201,6 @@ fun LoginScreen(
             Text(
                 stringResource(R.string.login),
                 color = MaterialTheme.colorScheme.onTertiaryContainer,
-                style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.padding(vertical = 6.dp)
             )
         }
