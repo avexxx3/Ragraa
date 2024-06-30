@@ -1,4 +1,4 @@
-package com.avex.ragraa.data
+package com.avex.ragraa.data.dataclasses
 
 data class Course(
     val name: String,

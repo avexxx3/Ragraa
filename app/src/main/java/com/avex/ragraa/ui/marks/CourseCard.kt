@@ -29,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
-import com.avex.ragraa.data.Course
+import com.avex.ragraa.data.dataclasses.Course
 
 @Composable
 fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> Unit) {

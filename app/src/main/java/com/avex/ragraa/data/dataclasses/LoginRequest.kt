@@ -1,4 +1,4 @@
-package com.avex.ragraa.data
+package com.avex.ragraa.data.dataclasses
 
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id

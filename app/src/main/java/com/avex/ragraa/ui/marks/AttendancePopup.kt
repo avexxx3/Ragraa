@@ -23,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
-import com.avex.ragraa.data.Attendance
-import com.avex.ragraa.data.Course
+import com.avex.ragraa.data.dataclasses.Attendance
+import com.avex.ragraa.data.dataclasses.Course
 
 @Composable
 fun AttendancePopup(course: Course, hideCourse: () -> Unit) {

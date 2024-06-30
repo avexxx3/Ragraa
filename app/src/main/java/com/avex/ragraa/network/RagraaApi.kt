@@ -3,7 +3,7 @@ package com.avex.ragraa.network
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.Datasource.marksResponse
 import com.avex.ragraa.data.Datasource.saveImage
-import com.avex.ragraa.data.LoginRequest
+import com.avex.ragraa.data.dataclasses.LoginRequest
 import com.avex.ragraa.sharedPreferences
 import okhttp3.Call
 import okhttp3.Callback
@@ -44,16 +44,13 @@ object RagraaApi {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: java.io.IOException) {
                 updateStatus(Pair("Error: Response to Flex servers timed out.", 0))
+
                 e.printStackTrace()
             }
 
             override fun onResponse(call: Call, response: Response) {
                 if (!response.body?.string().toString().contains("\"status\":\"done\"")) {
-                    updateStatus(
-                        Pair(
-                            "Error: Invalid credentials or recaptcha. Please login again", 0
-                        )
-                    )
+                    updateStatus(Pair("Error: Invalid credentials or recaptcha.", 0))
                     return
                 }
                 updateStatus(Pair("Logged in successfully", 0))

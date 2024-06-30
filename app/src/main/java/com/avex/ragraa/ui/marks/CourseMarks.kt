@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
 import com.avex.ragraa.R
-import com.avex.ragraa.data.Marks
+import com.avex.ragraa.data.dataclasses.Marks
 import com.avex.ragraa.ui.misc.CustomerCircularProgressBar
 import com.avex.ragraa.ui.theme.sweetie_pie
 

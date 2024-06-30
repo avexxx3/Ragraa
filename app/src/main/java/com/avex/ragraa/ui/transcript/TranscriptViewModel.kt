@@ -2,7 +2,7 @@ package com.avex.ragraa.ui.transcript
 
 import androidx.lifecycle.ViewModel
 import com.avex.ragraa.data.Datasource
-import com.avex.ragraa.data.Transcript
+import com.avex.ragraa.data.dataclasses.Transcript
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -3,9 +3,10 @@ package com.avex.ragraa.ui.login
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.avex.ragraa.data.Datasource
-import com.avex.ragraa.data.LoginRequest
+import com.avex.ragraa.data.dataclasses.LoginRequest
 import com.avex.ragraa.network.RagraaApi
 import com.avex.ragraa.sharedPreferences
+import com.avex.ragraa.ui.Screens
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -86,9 +87,9 @@ class LoginViewModel : ViewModel() {
 
     //Used to update the token retrieved from CustomChromeWebClient
     //Navigates back to home screen after fetching it successfully
-    fun updateCaptcha(newToken: String) {
+    fun updateCaptchaToken(newToken: String) {
         loginRequest.g_recaptcha_response = newToken
-        navController.navigate("login")
+        navController.navigate(Screens.Login.Title)
         loginFlex()
     }
 

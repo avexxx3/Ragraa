@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.network.captchaLoaded
+import com.avex.ragraa.ui.Screens
 
 @Composable
 fun LoginScreen(
@@ -86,7 +87,12 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_large)),
-            label = { Text(text = stringResource(R.string.roll_number)) },
+            label = {
+                Text(
+                    text = stringResource(R.string.roll_number),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
@@ -112,7 +118,12 @@ fun LoginScreen(
                 ),
             singleLine = true,
             visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            label = { Text(text = stringResource(R.string.password)) },
+            label = {
+                Text(
+                    text = stringResource(R.string.password),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             keyboardActions = KeyboardActions {
                 focusManager.clearFocus()
@@ -179,8 +190,7 @@ fun LoginScreen(
                 )
                 .fillMaxWidth(),
             onClick = {
-                captchaLoaded = false
-                viewModel.navController.navigate("web")
+                viewModel.navController.navigate(Screens.Web.Title)
             },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
             elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))

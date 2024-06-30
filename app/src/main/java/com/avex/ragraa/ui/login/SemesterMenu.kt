@@ -3,13 +3,13 @@ package com.avex.ragraa.ui.login
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -43,12 +43,11 @@ fun SemesterMenu(viewModel: LoginViewModel) {
             label = { Text(stringResource(R.string.current_semester)) },
             textStyle = MaterialTheme.typography.bodyLarge,
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                textColor = MaterialTheme.colorScheme.onBackground
+                focusedLabelColor = MaterialTheme.colorScheme.primary
             ),
             onValueChange = {},
             readOnly = true,
@@ -57,27 +56,29 @@ fun SemesterMenu(viewModel: LoginViewModel) {
                 .fillMaxWidth(),
         )
 
+
         ExposedDropdownMenu(
             expanded = uiState.expanded,
             onDismissRequest = { viewModel.showMenu(false) }) {
             for (i in -1..1) {
-                @Suppress("DEPRECATION") val year =
-                    (Calendar.getInstance().time.year + i).toString().substring(1, 3)
-                DropdownMenuItem(onClick = { viewModel.select("${year}1") }) {
+                val year = (Calendar.getInstance().time.year + i).toString().substring(1, 3)
+                DropdownMenuItem(onClick = { viewModel.select("${year}1") }, text = {
                     Text(
                         "Spring $year", color = MaterialTheme.colorScheme.onBackground
                     )
-                }
-                DropdownMenuItem(onClick = { viewModel.select("${year}2") }) {
+                })
+
+                DropdownMenuItem(onClick = { viewModel.select("${year}2") }, text = {
                     Text(
                         "Summer $year", color = MaterialTheme.colorScheme.onBackground
                     )
-                }
-                DropdownMenuItem(onClick = { viewModel.select("${year}3") }) {
+                })
+
+                DropdownMenuItem(onClick = { viewModel.select("${year}3") }, text = {
                     Text(
                         "Fall $year", color = MaterialTheme.colorScheme.onBackground
                     )
-                }
+                })
             }
         }
     }

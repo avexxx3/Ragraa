@@ -2,7 +2,7 @@ package com.avex.ragraa.ui.marks
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.avex.ragraa.data.Course
+import com.avex.ragraa.data.dataclasses.Course
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
