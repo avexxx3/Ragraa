@@ -1,5 +1,6 @@
 package com.avex.ragraa.ui.transcript
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -19,7 +20,13 @@ import com.avex.ragraa.R
 @Composable
 fun TranscriptScreen(
     transcriptViewModel: TranscriptViewModel,
+    navHome: () -> Unit
 ) {
+
+    BackHandler {
+        navHome
+    }
+
     val uiState by transcriptViewModel.uiState.collectAsState()
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.animateContentSize(

@@ -225,7 +225,7 @@ fun FlexApp(
 
                 Column {
                     NavBarHeader(R.string.transcript) { navBar() }
-                    Surface { TranscriptScreen(transcriptViewModel) }
+                    Surface { TranscriptScreen(transcriptViewModel) { navController.navigate(Screens.Home.Title) } }
                 }
             }
 
