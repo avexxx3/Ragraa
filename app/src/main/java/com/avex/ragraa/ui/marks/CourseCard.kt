@@ -38,45 +38,33 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
     val transition = rememberInfiniteTransition(label = "shimmer")
 
     val progressAnimated by transition.animateFloat(
-        initialValue = -limit,
-        targetValue = limit,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
+        initialValue = -limit, targetValue = limit, animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing), repeatMode = RepeatMode.Restart
         ), label = "shimmer"
     )
 
     val primary = MaterialTheme.colorScheme.primaryContainer
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .clickable { selectCourse(course); navCourse() }
-            .drawWithCache {
-                val offset = size.width * progressAnimated
-                val gradientWidth = size.width
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 12.dp)
+        .clickable { selectCourse(course); navCourse() }
+        .drawWithCache {
+            val offset = size.width * progressAnimated
+            val gradientWidth = size.width
 
-                val brush = if (course.newMarks) Brush.linearGradient(
-                    colors = listOf(
-                        primary,
-                        Color(0xFF89FFFD),
-                        Color(0xFFEF32D9),
-                        Color(0xFF89FFFD),
-                        primary
-                    ),
-                    start = Offset(offset, 0f),
-                    end = Offset(offset + gradientWidth, size.height)
-                ) else Brush.linearGradient(listOf(primary, primary))
+            val brush = if (course.newMarks) Brush.linearGradient(
+                colors = listOf(
+                    primary, Color(0xFF89FFFD), Color(0xFFEF32D9), Color(0xFF89FFFD), primary
+                ), start = Offset(offset, 0f), end = Offset(offset + gradientWidth, size.height)
+            ) else Brush.linearGradient(listOf(primary, primary))
 
-                onDrawBehind {
-                    drawRoundRect(
-                        brush = brush,
-                        blendMode = BlendMode.SrcIn,
-                        cornerRadius = CornerRadius(12f)
-                    )
-                }
-            },
+            onDrawBehind {
+                drawRoundRect(
+                    brush = brush, blendMode = BlendMode.SrcIn, cornerRadius = CornerRadius(12f)
+                )
+            }
+        },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer.copy(
                 alpha = if (course.newMarks) 0f else 1f

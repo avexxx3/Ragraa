@@ -32,11 +32,10 @@ fun AttendancePopup(course: Course, hideCourse: () -> Unit) {
         hideCourse()
     }
 
-    Box(
-        modifier = Modifier
-            .background(Color(0, 0, 0, 200))
-            .fillMaxSize()
-            .clickable { hideCourse() }) {
+    Box(modifier = Modifier
+        .background(Color(0, 0, 0, 200))
+        .fillMaxSize()
+        .clickable { hideCourse() }) {
         Card(
             modifier = Modifier
                 .align(Alignment.Center)

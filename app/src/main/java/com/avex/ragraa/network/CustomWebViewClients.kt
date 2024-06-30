@@ -12,7 +12,7 @@ class CustomWebViewClient(
 ) : WebViewClient() {
     override fun onPageFinished(view: WebView?, url: String?) {
         super.onPageFinished(view, url)
-        Log.d("Dev", "Webview page loaded: $captchaLoaded")
+        Log.d("Dev", "WebView page loaded: $captchaLoaded")
 
         val otherURL =
             "<html>\n" +

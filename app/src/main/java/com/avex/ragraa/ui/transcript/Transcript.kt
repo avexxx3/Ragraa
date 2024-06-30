@@ -19,8 +19,7 @@ import com.avex.ragraa.R
 
 @Composable
 fun TranscriptScreen(
-    transcriptViewModel: TranscriptViewModel,
-    navHome: () -> Unit
+    transcriptViewModel: TranscriptViewModel, navHome: () -> Unit
 ) {
 
     BackHandler {

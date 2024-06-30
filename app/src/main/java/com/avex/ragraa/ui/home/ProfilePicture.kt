@@ -23,9 +23,7 @@ fun ProfilePicture(showImage: Boolean, modifier: Modifier = Modifier) {
 
     Box {
         AnimatedVisibility(
-            showImage,
-            enter = fadeIn(),
-            exit = fadeOut()
+            showImage, enter = fadeIn(), exit = fadeOut()
         ) {
             Datasource.bitmap?.let {
                 Image(
@@ -42,9 +40,7 @@ fun ProfilePicture(showImage: Boolean, modifier: Modifier = Modifier) {
         }
 
         AnimatedVisibility(
-            !showImage,
-            enter = fadeIn(),
-            exit = fadeOut()
+            !showImage, enter = fadeIn(), exit = fadeOut()
         ) {
             Image(
                 painter = painterResource(R.drawable.cat),

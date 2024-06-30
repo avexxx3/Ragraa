@@ -21,7 +21,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +43,7 @@ fun CustomerCircularProgressBar(
         label = "",
     )
 
-    LaunchedEffect(LocalLifecycleOwner.current) {
+    LaunchedEffect(androidx.lifecycle.compose.LocalLifecycleOwner.current) {
         progress = if (obtained < 0) 0f else if (obtained <= total) obtained / total * 270 else 270f
     }
 

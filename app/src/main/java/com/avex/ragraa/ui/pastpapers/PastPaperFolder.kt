@@ -2,7 +2,6 @@ package com.avex.ragraa.ui.pastpapers
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.avex.ragraa.ui.misc.CircularLoadingIndicator
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PastPaperFolder(
     viewModel: PastPaperViewModel = viewModel(),

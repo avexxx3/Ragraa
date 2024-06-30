@@ -47,10 +47,7 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
     private fun updateUI() {
         _uiState.update {
             it.copy(
-                downloadIcon =
-                if (isDownloaded) Icons.Filled.DownloadDone else
-                    if (isDownloading) Icons.Default.Downloading else
-                        Icons.Default.Download,
+                downloadIcon = if (isDownloaded) Icons.Filled.DownloadDone else if (isDownloading) Icons.Default.Downloading else Icons.Default.Download,
             )
         }
     }

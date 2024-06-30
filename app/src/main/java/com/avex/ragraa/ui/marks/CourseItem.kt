@@ -1,5 +1,3 @@
-@file:Suppress("AnimateAsStateLabel")
-
 package com.avex.ragraa.ui.marks
 
 import androidx.compose.animation.animateContentSize
@@ -46,7 +44,7 @@ fun CourseItem(courseItem: Section) {
     val roundness by animateFloatAsState(
         targetValue = if (isExpanded.value) 0f else 24f, animationSpec = spring(
             dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
-        )
+        ), label = ""
     )
 
     Column(

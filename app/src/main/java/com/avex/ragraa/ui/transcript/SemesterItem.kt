@@ -40,7 +40,7 @@ fun SemesterItem(semester: Semester) {
     val roundness by animateFloatAsState(
         targetValue = if (isExpanded.value) 0f else 24f, animationSpec = spring(
             dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium
-        )
+        ), label = ""
     )
 
     Column(
@@ -57,10 +57,7 @@ fun SemesterItem(semester: Semester) {
                 .padding(horizontal = 8.dp)
                 .clickable { isExpanded.value = !isExpanded.value },
             shape = RoundedCornerShape(
-                topStart = 24f,
-                topEnd = 24f,
-                bottomStart = roundness,
-                bottomEnd = roundness
+                topStart = 24f, topEnd = 24f, bottomStart = roundness, bottomEnd = roundness
             ),
             elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
         ) {

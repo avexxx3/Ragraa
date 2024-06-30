@@ -43,18 +43,11 @@ fun MarksScreen(
             }
         }
 
-        composable("course",
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { it }
-                )
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { it }
-                )
-            }
-        ) {
+        composable("course", enterTransition = {
+            slideInHorizontally(initialOffsetX = { it })
+        }, exitTransition = {
+            slideOutHorizontally(targetOffsetX = { it })
+        }) {
             CourseDetails(course = uiState.currentCourse!!) { viewModel.showAttendance() }
         }
     }

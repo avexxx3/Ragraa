@@ -33,11 +33,12 @@ fun Settings(viewModel: HomeViewModel) {
         .background(Color(0, 0, 0, 230))
         .fillMaxSize()
         .clickable { viewModel.toggleSettings() }) {
-        Card(modifier = Modifier
-            .align(Alignment.Center)
-            .fillMaxWidth()
-            .padding(20.dp)
-            .clickable {}) {
+        Card(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(20.dp)
+                .clickable {}) {
             Column(modifier = Modifier.padding(vertical = 4.dp)) {
                 SettingItem(
                     R.string.refresh_on_startup,

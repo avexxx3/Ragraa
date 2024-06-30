@@ -29,8 +29,7 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
                 style = MaterialTheme.typography.displayMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .padding(16.dp)
+                modifier = Modifier.padding(16.dp)
             )
 
             if (showAttendance != null) Button(
@@ -41,8 +40,7 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
                     stringResource(R.string.view_attendance),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                 )
             }
 
