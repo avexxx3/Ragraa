@@ -62,6 +62,7 @@ fun WebViewScreen(
                 this.webViewClient = webViewClient
                 this.webChromeClient = webChromeClient
                 settings.javaScriptEnabled = true
+                settings.blockNetworkImage = true
                 settings.setSupportZoom(true)
             }
         }) { webView ->
