@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -166,13 +167,15 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 )
             )
 
-            if (!uiState.editingCourse.isCustom) Button(colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer
-            ), modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp), onClick = {
-                viewModel.viewMarks()
-            }) {
+            if (!uiState.editingCourse.isCustom) Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                ), modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp), onClick = {
+                    viewModel.viewMarks()
+                }, elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))
+            ) {
                 Text(
                     stringResource(R.string.show_marks),
                     modifier = Modifier.padding(vertical = 8.dp),
@@ -186,7 +189,9 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .padding(start = 16.dp, end = 8.dp, top = 4.dp),
-                    onClick = { viewModel.saveCourse() }) {
+                    onClick = { viewModel.saveCourse() },
+                    elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))
+                ) {
                     Text(
                         "Done",
                         modifier = Modifier.padding(vertical = 8.dp),
@@ -199,7 +204,9 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 8.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
-                    onClick = { viewModel.deleteCourse() }) {
+                    onClick = { viewModel.deleteCourse() },
+                    elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))
+                ) {
                     Text(
                         "Delete",
                         modifier = Modifier.padding(vertical = 8.dp),

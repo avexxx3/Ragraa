@@ -30,7 +30,7 @@ fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .clickable { editCourse() },
-        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation))
     ) {
         Column {
             Text(

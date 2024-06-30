@@ -182,7 +182,8 @@ fun LoginScreen(
                 captchaLoaded = false
                 viewModel.navController.navigate("web")
             },
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+            elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))
         ) {
             Text(
                 stringResource(R.string.login),

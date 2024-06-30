@@ -32,17 +32,18 @@ fun AttendancePopup(course: Course, hideCourse: () -> Unit) {
         hideCourse()
     }
 
-    Box(modifier = Modifier
-        .background(Color(0, 0, 0, 200))
-        .fillMaxSize()
-        .clickable { hideCourse() }) {
+    Box(
+        modifier = Modifier
+            .background(Color(0, 0, 0, 200))
+            .fillMaxSize()
+            .clickable { hideCourse() }) {
         Card(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()
                 .padding(40.dp)
                 .clickable { },
-            elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
+            elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation))
         ) {
             LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
                 item {

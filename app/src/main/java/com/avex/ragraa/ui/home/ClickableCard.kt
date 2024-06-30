@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -45,7 +46,10 @@ fun ClickableCard(
             else listOf(
                 Color(0xFF659999), Color(0xFF6BE585), Color(0xFF659999)
             ),
-        ), colors = CardDefaults.cardColors(Color(0, 0, 0, 0))) {
+        ),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+        shape = RoundedCornerShape(4.dp),
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation))) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier

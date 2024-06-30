@@ -69,7 +69,7 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
                     .clickable { viewModel.addCourse() }
                     .fillMaxWidth()
                     .padding(end = 20.dp, start = 20.dp, top = 20.dp, bottom = 32.dp),
-                    elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation)),
+                    elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation)),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)) {
                     Icon(
                         imageVector = Icons.Filled.Add,

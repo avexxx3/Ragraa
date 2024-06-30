@@ -70,7 +70,7 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
                 alpha = if (course.newMarks) 0f else 1f
             )
         ),
-        elevation = CardDefaults.cardElevation(if (course.newMarks) 0.dp else dimensionResource(R.dimen.card_elevation))
+        elevation = CardDefaults.cardElevation(if (course.newMarks) 0.dp else dimensionResource(R.dimen.elevation))
     ) {
 
         val textColor = MaterialTheme.colorScheme.onPrimaryContainer

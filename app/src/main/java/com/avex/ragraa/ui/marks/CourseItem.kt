@@ -63,7 +63,7 @@ fun CourseItem(courseItem: Section) {
             shape = RoundedCornerShape(
                 topStart = 24f, topEnd = 24f, bottomStart = roundness, bottomEnd = roundness
             ),
-            elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation))
+            elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation))
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -96,7 +96,7 @@ fun CourseItem(courseItem: Section) {
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.card_elevation)),
+                elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation)),
                 shape = RoundedCornerShape(
                     topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f
                 )

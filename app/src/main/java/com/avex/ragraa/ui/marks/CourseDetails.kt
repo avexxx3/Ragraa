@@ -4,12 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -33,8 +35,9 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
             )
 
             if (showAttendance != null) Button(
-                modifier = Modifier.padding(bottom = 16.dp),
-                onClick = { showAttendance() },
+                modifier = Modifier.padding(bottom = 16.dp), onClick = { showAttendance() },
+
+                elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))
             ) {
                 Text(
                     stringResource(R.string.view_attendance),

@@ -14,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import com.avex.ragraa.R
 
 @Composable
 fun PastPaperFolderCard(folder: PastPaperDirectory, setDir: () -> Unit) {
@@ -23,7 +25,8 @@ fun PastPaperFolderCard(folder: PastPaperDirectory, setDir: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable { setDir() },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
