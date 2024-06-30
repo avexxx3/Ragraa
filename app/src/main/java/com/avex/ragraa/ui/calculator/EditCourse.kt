@@ -13,11 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,7 +56,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 .padding(20.dp),
         ) {
             Text(
-                stringResource(R.string.editing),
+                text = stringResource(R.string.editing),
                 style = MaterialTheme.typography.displaySmall,
                 modifier = Modifier
                     .padding(top = 16.dp, bottom = 4.dp)
@@ -63,9 +64,9 @@ fun EditCourse(viewModel: CalculatorViewModel) {
             )
 
             OutlinedTextField(
-                label = { Text(stringResource(R.string.course)) },
                 value = uiState.editingCourse!!.name,
                 onValueChange = { viewModel.updateName(it) },
+                label = { Text(text = stringResource(R.string.course)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp),
@@ -74,17 +75,18 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
-                colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
                     unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    textColor = MaterialTheme.colorScheme.onBackground
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
             OutlinedTextField(
-                label = { Text(stringResource(R.string.credits)) },
+                label = { Text(text = stringResource(R.string.credits)) },
                 value = uiState.editingCourse.credits,
                 onValueChange = { viewModel.updateCredits(it) },
                 modifier = Modifier
@@ -96,16 +98,18 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
-                colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
                     unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    textColor = MaterialTheme.colorScheme.onBackground
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
+
             OutlinedTextField(
-                label = { Text(stringResource(R.string.obtained)) },
+                label = { Text(text = stringResource(R.string.obtained)) },
                 value = uiState.editingCourse.obtained,
                 onValueChange = { viewModel.updateObtained(it) },
                 modifier = Modifier
@@ -117,12 +121,13 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
-                colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
                     unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    textColor = MaterialTheme.colorScheme.onBackground
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
@@ -131,13 +136,13 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                     .padding(vertical = 4.dp)
                     .clickable { viewModel.toggleRelative() }) {
                 Text(
-                    stringResource(R.string.relative),
-                    Modifier
+                    text = stringResource(R.string.relative),
+                    modifier = Modifier
                         .padding(start = 16.dp)
                         .clickable { viewModel.toggleRelative() },
                     style = MaterialTheme.typography.titleLarge,
                 )
-                Spacer(Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = uiState.editingCourse.isRelative,
                     onCheckedChange = { viewModel.toggleRelative() },
@@ -146,7 +151,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
             }
 
             if (uiState.editingCourse.isRelative) OutlinedTextField(
-                label = { Text(stringResource(R.string.mca)) },
+                label = { Text(text = stringResource(R.string.mca)) },
                 value = uiState.editingCourse.mca,
                 onValueChange = { viewModel.updateMca(it) },
                 modifier = Modifier
@@ -158,12 +163,13 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
-                colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
                     unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    textColor = MaterialTheme.colorScheme.onBackground
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
@@ -177,7 +183,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                 }, elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))
             ) {
                 Text(
-                    stringResource(R.string.show_marks),
+                    text = stringResource(R.string.show_marks),
                     modifier = Modifier.padding(vertical = 8.dp),
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
@@ -193,7 +199,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                     elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))
                 ) {
                     Text(
-                        "Done",
+                        text = stringResource(R.string.done),
                         modifier = Modifier.padding(vertical = 8.dp),
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -208,7 +214,7 @@ fun EditCourse(viewModel: CalculatorViewModel) {
                     elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))
                 ) {
                     Text(
-                        "Delete",
+                        text = stringResource(R.string.delete),
                         modifier = Modifier.padding(vertical = 8.dp),
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )

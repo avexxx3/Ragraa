@@ -42,4 +42,5 @@
     <string name="delete">Delete</string>
     <string name="loading_captcha">Loading CAPTCHA...</string>
     <string name="please_solve_the_captcha_to_continue">Please solve the CAPTCHA to continue.</string>
+    <string name="done">Done</string>
 </resources>

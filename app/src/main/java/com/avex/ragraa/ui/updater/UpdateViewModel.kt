@@ -14,11 +14,11 @@ open class UpdateViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UpdateUIState())
     val uiState: StateFlow<UpdateUIState> = _uiState.asStateFlow()
 
-    var newVersion = 0f
-    var updateURL = ""
-    var showPrompt = false
+    private var newVersion = 0f
+    private var updateURL = ""
+    private var showPrompt = false
 
-    fun updateUI() {
+    private fun updateUI() {
         _uiState.update {
             it.copy(
                 newVersion = newVersion,
@@ -34,7 +34,7 @@ open class UpdateViewModel : ViewModel() {
         updateUI()
     }
 
-    fun collectData(source: Pair<Float, String>) {
+    private fun collectData(source: Pair<Float, String>) {
         newVersion = source.first
         updateURL = source.second
         showPrompt = true
@@ -42,7 +42,6 @@ open class UpdateViewModel : ViewModel() {
     }
 
     fun updateApp() {
-
         val browserIntent = Intent(
             Intent.ACTION_VIEW, Uri.parse(updateURL)
         ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

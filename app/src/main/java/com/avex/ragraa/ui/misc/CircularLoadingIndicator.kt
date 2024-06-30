@@ -24,13 +24,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CircularLoadingIndicator(
+    modifier: Modifier = Modifier,
     size: Dp = 32.dp,
     sweepAngle: Float = 90f,
     color: Color = MaterialTheme.colorScheme.primary,
-    strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth,
-    modifier: Modifier = Modifier
+    strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth
 ) {
-    val transition = rememberInfiniteTransition()
+    val transition = rememberInfiniteTransition(label = "")
 
     val currentArcStartAngle by transition.animateValue(
         0, 360, Int.VectorConverter, infiniteRepeatable(

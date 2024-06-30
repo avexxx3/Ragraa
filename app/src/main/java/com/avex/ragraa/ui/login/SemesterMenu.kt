@@ -40,7 +40,12 @@ fun SemesterMenu(viewModel: LoginViewModel) {
                 '3' -> "Fall "
                 else -> ""
             } + Datasource.semId.substring(0, 2),
-            label = { Text(stringResource(R.string.current_semester)) },
+            label = {
+                Text(
+                    stringResource(R.string.current_semester),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
             textStyle = MaterialTheme.typography.bodyLarge,
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
             colors = OutlinedTextFieldDefaults.colors(

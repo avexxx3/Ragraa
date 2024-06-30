@@ -3,6 +3,7 @@ package com.avex.ragraa.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -195,15 +196,21 @@ fun FlexApp(
             composable(Screens.Web.Title) {
                 CurrentScreen = Screens.Web
 
-                var showCaptcha by remember { mutableStateOf(false) }
+                var showLoading by remember { mutableStateOf(true) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    WebViewScreen({ loginViewModel.updateCaptcha(it) },
-                        { navController.navigate(Screens.Login.Title) },
-                        { showCaptcha = true },
-                        { showCaptcha = false })
+                    WebViewScreen(
+                        updateCaptchaToken = { loginViewModel.updateCaptchaToken(it) },
+                        navLogin = { navController.navigate(Screens.Login.Title) },
+                        updateLoading = { showLoading = it },
+                        loading = showLoading
+                    )
 
-                    if (!showCaptcha) {
+                    AnimatedVisibility(
+                        visible = showLoading,
+                        enter = fadeIn(),
+                        exit = slideOutHorizontally { -it }
+                    ) {
                         LoadingScreen()
                     }
                 }

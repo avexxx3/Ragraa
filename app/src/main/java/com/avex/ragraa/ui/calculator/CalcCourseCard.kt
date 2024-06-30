@@ -43,9 +43,9 @@ fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
 
             val style = MaterialTheme.typography.titleMedium
 
-            Row(Modifier.padding(top = 8.dp)) {
+            Row(modifier = Modifier.padding(top = 8.dp)) {
                 Box(
-                    Modifier
+                    modifier = Modifier
                         .size(height = 30.dp, width = 172.dp)
                         .align(Alignment.CenterVertically)
                 ) {
@@ -70,9 +70,9 @@ fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
 
             }
 
-            Row(Modifier.padding(bottom = 4.dp)) {
+            Row(modifier = Modifier.padding(bottom = 4.dp)) {
                 Box(
-                    Modifier
+                    modifier = Modifier
                         .size(height = 30.dp, width = 172.dp)
                         .align(Alignment.CenterVertically)
                 ) {

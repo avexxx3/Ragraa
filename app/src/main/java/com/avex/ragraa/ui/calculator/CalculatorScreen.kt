@@ -62,7 +62,7 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
                 )
 
                 for (course in uiState.courses) {
-                    CalcCourseCard(course) { viewModel.editCourse(course) }
+                    CalcCourseCard(course = course, editCourse = { viewModel.editCourse(course) })
                 }
 
                 Card(modifier = Modifier
