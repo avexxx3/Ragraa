@@ -25,7 +25,7 @@ fun Logo(
             text = "agraa",
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.displaySmall,
-            modifier = Modifier.offset(x = (-37).dp, y = 5.dp)
+            modifier = Modifier.offset(x = (-37).dp, y = 8.dp)
         )
     }
 }
