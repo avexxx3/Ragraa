@@ -26,13 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.context
+import com.avex.ragraa.ui.Screens
 import java.util.Locale
 
 @Composable
 fun CalculatorScreen(viewModel: CalculatorViewModel) {
     val uiState = viewModel.uiState.collectAsState().value
 
-    BackHandler { viewModel.navController.navigate("home") }
+    BackHandler { viewModel.navController.navigate(Screens.Home.Title) }
 
     LaunchedEffect(context) {
         if (uiState.courses.isEmpty()) viewModel.init()

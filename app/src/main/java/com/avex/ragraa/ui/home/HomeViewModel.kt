@@ -10,6 +10,7 @@ import com.avex.ragraa.context
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.network.captchaLoaded
 import com.avex.ragraa.sharedPreferences
+import com.avex.ragraa.ui.Screens
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,10 +38,10 @@ class HomeViewModel : ViewModel() {
 
     fun refresh() {
         if (Datasource.rollNo.isEmpty() || Datasource.password.isEmpty()) {
-            navController.navigate("login")
+            navController.navigate(Screens.Login.Title)
         } else {
             captchaLoaded = false
-            navController.navigate("web")
+            navController.navigate(Screens.Web.Title)
         }
     }
 

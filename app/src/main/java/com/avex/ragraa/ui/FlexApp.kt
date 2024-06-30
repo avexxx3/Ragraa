@@ -199,7 +199,7 @@ fun FlexApp(
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     WebViewScreen({ loginViewModel.updateCaptcha(it) },
-                        { navController.navigate("login") },
+                        { navController.navigate(Screens.Login.Title) },
                         { showCaptcha = true },
                         { showCaptcha = false })
 
