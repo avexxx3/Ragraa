@@ -1,6 +1,7 @@
 package com.avex.ragraa.ui.login
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.VpnKey
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -24,14 +22,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -151,17 +148,18 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.padding(start = 11.dp)
         ) {
-            CompositionLocalProvider(LocalRippleTheme provides object : RippleTheme {
-                @Composable
-                override fun defaultColor() = Color.Unspecified
+            Surface {
+                AnimatedContent(uiState.rememberLogin, label = "") {
+                    if (it) {
+                        Checkbox(checked = true,
+                            onCheckedChange = { viewModel.updatePreference() })
+                    } else {
+                        Checkbox(checked = false,
+                            onCheckedChange = { viewModel.updatePreference() })
+                    }
+                }
 
-                @Composable
-                override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0f, 0.0f, 0.0f, 0.0f)
-            }) {
-                Checkbox(checked = uiState.rememberLogin,
-                    onCheckedChange = { viewModel.updatePreference() })
             }
-
             Text(
                 text = stringResource(R.string.remember_login_info),
                 modifier = Modifier.clickable { viewModel.updatePreference() },
