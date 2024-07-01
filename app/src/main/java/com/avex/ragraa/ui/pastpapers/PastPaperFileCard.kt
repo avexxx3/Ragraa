@@ -1,7 +1,7 @@
 package com.avex.ragraa.ui.pastpapers
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,10 +27,7 @@ fun PastPaperFileCard(viewModel: PastPaperFileViewModel) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 16.dp, vertical = 4.dp)
-        .combinedClickable(
-            onClick = { viewModel.openFile() },
-            onLongClick = { viewModel.shareFile() }
-        )) {
+        .clickable { viewModel.openFile() }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 8.dp)
