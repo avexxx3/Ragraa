@@ -70,7 +70,7 @@ fun UpdatePrompt(viewModel: UpdateViewModel, uiState: UpdateUIState) {
                 )
 
                 Text(
-                    "${stringResource(R.string.current_version)}: ${UpdateManager.CURRENT_VERSION}",
+                    "${stringResource(R.string.current_version)}: v${UpdateManager.CURRENT_VERSION}",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(start = 8.dp),
                     color = textColor
