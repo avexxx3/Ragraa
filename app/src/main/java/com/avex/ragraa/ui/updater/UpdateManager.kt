@@ -52,8 +52,6 @@ object UpdateManager {
     }
 
     fun compareRelease() {
-        if (CURRENT_VERSION >= newVersion) return
-        Log.d("Dev", "New version found: $newVersion")
-        updateUI(Pair(newVersion, updateURL))
+        if (newVersion > CURRENT_VERSION.toFloat()) updateUI(Pair(newVersion, updateURL))
     }
 }
