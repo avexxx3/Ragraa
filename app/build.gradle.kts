@@ -57,7 +57,6 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.compose.recyclerview)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material)
     implementation(libs.androidx.core.ktx)

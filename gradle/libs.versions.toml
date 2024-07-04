@@ -1,8 +1,6 @@
 [versions]
 agp = "8.3.2"
 biometric = "1.1.0"
-compose_recyclerview = "1.0.3"
-coreSplashscreen = "1.0.1"
 gson = "2.11.0"
 jsoupVersion = "1.14.3"
 kotlin = "1.9.0"
@@ -12,13 +10,14 @@ junitVersion = "1.2.0"
 espressoCore = "3.6.0"
 lifecycleRuntimeKtx = "2.8.2"
 activityCompose = "1.9.0"
+coreSplashscreen = "1.0.1"
 composeBom = "2024.06.00"
 composeAnimation = "1.7.0-alpha07"
-material = "1.6.8"
-navigationRuntimeKtx = "2.7.7"
-navigationCompose = "2.7.7"
-objectboxGradlePlugin = "3.8.0"
 okhttp = "4.12.0"
+navigationCompose = "2.7.7"
+navigationRuntimeKtx = "2.7.7"
+material = "1.6.8"
+objectboxGradlePlugin = "3.8.0"
 appcompat = "1.7.0"
 uiTextGoogleFonts = "1.6.8"
 
@@ -29,7 +28,6 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
-compose_recyclerview = { module = "com.canopas:compose_recyclerview", version.ref = "compose_recyclerview" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jsoup-jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

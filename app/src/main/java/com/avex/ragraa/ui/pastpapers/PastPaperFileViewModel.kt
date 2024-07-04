@@ -140,6 +140,27 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
         else if (!isDownloading) openUrl()
     }
 
+    fun shareFile() {
+        if (!isDownloaded) return
+
+        val uri = FileProvider.getUriForFile(
+            context, "com.avex.ragraa.provider", selfFile
+        )
+
+        val intentShareFile = Intent(Intent.ACTION_SEND)
+        intentShareFile.setType("application/pdf")
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, uri)
+        intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing File...")
+        intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
+
+        startActivity(
+            context,
+            Intent.createChooser(intentShareFile, "Share File")
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            null
+        )
+    }
+
     private fun deleteFile() {
         if (!isDownloaded) return
 
