@@ -68,12 +68,7 @@ fun HomeScreen(
                 ClickableCard(
                     Screen = Screens.Web,
                     onClick = {
-                        Datasource.marksParsed = false
-                        Datasource.attendanceParsed = false
-                        Datasource.parseMarks()
-                        Datasource.parseAttendance()
-                        //viewModel.refresh()
-
+                        viewModel.refresh()
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
