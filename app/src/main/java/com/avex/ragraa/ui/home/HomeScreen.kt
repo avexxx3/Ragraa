@@ -44,7 +44,7 @@ fun HomeScreen(
             }
 
             Text(
-                "${stringResource(R.string.welcome)}\n${Datasource.rollNo},",
+                "${stringResource(R.string.welcome)},\n${Datasource.rollNo}",
                 style = MaterialTheme.typography.displayMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp)
@@ -67,7 +67,14 @@ fun HomeScreen(
 
                 ClickableCard(
                     Screen = Screens.Web,
-                    onClick = { viewModel.refresh() },
+                    onClick = {
+                        Datasource.marksParsed = false
+                        Datasource.attendanceParsed = false
+                        Datasource.parseMarks()
+                        Datasource.parseAttendance()
+                        //viewModel.refresh()
+
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

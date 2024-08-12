@@ -43,4 +43,6 @@
     <string name="loading_captcha">Loading CAPTCHA...</string>
     <string name="please_solve_the_captcha_to_continue">Please solve the CAPTCHA to continue.</string>
     <string name="done">Done</string>
+    <string name="override_system_theme">Override system theme</string>
+    <string name="dark_theme">Dark theme</string>
 </resources>

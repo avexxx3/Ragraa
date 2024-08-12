@@ -41,13 +41,14 @@ fun ProfilePicture(showImage: Boolean, modifier: Modifier = Modifier) {
 
         AnimatedVisibility(
             !showImage, enter = fadeIn(), exit = fadeOut()
-        ) {
+        ) { 
             Image(
-                painter = painterResource(R.drawable.cat),
+                painter = painterResource(R.drawable.cat2),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight,
                 modifier = modifier
                     .aspectRatio(1f)
+                    .drawRainbowBorder(2.dp, 1200, 10000f)
                     .clip(CircleShape)
                     .fillMaxSize(0.8f)
             )

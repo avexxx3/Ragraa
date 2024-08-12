@@ -44,6 +44,9 @@ object Datasource {
     var showImage: Boolean = true
     var date: String = ""
 
+    var overrideSystemTheme: Boolean = false
+    var darkTheme: Boolean = true
+
     lateinit var initScreen: Screens
 
     var bitmap: ImageBitmap? = null
@@ -93,11 +96,15 @@ object Datasource {
             password = password.decrypt()
         }
 
+        overrideSystemTheme = sharedPreferences.getBoolean("overrideSystemTheme", false)
+
+        darkTheme = sharedPreferences.getBoolean("darkTheme", true)
+
         date = sharedPreferences.getString("date", "").toString()
 
         showImage = sharedPreferences.getBoolean("showImage", true)
 
-        semId = sharedPreferences.getString("semId", "241").toString()
+        semId = sharedPreferences.getString("semId", "243").toString()
 
         if (rollNo.isEmpty()) return
 
@@ -112,6 +119,16 @@ object Datasource {
         }
 
         updateHomeUI()
+    }
+
+    fun setOverride(bool: Boolean) {
+        overrideSystemTheme = bool
+        sharedPreferences.edit().putBoolean("overrideSystemTheme", bool).apply()
+    }
+
+    fun setDark(bool: Boolean) {
+        darkTheme = bool
+        sharedPreferences.edit().putBoolean("darkTheme", bool).apply()
     }
 
     fun saveLogin() {
@@ -135,6 +152,8 @@ object Datasource {
         val attendancesName = attendanceDatabase.map { it.courseName }
         val marksName = marksDatabase.map { it.courseName }
 
+        val newCourses: MutableList<Course> = mutableListOf()
+
         for (marks in marksName) {
             val indexMarks = marksName.indexOf(marks)
             val indexAttendance = attendancesName.indexOf(marks)
@@ -149,7 +168,7 @@ object Datasource {
                 absents = attendanceDatabase[indexAttendance].absents
             }
 
-            courses.add(
+            newCourses.add(
                 Course(
                     name = marksDatabase[indexMarks].courseName,
                     marks = marksDatabase[indexMarks].courseMarks,
@@ -162,6 +181,7 @@ object Datasource {
             )
         }
 
+        courses = newCourses
         updateHomeUI()
     }
 
@@ -217,6 +237,8 @@ object Datasource {
 
                     totalWeightage += temp[0]
 
+
+
                     listOfMarks.add(
                         Marks(
                             temp[0],
@@ -250,6 +272,7 @@ object Datasource {
                 )
 
             }
+
 
 
             listOfItems.add(

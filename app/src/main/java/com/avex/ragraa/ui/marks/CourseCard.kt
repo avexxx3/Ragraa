@@ -33,16 +33,14 @@ import com.avex.ragraa.data.dataclasses.Course
 
 @Composable
 fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> Unit) {
-    val limit = 1f
+
 
     val transition = rememberInfiniteTransition(label = "shimmer")
-
     val progressAnimated by transition.animateFloat(
-        initialValue = -limit, targetValue = limit, animationSpec = infiniteRepeatable(
+        initialValue = -1f, targetValue = 1f, animationSpec = infiniteRepeatable(
             animation = tween(1000, easing = LinearEasing), repeatMode = RepeatMode.Restart
         ), label = "shimmer"
     )
-
     val primary = MaterialTheme.colorScheme.primaryContainer
 
     Card(modifier = Modifier

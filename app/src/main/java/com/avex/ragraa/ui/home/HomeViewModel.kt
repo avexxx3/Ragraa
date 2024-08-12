@@ -28,11 +28,17 @@ class HomeViewModel : ViewModel() {
     private var vibrate: Boolean = false
     private var danger: Boolean = false
     private var startupRefresh: Boolean = false
+    private var overrideDeviceTheme = false
+    private var darkTheme = true
+
+    var changeTheme: (String) -> Unit = {}
 
     init {
         showImage = Datasource.showImage
         Datasource.updateHomeUI = { updateUI() }
         startupRefresh = sharedPreferences.getBoolean("startupRefresh", false)
+        overrideDeviceTheme = Datasource.overrideSystemTheme
+        darkTheme = Datasource.darkTheme
         updateUI()
     }
 
@@ -62,12 +68,16 @@ class HomeViewModel : ViewModel() {
                 updated = updated,
                 showSettings = showSettings,
                 showImage = showImage,
-                vibrate = vibrate,
+                vibrate = vibrate,                  
                 danger = danger,
                 date = Datasource.date,
-                startupRefresh = startupRefresh
+                startupRefresh = startupRefresh,
+                overrideTheme = overrideDeviceTheme,
+                darkTheme = darkTheme
             )
         }
+
+        if (overrideDeviceTheme) changeTheme(if (darkTheme) "dark" else "light") else changeTheme("no")
     }
 
     fun toggleSettings() {
@@ -81,6 +91,17 @@ class HomeViewModel : ViewModel() {
         updateUI()
     }
 
+    fun toggleOverride() {
+        overrideDeviceTheme = !overrideDeviceTheme
+        Datasource.setOverride(overrideDeviceTheme)
+        updateUI()
+    }
+
+    fun toggleDark() {
+        darkTheme = !darkTheme
+        Datasource.setDark(darkTheme)
+        updateUI()
+    }
 
     @Suppress("DEPRECATION")
     fun vibrate() {

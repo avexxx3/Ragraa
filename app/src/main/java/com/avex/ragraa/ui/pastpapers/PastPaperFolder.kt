@@ -6,8 +6,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -55,12 +55,17 @@ fun PastPaperFolder(
                 modifier = Modifier.animateContentSize()
             ) {
                 item {
-                    if (uiState.selfDir.name.isNotEmpty()) Text(
-                        uiState.selfDir.name,
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        textAlign = TextAlign.Center
-                    )
+                    if (uiState.selfDir.name.isNotEmpty()) {
+                        Text(
+                            uiState.selfDir.name,
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            textAlign = TextAlign.Center
+                        )
+
+                        PastPaperFolderCard(PastPaperDirectory("...")) { returnFunction() }
+                    }
+
 
                     if (uiState.selfDir.completed) {
                         for (folder in uiState.selfDir.contents.directories) {
@@ -84,12 +89,13 @@ fun PastPaperFolder(
                         )
                     } else {
                         Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
-                            Spacer(Modifier.weight(1f))
                             CircularLoadingIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                            Spacer(Modifier.weight(1f))
                         }
                     }
 

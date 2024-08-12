@@ -60,13 +60,13 @@ fun CourseMarks(marks: Marks, index: String) {
         )
 
         for (marksName in listMarks) {
-            Box(Modifier.weight(1f)) {
+            Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 Text(
                     marksName,
                     modifier = Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center,
                     style = style,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = if (marks.new) sweetie_pie else MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
         }

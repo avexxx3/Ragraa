@@ -7,9 +7,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.avex.ragraa.ui.FlexApp
@@ -46,14 +51,35 @@ class MainActivity : AppCompatActivity() {
         //Using the SplashScreen android:theme makes the action bar pop up so it is explicitly disabled
         actionBar?.hide()
 
+
+        val overrideSystemTheme = sharedPreferences.getBoolean("overrideSystemTheme", false)
+        val darkThemePref = sharedPreferences.getBoolean("darkTheme", true)
+        
         setContent {
-            FlexTheme {
+            var theme by rememberSaveable {
+                mutableStateOf(
+                    if (overrideSystemTheme) {
+                        if (darkThemePref) "dark" else "light"
+                    } else {
+                        "no"
+                    }
+                )
+            }
+
+            val darkTheme = when (theme) {
+                "dark" -> true
+                "light" -> false
+                "no" -> isSystemInDarkTheme()
+                else -> true
+            }
+
+            FlexTheme(darkTheme = darkTheme) {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
                         .safeDrawingPadding()
                 ) {
-                    FlexApp()
+                    FlexApp { theme = it }
                 }
             }
         }

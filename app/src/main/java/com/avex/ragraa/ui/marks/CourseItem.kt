@@ -1,9 +1,15 @@
 package com.avex.ragraa.ui.marks
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +33,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -54,16 +65,55 @@ fun CourseItem(courseItem: Section) {
             )
         )
     ) {
+        val transition = rememberInfiniteTransition(label = "shimmer")
+        val progressAnimated by transition.animateFloat(
+            initialValue = -1f, targetValue = 1f, animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = LinearEasing), repeatMode = RepeatMode.Restart
+            ), label = "shimmer"
+        )
+        val primary = MaterialTheme.colorScheme.primaryContainer
+
+
         Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(
+                    alpha = if (courseItem.new) 0f else 1f
+                )
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
+                .drawWithCache {
+                    val offset = size.width * progressAnimated
+                    val gradientWidth = size.width
+
+                    val brush = if (courseItem.new) Brush.linearGradient(
+                        colors = listOf(
+                            primary,
+                            Color(0xFF89FFFD),
+                            Color(0xFFEF32D9),
+                            Color(0xFF89FFFD),
+                            primary
+                        ),
+                        start = Offset(offset, 0f),
+                        end = Offset(offset + gradientWidth, size.height)
+                    ) else Brush.linearGradient(listOf(primary, primary))
+
+                    onDrawBehind {
+                        drawRoundRect(
+                            brush = brush,
+                            blendMode = BlendMode.SrcIn,
+                            cornerRadius = CornerRadius(if (courseItem.new) 0f else 24f)
+                        )
+                    }
+                }
                 .clickable { isExpanded.value = !isExpanded.value },
-            shape = RoundedCornerShape(
+            shape = if (courseItem.new) RoundedCornerShape(
+                0f
+            ) else RoundedCornerShape(
                 topStart = 24f, topEnd = 24f, bottomStart = roundness, bottomEnd = roundness
             ),
-            elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation))
+            elevation = CardDefaults.cardElevation(if (courseItem.new) 0.dp else dimensionResource(R.dimen.elevation))
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -11,5 +11,7 @@ data class HomeUiState(
     val vibrate: Boolean = false,
     val danger: Boolean = false,
     val date: String = "",
-    val startupRefresh: Boolean = false
+    val startupRefresh: Boolean = false,
+    val overrideTheme: Boolean = false,
+    val darkTheme: Boolean = true
 )

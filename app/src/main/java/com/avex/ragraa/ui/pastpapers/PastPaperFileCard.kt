@@ -29,7 +29,7 @@ fun PastPaperFileCard(viewModel: PastPaperFileViewModel) {
         .padding(horizontal = 16.dp, vertical = 4.dp)
         .combinedClickable(
             onClick = { viewModel.openFile() },
-            onLongClick = { viewModel.shareFile() })
+            onLongClick = { viewModel.share() })
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

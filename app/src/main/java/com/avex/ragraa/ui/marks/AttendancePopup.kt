@@ -41,7 +41,7 @@ fun AttendancePopup(course: Course, hideCourse: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()
-                .padding(40.dp)
+                .padding(30.dp)
                 .clickable { },
             elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation))
         ) {

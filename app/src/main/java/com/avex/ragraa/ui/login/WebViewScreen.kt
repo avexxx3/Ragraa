@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.webkit.WebView
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.avex.ragraa.R
 import com.avex.ragraa.context
+import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.network.CustomWebChromeClient
 import com.avex.ragraa.network.CustomWebViewClient
 
@@ -39,7 +39,7 @@ fun WebViewScreen(
         navLogin()
     }
 
-    val backgroundHex = if (isSystemInDarkTheme()) "#11140F" else "#F8FAF0"
+    val backgroundHex = if (Datasource.darkTheme) "#11140F" else "#F8FAF0"
 
     val webViewClient = CustomWebViewClient {
         updateLoading(false)

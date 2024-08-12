@@ -71,7 +71,7 @@ class BiometricPromptManager(
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                Log.d("Dev", "AUTH ERROR")
+                Log.d("Dev", "AUTH_ERROR")
             }
 
         })

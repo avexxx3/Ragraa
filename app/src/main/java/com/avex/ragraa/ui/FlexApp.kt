@@ -80,6 +80,7 @@ fun FlexApp(
     transcriptViewModel: TranscriptViewModel = viewModel(),
     marksViewModel: MarksViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
+    updateTheme: (String) -> Unit
 ) {
     //The view-models are initialized here for a cheap dependency injection
     // (I was not aware of Koin at the time of writing this)
@@ -87,6 +88,7 @@ fun FlexApp(
     homeViewModel.navController = navController
     calculatorViewModel.navController = navController
     marksViewModel.navController = navController
+    homeViewModel.changeTheme = { updateTheme(it) }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -97,7 +99,7 @@ fun FlexApp(
     ModalNavigationDrawer(drawerState = drawerState,
         gesturesEnabled = (CurrentScreen != Screens.Web && CurrentScreen != Screens.Login) || (Datasource.rollNo.isNotEmpty() && loginViewModel.uiState.collectAsState().value.showButtons && !loginViewModel.uiState.collectAsState().value.isCompleted && CurrentScreen == Screens.Login),
         drawerContent = {
-            ModalDrawerSheet(drawerShape = NavShape(0.dp, 0.8f)) {
+            ModalDrawerSheet(drawerShape = NavShape(0.dp, 0.7f)) {
                 Image(
                     painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                     contentDescription = null,

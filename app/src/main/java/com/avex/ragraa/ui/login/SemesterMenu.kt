@@ -3,9 +3,12 @@ package com.avex.ragraa.ui.login
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -13,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
@@ -30,8 +32,8 @@ fun SemesterMenu(viewModel: LoginViewModel) {
         onExpandedChange = { viewModel.showMenu() },
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_large))
+            .padding(horizontal = 16.dp)
+            .padding(top = 16.dp)
     ) {
         OutlinedTextField(
             value = when (Datasource.semId[2]) {
@@ -43,7 +45,7 @@ fun SemesterMenu(viewModel: LoginViewModel) {
             label = {
                 Text(
                     stringResource(R.string.current_semester),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.labelLarge
                 )
             },
             textStyle = MaterialTheme.typography.bodyLarge,
@@ -61,6 +63,7 @@ fun SemesterMenu(viewModel: LoginViewModel) {
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
+            trailingIcon = { Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null) }
         )
 
 

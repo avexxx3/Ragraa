@@ -83,11 +83,11 @@ fun LoginScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_large)),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             label = {
                 Text(
                     text = stringResource(R.string.roll_number),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.labelLarge
                 )
             },
             shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
@@ -109,9 +109,8 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = dimensionResource(id = R.dimen.padding_large),
-                    start = dimensionResource(id = R.dimen.padding_large),
-                    end = dimensionResource(id = R.dimen.padding_large),
+                    start = 16.dp,
+                    end = 16.dp,
                     bottom = dimensionResource(id = R.dimen.padding_small)
                 ),
             singleLine = true,
@@ -119,7 +118,7 @@ fun LoginScreen(
             label = {
                 Text(
                     text = stringResource(R.string.password),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.labelLarge
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
