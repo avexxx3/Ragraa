@@ -375,6 +375,12 @@ object Datasource {
 
         for (course in courses) {
             val courseName = course.getElementsByClass("col-md-6")[0].text()
+
+            if (course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text()
+                    .isEmpty()
+            )
+                continue
+
             val percentage =
                 course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text()
                     .substring(

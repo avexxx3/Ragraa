@@ -39,6 +39,7 @@ class CalculatorViewModel : ViewModel() {
 
         for (course in marks) {
 
+
             var locked = false
 
             val index = transcript.indexOf(course.substring(0..5))
@@ -50,10 +51,12 @@ class CalculatorViewModel : ViewModel() {
 
             if (index != -1) locked = transcriptCourse?.grade!!.isNotEmpty()
 
-
             // If the course exists in the transcript and it has a grade uploaded,
             // then it'll be preferred over the data from the marks
             // Otherwise data is filled from the marks uploaded on Flex
+
+            if (Datasource.courses[marks.indexOf(course)].marks.last().average.isNaN())
+                continue
 
             if (index == -1) {
                 courses.add(

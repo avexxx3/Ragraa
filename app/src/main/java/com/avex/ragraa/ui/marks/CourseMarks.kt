@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.avex.ragraa.R
 import com.avex.ragraa.data.dataclasses.Marks
 import com.avex.ragraa.ui.misc.CustomerCircularProgressBar
-import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun CourseMarks(marks: Marks, index: String) {
@@ -44,7 +43,7 @@ fun CourseMarks(marks: Marks, index: String) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         formatMarks(marks.obtained),
-                        color = if (marks.new) sweetie_pie else MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = if (marks.new) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer,
                         style = style
                     )
 
@@ -66,7 +65,7 @@ fun CourseMarks(marks: Marks, index: String) {
                     modifier = Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center,
                     style = style,
-                    color = if (marks.new) sweetie_pie else MaterialTheme.colorScheme.onSecondaryContainer
+                    color = if (marks.new) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
         }

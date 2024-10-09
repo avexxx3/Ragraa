@@ -70,8 +70,8 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
 
         val downloadManager =
             (AppCompatActivity as Activity).getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val request = DownloadManager.Request(Uri.parse(file.url))
 
+        val request = DownloadManager.Request(Uri.parse(file.url))
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(file.name).setDestinationInExternalFilesDir(context, directory, file.name)
 

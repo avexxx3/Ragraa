@@ -50,7 +50,7 @@ object RagraaApi {
 
             override fun onResponse(call: Call, response: Response) {
                 if (!response.body?.string().toString().contains("\"status\":\"done\"")) {
-                    updateStatus(Pair("Error: Invalid credentials or recaptcha.", 0))
+                    updateStatus(Pair("Error: Please check your credentials or log in again.", 0))
                     return
                 }
                 updateStatus(Pair("Logged in successfully", 0))
