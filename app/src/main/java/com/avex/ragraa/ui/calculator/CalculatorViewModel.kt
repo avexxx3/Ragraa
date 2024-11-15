@@ -38,8 +38,6 @@ class CalculatorViewModel : ViewModel() {
         courses.clear()
 
         for (course in marks) {
-
-
             var locked = false
 
             val index = transcript.indexOf(course.substring(0..5))

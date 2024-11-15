@@ -13,8 +13,8 @@ android {
         applicationId = "com.avex.ragraa"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 14
+        versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -24,18 +24,9 @@ android {
 
     buildTypes {
         getByName("release") {
-            // Enables code shrinking, obfuscation, and optimization for only
-            // your project's release build type. Make sure to use a build
-            // variant with `isDebuggable=false`.
-            isMinifyEnabled = false
-            // Enables resource shrinking, which is performed by the
-            // Android Gradle plugin.
-            isShrinkResources = false
-
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
-                // Includes the default ProGuard rules files that are packaged with
-                // the Android Gradle plugin. To learn more, go to the section about
-                // R8 configuration files.
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 // Includes a local, custom Proguard rules file
                 "proguard-rules.pro"

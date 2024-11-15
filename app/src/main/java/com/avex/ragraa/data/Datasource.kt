@@ -254,16 +254,19 @@ object Datasource {
                 var average = 0f
 
                 for (item in listOfMarks) {
-                    average += item.average / item.total * item.weightage
+                    if (!(item.average.isNaN() || item.total.isNaN() || item.weightage.isNaN()))
+                        average += item.average / item.total * item.weightage
                 }
+
                 val obtained =
                     course.getElementsByClass("text-center totalColObtMarks")[i].text().toFloat()
                 val total =
                     course.getElementsByClass("text-center totalColweightage")[i].text().toFloat()
 
-                projectedAvg += average
+                projectedAvg += if (average.isNaN()) 0f else average
                 projectedTotal += total
                 projectedObt += obtained
+
 
                 listOfItems.add(
                     Section(
@@ -373,8 +376,11 @@ object Datasource {
 
         val courses = htmlFile.getElementsByAttributeValue("role", "tabpanel")
 
+        var index = 0
         for (course in courses) {
             val courseName = course.getElementsByClass("col-md-6")[0].text()
+
+            index++
 
             if (course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text()
                     .isEmpty()
@@ -398,8 +404,14 @@ object Datasource {
             var presence: Char? = null
             var absent = 0
 
+
+
             for (textCenter in courseDetails) {
                 if (textCenter.text().contains('-')) date = textCenter.text()
+
+                if (textCenter.text().length > 1)
+                    continue
+
                 if (textCenter.text()[0] == 'P' || textCenter.text()[0] == 'A' || textCenter.text()[0] == 'L') {
                     presence = textCenter.text()[0]
                 }

@@ -24,7 +24,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,8 +32,6 @@ import com.avex.ragraa.data.dataclasses.Course
 
 @Composable
 fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> Unit) {
-
-
     val transition = rememberInfiniteTransition(label = "shimmer")
     val progressAnimated by transition.animateFloat(
         initialValue = -1f, targetValue = 1f, animationSpec = infiniteRepeatable(
@@ -68,7 +65,7 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
                 alpha = if (course.newMarks) 0f else 1f
             )
         ),
-        elevation = CardDefaults.cardElevation(if (course.newMarks) 0.dp else dimensionResource(R.dimen.elevation))
+        elevation = if (course.newMarks) CardDefaults.cardElevation(0.dp) else CardDefaults.cardElevation()
     ) {
 
         val textColor = MaterialTheme.colorScheme.onPrimaryContainer

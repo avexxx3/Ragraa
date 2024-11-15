@@ -43,7 +43,7 @@ fun CourseMarks(marks: Marks, index: String) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         formatMarks(marks.obtained),
-                        color = if (marks.new) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = if (marks.new) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
                         style = style
                     )
 
@@ -65,7 +65,7 @@ fun CourseMarks(marks: Marks, index: String) {
                     modifier = Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center,
                     style = style,
-                    color = if (marks.new) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer
+                    color = if (marks.new) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
         }

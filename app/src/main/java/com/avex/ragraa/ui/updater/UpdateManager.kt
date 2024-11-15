@@ -9,11 +9,11 @@ import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
 object UpdateManager {
-    const val CURRENT_VERSION = 1.3
+    const val CURRENT_VERSION = 1.4
     var newVersion = 0f
     var updateURL = ""
 
-    var updateUI: (Pair<Float, String>) -> Unit = {}
+    var updateUI: (Pair<Float, String>) -> Unit = {}                    
 
     fun checkUpdate(_updateUI: (Pair<Float, String>) -> Unit) {
         updateUI = _updateUI

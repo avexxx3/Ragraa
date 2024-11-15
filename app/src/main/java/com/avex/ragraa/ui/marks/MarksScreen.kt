@@ -28,6 +28,11 @@ fun MarksScreen(
     NavHost(
         navController = newNavController,
         startDestination = "marks",
+        enterTransition = {
+            slideInHorizontally(initialOffsetX = { -it })
+        }, exitTransition = {
+            slideOutHorizontally(targetOffsetX = { -it })
+        }
     ) {
         composable("marks") {
             LazyColumn {

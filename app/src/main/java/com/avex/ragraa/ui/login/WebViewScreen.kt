@@ -73,7 +73,7 @@ fun WebViewScreen(
                 settings.blockNetworkImage = true
                 settings.setSupportZoom(true)
                 settings.userAgentString =
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+                    "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.39 Mobile Safari/537.36"
             }
         }) { webView ->
             if (loading) {

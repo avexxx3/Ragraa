@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.compose.material.icons.Icons
@@ -75,7 +76,6 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(file.name).setDestinationInExternalFilesDir(context, directory, file.name)
 
-
         val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(ctxt: Context, intent: Intent) {
                 isDownloaded = true
@@ -89,7 +89,18 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
             }
         }
 
-        context.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU)
+            context.registerReceiver(
+                onComplete,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                Context.RECEIVER_NOT_EXPORTED
+            )
+        else
+            context.registerReceiver(
+                onComplete,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+            )
+
 
         Log.d("Dev", "Starting download for: ${file.name}")
 
