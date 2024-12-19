@@ -19,6 +19,7 @@ import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Refresh
@@ -45,6 +46,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.avex.ragraa.About
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.sharedPreferences
@@ -106,14 +108,7 @@ fun FlexApp(
                     modifier = Modifier.padding(top = 4.dp)
                 )
 
-                val listOfItems = listOf(
-                    Screens.Home,
-                    Screens.Login,
-                    Screens.Marks,
-                    Screens.Calculator,
-                    Screens.PastPapers,
-                    Screens.Transcript
-                )
+                val listOfItems = Screens.entries.toTypedArray()
 
                 for (screenItem in listOfItems) {
                     NavigationDrawerItem(
@@ -249,6 +244,15 @@ fun FlexApp(
                 }
 
             }
+
+            composable(Screens.About.Title) {
+                CurrentScreen = Screens.About
+
+                Column {
+                    NavBarHeader(R.string.past_papers) { navBar() }
+                    About()
+                }
+            }
         }
     }
 
@@ -270,5 +274,6 @@ enum class Screens(val Title: String, val stringRes: Int, val icon: ImageVector)
     Transcript(
         "transcript", R.string.transcript, Icons.AutoMirrored.Filled.Notes
     ),
-    PastPapers("pastpapers", R.string.past_papers, Icons.Filled.Map)
+    PastPapers("pastpapers", R.string.past_papers, Icons.Filled.Map),
+    About("about", R.string.about, Icons.Filled.Info)
 }

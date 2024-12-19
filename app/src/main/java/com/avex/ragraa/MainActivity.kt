@@ -17,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.ui.FlexApp
 import com.avex.ragraa.ui.theme.FlexTheme
 import io.objectbox.BoxStore
@@ -72,6 +73,8 @@ class MainActivity : AppCompatActivity() {
                 "no" -> isSystemInDarkTheme()
                 else -> true
             }
+
+            Datasource.darkTheme = darkTheme
 
             FlexTheme(darkTheme = darkTheme) {
                 Surface(
