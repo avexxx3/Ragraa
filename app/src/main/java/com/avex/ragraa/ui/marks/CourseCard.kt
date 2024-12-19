@@ -56,7 +56,7 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
 
             onDrawBehind {
                 drawRoundRect(
-                    brush = brush, blendMode = BlendMode.SrcIn, cornerRadius = CornerRadius(12f)
+                    brush = brush, blendMode = BlendMode.SrcIn, cornerRadius = CornerRadius(24f)
                 )
             }
         },
