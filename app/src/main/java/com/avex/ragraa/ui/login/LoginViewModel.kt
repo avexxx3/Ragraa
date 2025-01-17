@@ -41,8 +41,10 @@ class LoginViewModel : ViewModel() {
         updateUI()
     }
 
+    public var updateCalc: () -> Unit = {}
     fun resetData() {
         status = mutableListOf("", "", "", "", "")
+        updateCalc()
         showButtons = true
         response = 0
         isCompleted = false

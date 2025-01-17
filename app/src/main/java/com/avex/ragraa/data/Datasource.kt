@@ -217,6 +217,7 @@ object Datasource {
                 }
 
                 val listOfMarks: MutableList<Marks> = mutableListOf()
+                var number = 1
 
                 for (courseWorkMerit in course.getElementsByClass("sum_table table m-table m-table--head-bg-info table-bordered table-striped table-responsive")[i].getElementsByClass(
                     "calculationrow"
@@ -241,6 +242,7 @@ object Datasource {
 
                     listOfMarks.add(
                         Marks(
+                            number,
                             temp[0],
                             temp[1],
                             temp[2],
@@ -249,6 +251,7 @@ object Datasource {
                             temp[6],
                         )
                     )
+                    number++
                 }
 
                 var average = 0f
@@ -273,14 +276,21 @@ object Datasource {
                         courseWork.text(), listOfMarks, obtained, total, average
                     )
                 )
-
             }
 
-
-
-            listOfItems.add(
+            if (grandTotalExists)
+                listOfItems.add(
+                    Section(
+                        "Grand Total",
+                        listOf(),
+                        projectedObt,
+                        projectedTotal,
+                        projectedAvg
+                    )
+                )
+            else listOfItems.add(
                 Section(
-                    if (grandTotalExists) "Grand Total" else "Projected Total",
+                    "Projected Total",
                     listOf(),
                     projectedObt,
                     projectedTotal,

@@ -21,16 +21,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -41,6 +46,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
@@ -140,124 +146,156 @@ fun CourseItem(courseItem: Section) {
         }
 
 
-        if (isExpanded.value) {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation)),
-                shape = RoundedCornerShape(
-                    topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(top = 8.dp)
+        var recompose by remember { mutableStateOf(0) }
+        key(recompose) {
+            if (isExpanded.value) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation)),
+                    shape = RoundedCornerShape(
+                        topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f
+                    )
                 ) {
-                    val textColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    Column(
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        val textColor = MaterialTheme.colorScheme.onSecondaryContainer
 
-                    if (courseItem.listOfMarks.isNotEmpty()) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = dimensionResource(id = R.dimen.padding_medium)),
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
+                        if (courseItem.listOfMarks.isNotEmpty()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = dimensionResource(id = R.dimen.padding_medium)),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
 
-                            val style = MaterialTheme.typography.titleLarge
+                                val style = MaterialTheme.typography.titleLarge
 
-                            Box(
-                                Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    "#",
-                                    style = style,
-                                    color = textColor,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
-                            Box(
-                                Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    "Obt",
-                                    style = style,
-                                    color = textColor,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
-                            Box(
-                                Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    "Avg",
-                                    style = style,
-                                    color = textColor,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
-                            Box(
-                                Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    "Min",
-                                    style = style,
-                                    color = textColor,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
-                            Box(
-                                Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    "Max",
-                                    style = style,
-                                    color = textColor,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
+                                Box(
+                                    Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        "#",
+                                        style = style,
+                                        color = textColor,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                                Box(
+                                    Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        "Obt",
+                                        style = style,
+                                        color = textColor,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                                Box(
+                                    Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        "Avg",
+                                        style = style,
+                                        color = textColor,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                                Box(
+                                    Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        "Min",
+                                        style = style,
+                                        color = textColor,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                                Box(
+                                    Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        "Max",
+                                        style = style,
+                                        color = textColor,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
                             }
                         }
+
+                        Spacer(modifier = Modifier.padding(top = 4.dp))
+
+                        courseItem.selectedList.sortedBy { it.number }.forEach { marks ->
+                            CourseMarks(marks)
+                        }
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        ) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}",
+                                color = textColor,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+
+                            Text(
+                                "/${formatMarks(courseItem.total)}",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Color.Gray
+                            )
+
+                            Spacer(modifier = Modifier.weight(0.3f))
+
+                            Text(
+                                "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = textColor,
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+
+                        if (courseItem.name == "Quiz")
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp)
+                            ) {
+                                Text(
+                                    "Best of: ",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = textColor
+                                )
+
+                                Icon(
+                                    Icons.Filled.KeyboardArrowDown,
+                                    contentDescription = null,
+                                    modifier = Modifier.clickable { courseItem.decrement(); recompose++ },
+                                    tint = if (courseItem.bestOf != 1) LocalContentColor.current else Color.Gray
+                                )
+                                Text(courseItem.bestOf.toString())
+                                Icon(
+                                    Icons.Filled.KeyboardArrowUp,
+                                    contentDescription = null,
+                                    modifier = Modifier.clickable { courseItem.increment(); recompose++ },
+                                    if (courseItem.bestOf != courseItem.listOfMarks.size) LocalContentColor.current else Color.Gray
+                                )
+                            }
+
                     }
-
-                    Spacer(modifier = Modifier.padding(top = 4.dp))
-
-                    courseItem.listOfMarks.forEachIndexed { index, marks ->
-                        CourseMarks(marks, (index + 1).toString())
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    ) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}",
-                            color = textColor,
-                            style = MaterialTheme.typography.titleLarge
-                        )
-
-                        Text(
-                            "/${formatMarks(courseItem.total)}",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = Color.Gray
-                        )
-
-                        Spacer(modifier = Modifier.weight(0.3f))
-
-                        Text(
-                            "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = textColor,
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-
                 }
             }
         }
-
         Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
     }
 }
 

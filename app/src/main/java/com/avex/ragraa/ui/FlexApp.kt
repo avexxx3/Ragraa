@@ -91,6 +91,7 @@ fun FlexApp(
     calculatorViewModel.navController = navController
     marksViewModel.navController = navController
     homeViewModel.changeTheme = { updateTheme(it) }
+    loginViewModel.updateCalc = { calculatorViewModel.init() }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -111,6 +112,7 @@ fun FlexApp(
                 val listOfItems = Screens.entries.toTypedArray()
 
                 for (screenItem in listOfItems) {
+                    if (screenItem != Screens.Web)
                     NavigationDrawerItem(
                         screenItem.stringRes, screenItem.icon, CurrentScreen.Title, screenItem.Title
                     ) {
@@ -249,7 +251,7 @@ fun FlexApp(
                 CurrentScreen = Screens.About
 
                 Column {
-                    NavBarHeader(R.string.past_papers) { navBar() }
+                    NavBarHeader(R.string.about) { navBar() }
                     About()
                 }
             }
@@ -262,18 +264,12 @@ fun FlexApp(
 }
 
 enum class Screens(val Title: String, val stringRes: Int, val icon: ImageVector) {
-    Home("home", R.string.home, Icons.Filled.Home), Marks(
-        "marks", R.string.marks, Icons.Filled.Percent
-    ),
-    Login("login", R.string.login, Icons.AutoMirrored.Filled.Login), Web(
-        "web", R.string.refresh, Icons.Filled.Refresh
-    ),
-    Calculator(
-        "calculator", R.string.calculator, Icons.Filled.Grade
-    ),
-    Transcript(
-        "transcript", R.string.transcript, Icons.AutoMirrored.Filled.Notes
-    ),
+    Home("home", R.string.home, Icons.Filled.Home),
+    Login("login", R.string.login, Icons.AutoMirrored.Filled.Login),
+    Marks("marks", R.string.marks, Icons.Filled.Percent),
+    Web("web", R.string.refresh, Icons.Filled.Refresh),
+    Calculator("calculator", R.string.calculator, Icons.Filled.Grade),
+    Transcript("transcript", R.string.transcript, Icons.AutoMirrored.Filled.Notes),
     PastPapers("pastpapers", R.string.past_papers, Icons.Filled.Map),
     About("about", R.string.about, Icons.Filled.Info)
 }

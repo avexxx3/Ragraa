@@ -18,7 +18,7 @@ import com.avex.ragraa.data.dataclasses.Marks
 import com.avex.ragraa.ui.misc.CustomerCircularProgressBar
 
 @Composable
-fun CourseMarks(marks: Marks, index: String) {
+fun CourseMarks(marks: Marks) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -32,7 +32,7 @@ fun CourseMarks(marks: Marks, index: String) {
                 marks.obtained,
                 marks.total,
                 formatMarks(marks.weightage),
-                index,
+                marks.number.toString(),
             )
         }
 
