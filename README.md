@@ -1,5 +1,5 @@
 
-## <img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/git-icon.png" width="20">agraa
+## <img src=".github/readme-images/git-icon.png" width="20">agraa
 
 Ragraa is a frontend third-party client for [Flex](https://flexstudent.nu.edu.pk/Login), made solely for the purpose of optimizing the user experience on Android.
 
@@ -23,10 +23,10 @@ Since the app doesn't have access to Flex API, it cannot login without having so
 
 ## Screenshots
 
-<img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/LoginHomeCalcDark.png">
-<img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/LoginHomeCalcLight.png">
-<img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/MarksIslPPDark.png">
-<img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/MarksIslPPLight.png">
+<img src=".github/readme-images/LoginHomeCalcDark.png">
+<img src=".github/readme-images/LoginHomeCalcLight.png">
+<img src=".github/readme-images/MarksIslPPDark.png">
+<img src=".github/readme-images/MarksIslPPLight.png">
 
 
 ## Releases
