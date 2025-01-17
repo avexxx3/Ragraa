@@ -41,9 +41,9 @@ fun ProfilePicture(showImage: Boolean, modifier: Modifier = Modifier) {
 
         AnimatedVisibility(
             !showImage, enter = fadeIn(), exit = fadeOut()
-        ) { 
+        ) {
             Image(
-                painter = painterResource(R.drawable.cat2),
+                painter = painterResource(if (Datasource.darkTheme) R.drawable.sofia else R.drawable.flutter),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight,
                 modifier = modifier
