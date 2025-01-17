@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.avex.ragraa.ui.login.Logo
+import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun About() {
@@ -34,15 +35,15 @@ fun About() {
         Logo()
         Text(
             "Developed by Armaghan Atiq",
-            color = MaterialTheme.colorScheme.onBackground,
+            color = sweetie_pie,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 32.dp)
         )
         Text(
             "\nits been almost a year (circa 2023) thought of making a flex clone and naming it 'Ragraa' as a haha funny; and it was, albeit for the first few times. ever since then seeing the name or associating with it has filled me with hatred for myself and now the branding is too deep for me to consider changing it now." +
-                    "\n\nThis has been by far my least favorite project to work on and i can't wait for the day where i completely end up updating it" +
-                    "\n\ni don't have alot to say about myself so this is just to fill the space up a bit more" +
+                    "\n\nThis has been by far my least favorite project to work on and i can't wait for the day where i completely end up abandoning it" +
+                    "\n\ni don't have alot to say about myself so this is just to fill the space up a bit more. also if you are a recruiter somewhere and are seeing this please give me an internship i can't affford to be homeless" +
                     "\n\nThe code is open source and linked below so if you have anything you'd like to add, feel free",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
