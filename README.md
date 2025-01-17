@@ -1,6 +1,5 @@
-<img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/git-icon.png" width="75">
 
-## Ragraa
+## <img src="https://github.com/avexxx3/Ragraa/blob/master/.github/readme-images/git-icon.png" width="20">agraa
 
 Ragraa is a frontend third-party client for [Flex](https://flexstudent.nu.edu.pk/Login), made solely for the purpose of optimizing the user experience on Android.
 
