@@ -27,7 +27,7 @@ class CalculatorViewModel : ViewModel() {
     var currentCourse: Course? = null
     private var viewingCourseMarks = false
 
-    fun init() {
+    public fun init() {
         Datasource.initCalculator = { updateUI() }
 
         val transcript =
