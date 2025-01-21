@@ -104,7 +104,7 @@ object Datasource {
 
         showImage = sharedPreferences.getBoolean("showImage", true)
 
-        semId = sharedPreferences.getString("semId", "243").toString()
+        semId = sharedPreferences.getString("semId", "251").toString()
 
         if (rollNo.isEmpty()) return
 
