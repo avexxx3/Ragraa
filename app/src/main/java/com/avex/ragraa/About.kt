@@ -42,9 +42,9 @@ fun About() {
         )
         Text(
             "\nits been almost a year (circa 2023) thought of making a flex clone and naming it 'Ragraa' as a haha funny; and it was, albeit for the first few times. ever since then seeing the name or associating with it has filled me with hatred for myself and now the branding is too deep for me to consider changing it now." +
-                    "\n\nThis has been by far my least favorite project to work on and i can't wait for the day where i completely end up abandoning it" +
+                    "\n\nif i had to say something about it, its best described as one of the projects of all time" +
                     "\n\ni don't have alot to say about myself so this is just to fill the space up a bit more. also if you are a recruiter somewhere and are seeing this please give me an internship i can't affford to be homeless" +
-                    "\n\nThe code is open source and linked below so if you have anything you'd like to add, feel free",
+                    "\n\nthe code is open source and linked below so if you have anything you'd like to add, feel free. i will not apologize for the mess of a codebase i've written so good luck understanding it",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
@@ -65,6 +65,12 @@ fun About() {
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
             }
         }
+        Text(
+            "avexuchiha@gmail.com",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 8.dp)
+        )
 
         Spacer(modifier = Modifier.weight(0.5f))
     }
