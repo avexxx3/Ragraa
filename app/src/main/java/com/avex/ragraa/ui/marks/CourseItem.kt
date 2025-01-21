@@ -14,6 +14,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,6 +56,7 @@ import com.avex.ragraa.data.dataclasses.Section
 import com.avex.ragraa.ui.theme.sweetie_pie
 import java.text.NumberFormat
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CourseItem(courseItem: Section) {
     val isExpanded = remember { mutableStateOf(courseItem.new) }
@@ -233,32 +236,32 @@ fun CourseItem(courseItem: Section) {
                             CourseMarks(marks)
                         }
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(bottom = 16.dp)
+                        FlowRow(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .padding(bottom = 16.dp)
+                                .fillMaxWidth()
                         ) {
-                            Spacer(modifier = Modifier.weight(1f))
                             Text(
                                 "${stringResource(R.string.total)}: ${formatMarks(courseItem.obtained)}",
                                 color = textColor,
-                                style = MaterialTheme.typography.titleLarge
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(start = 8.dp)
                             )
 
                             Text(
                                 "/${formatMarks(courseItem.total)}",
                                 style = MaterialTheme.typography.titleLarge,
-                                color = Color.Gray
+                                color = Color.Gray,
+                                modifier = Modifier.padding(end = 8.dp)
                             )
-
-                            Spacer(modifier = Modifier.weight(0.3f))
 
                             Text(
                                 "${stringResource(R.string.average)}: ${formatMarks(courseItem.average)}",
                                 style = MaterialTheme.typography.titleLarge,
                                 color = textColor,
+                                modifier = Modifier.padding(end = 8.dp, start = 8.dp)
                             )
-
-                            Spacer(modifier = Modifier.weight(1f))
                         }
 
                         if (courseItem.name == "Quiz")
