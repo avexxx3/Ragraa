@@ -52,7 +52,9 @@ fun PastPaperFolder(
         } else {
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.animateContentSize()
+                modifier = Modifier
+                    .animateContentSize()
+                    .fillMaxSize()
             ) {
                 item {
                     if (uiState.selfDir.name.isNotEmpty()) {
