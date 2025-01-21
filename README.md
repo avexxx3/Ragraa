@@ -3,6 +3,7 @@
 
 Ragraa is a frontend third-party client for [Flex](https://flexstudent.nu.edu.pk/Login), made solely for the purpose of optimizing the user experience on Android.
 
+<img src=".github/readme-images/feature.jpg">
 
 ## Features
 
