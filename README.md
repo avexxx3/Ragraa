@@ -24,10 +24,10 @@ Since the app doesn't have access to Flex API, it cannot login without having so
 
 ## Screenshots
 
-<img src=".github/readme-images/LoginHomeCalcDark.png">
 <img src=".github/readme-images/LoginHomeCalcLight.png">
-<img src=".github/readme-images/MarksIslPPDark.png">
 <img src=".github/readme-images/MarksIslPPLight.png">
+<img src=".github/readme-images/LoginHomeCalcDark.png">
+<img src=".github/readme-images/MarksIslPPDark.png">
 
 
 ## Releases
