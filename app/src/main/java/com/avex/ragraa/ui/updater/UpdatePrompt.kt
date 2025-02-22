@@ -3,10 +3,10 @@ package com.avex.ragraa.ui.updater
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -82,8 +82,13 @@ fun UpdatePrompt(viewModel: UpdateViewModel, uiState: UpdateUIState) {
                     color = textColor
                 )
 
-                Row(modifier = Modifier.padding(bottom = 8.dp, end = 4.dp)) {
-                    Spacer(modifier = Modifier.weight(1f))
+                Row(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp, end = 4.dp, top = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Box(modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .clickable { viewModel.closePrompt() }) {

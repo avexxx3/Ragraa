@@ -9,7 +9,7 @@ import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
 object UpdateManager {
-    const val CURRENT_VERSION = 1.5
+    const val CURRENT_VERSION = 1.7
     var newVersion = 0f
     var updateURL = ""
 
@@ -52,6 +52,7 @@ object UpdateManager {
     }
 
     fun compareRelease() {
+        println("newVersion: ${newVersion}, currentVersion: ${CURRENT_VERSION}")
         if (newVersion > CURRENT_VERSION.toFloat()) updateUI(Pair(newVersion, updateURL))
     }
 }
