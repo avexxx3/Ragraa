@@ -24,6 +24,8 @@
     <string name="marks">Marks</string>
     <string name="attendance">Attendance</string>
     <string name="show_profile_picture">Show profile picture</string>
+    <string name="male_cat">Male cat..?</string>
+    <string name="niqa_cat">Niqab cat..?</string>
     <string name="refresh_on_startup">Refresh on startup</string>
     <string name="roll_number">Roll Number</string>
     <string name="password">Password</string>
