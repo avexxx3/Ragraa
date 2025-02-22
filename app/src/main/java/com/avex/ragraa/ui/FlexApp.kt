@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
@@ -33,6 +34,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -146,7 +148,8 @@ fun FlexApp(
             navController, if (sharedPreferences.getBoolean(
                     "startupRefresh", false
                 )
-            ) Screens.Web.Title else CurrentScreen.Title
+            ) Screens.Web.Title else CurrentScreen.Title,
+            modifier = Modifier.safeDrawingPadding()
         ) {
 
             composable(Screens.Home.Title) {
@@ -261,6 +264,15 @@ fun FlexApp(
     //Shows the update prompt only when a user isn't on any of the below mentioned screens,
     // so as to not disturb while inputting something
     if (!listOf(Screens.Web, Screens.Login, Screens.Calculator).contains(CurrentScreen)) Updater()
+
+    var promptKey by remember { mutableStateOf(false) }
+
+    key(promptKey) {
+        if (Datasource.firstTime) GenderPrompt {
+            promptKey = !promptKey; homeViewModel.updateImage()
+        }
+    }
+
 }
 
 enum class Screens(val Title: String, val stringRes: Int, val icon: ImageVector) {
