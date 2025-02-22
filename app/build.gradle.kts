@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "com.avex.ragraa"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.avex.ragraa"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 15
-        versionName = "1.5"
+        targetSdk = 35
+        versionCode = 17
+        versionName = "1.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -23,8 +23,6 @@ android {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 // Includes a local, custom Proguard rules file
