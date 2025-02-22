@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.avex.ragraa.ui.login.Logo
-import com.avex.ragraa.ui.theme.sweetie_pie
 
 @Composable
 fun About() {
@@ -35,16 +36,16 @@ fun About() {
         Logo()
         Text(
             "Developed by Armaghan Atiq",
-            color = sweetie_pie,
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 32.dp)
         )
         Text(
-            "\nits been almost a year (circa 2023) thought of making a flex clone and naming it 'Ragraa' as a haha funny; and it was, albeit for the first few times. ever since then seeing the name or associating with it has filled me with hatred for myself and now the branding is too deep for me to consider changing it now." +
-                    "\n\nif i had to say something about it, its best described as one of the projects of all time" +
-                    "\n\ni don't have alot to say about myself so this is just to fill the space up a bit more. also if you are a recruiter somewhere and are seeing this please give me an internship i can't affford to be homeless" +
-                    "\n\nthe code is open source and linked below so if you have anything you'd like to add, feel free. i will not apologize for the mess of a codebase i've written so good luck understanding it",
+            "\nit's been almost a year (circa 2023) thought of making a flex clone and naming it 'Ragraa' as a funny; and it was, albeit for the first few times. ever since then seeing the name or associating with it has filled me with hatred for myself and now the branding is too deep for me to consider changing it now." +
+                    "\n\nbuilt for android (kotlin) because i didn't want to make something cross platform just for ios users, and i really really love writing kotlin" +
+                    "\n\ni don't have alot to say about myself so this is just to fill the space up a bit more. also if you are a recruiter somewhere and are seeing this please give me an internship i can't afford to be homeless" +
+                    "\n\nthe code is open source and linked below so if you have anything you'd like to add, feel free. i will not apologize for the mess of a codebase i've written and wish you luck in understanding it",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
@@ -64,13 +65,14 @@ fun About() {
                         .clickable { openUrl(social.url) })
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
             }
+            Icon(
+                imageVector = Icons.Filled.Email,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clickable { openUrl("mailto:avexuchiha@gmail.com") })
+            Spacer(modifier = Modifier.padding(horizontal = 8.dp))
         }
-        Text(
-            "avexuchiha@gmail.com",
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 8.dp)
-        )
 
         Spacer(modifier = Modifier.weight(0.5f))
     }
@@ -86,5 +88,5 @@ fun openUrl(url: String) {
 enum class Socials(val id: Int, val url: String) {
     Git(R.drawable.git, "https://github.com/avexxx3/"),
     Insta(R.drawable.instagram, "https://www.instagram.com/armaghan.atiq"),
-    LinkedIn(R.drawable.linkedin, "https://www.linkedin.com/in/armaghan-atiq/")
+    LinkedIn(R.drawable.linkedin, "https://www.linkedin.com/in/armaghan-atiq/"),
 }
