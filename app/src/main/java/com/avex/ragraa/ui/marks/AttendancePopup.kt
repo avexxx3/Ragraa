@@ -45,7 +45,10 @@ fun AttendancePopup(course: Course, hideCourse: () -> Unit) {
                 .clickable { },
             elevation = CardDefaults.cardElevation(dimensionResource(R.dimen.elevation))
         ) {
-            LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 item {
                     Text(
                         text = "${course.attendancePercentage}%  ${stringResource(R.string.absents)}: ${course.attendanceAbsents}",
