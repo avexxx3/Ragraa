@@ -23,7 +23,9 @@ import com.avex.ragraa.R
 @Composable
 fun CalcCourseCard(course: CalculatorCourse, editCourse: () -> Unit) {
     Card(
-        colors = if (course.locked) CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer) else CardDefaults.cardColors(
+        colors = if (course.locked || course.grade.isNotEmpty()) CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ) else CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
         modifier = Modifier
