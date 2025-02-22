@@ -13,5 +13,7 @@ data class HomeUiState(
     val date: String = "",
     val startupRefresh: Boolean = false,
     val overrideTheme: Boolean = false,
-    val darkTheme: Boolean = true
+    val darkTheme: Boolean = true,
+    val male: Boolean = true,
+    val niqab: Boolean = false
 )

@@ -52,8 +52,20 @@ fun Settings(viewModel: HomeViewModel) {
 
                 SettingItem(
                     R.string.show_profile_picture,
-                    viewModel.uiState.collectAsState().value.showImage
+                    uiState.showImage
                 ) { viewModel.toggleImage() }
+
+                if (!uiState.showImage)
+                    SettingItem(
+                        R.string.male_cat,
+                        uiState.male
+                    ) { viewModel.toggleCat() }
+
+                if (!uiState.male)
+                    SettingItem(
+                        R.string.niqa_cat,
+                        uiState.niqab
+                    ) { viewModel.toggleNiqab() }
 
                 SettingItem(
                     R.string.override_system_theme,

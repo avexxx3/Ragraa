@@ -59,6 +59,9 @@ object Datasource {
     var transcriptDatabase: Transcript = Transcript(0f, listOf())
 
     var semId: String = ""
+    var male: Boolean = true
+    var niqab: Boolean = false
+    var firstTime = true
 
     var updateLoginUI: () -> Unit = {}
     var updateHomeUI: () -> Unit = {}
@@ -102,9 +105,15 @@ object Datasource {
 
         date = sharedPreferences.getString("date", "").toString()
 
-        showImage = sharedPreferences.getBoolean("showImage", true)
+        showImage = sharedPreferences.getBoolean("showImage", false)
+
+        male = sharedPreferences.getBoolean("male", true)
+
+        firstTime = sharedPreferences.getBoolean("firstTime", true)
 
         semId = sharedPreferences.getString("semId", "251").toString()
+
+        niqab = sharedPreferences.getBoolean("niqab", false)
 
         if (rollNo.isEmpty()) return
 
@@ -131,6 +140,14 @@ object Datasource {
         sharedPreferences.edit().putBoolean("darkTheme", bool).apply()
     }
 
+    fun setGender(isMale: Boolean) {
+        male = isMale
+        showImage = isMale
+        sharedPreferences.edit().putBoolean("firstTime", false).apply()
+        sharedPreferences.edit().putBoolean("male", male).apply()
+        firstTime = false
+    }
+
     fun saveLogin() {
         val editor = sharedPreferences.edit()
         editor.putString("rollNo", rollNo.encrypt())
@@ -145,6 +162,7 @@ object Datasource {
 
     var marksParsed = false
     var attendanceParsed = false
+
 
     private fun combineMarksAndAttendance() {
         if (!marksParsed || !attendanceParsed) return
@@ -180,6 +198,7 @@ object Datasource {
                 )
             )
         }
+
 
         courses = newCourses
         updateHomeUI()
@@ -251,6 +270,7 @@ object Datasource {
                             temp[6],
                         )
                     )
+
                     number++
                 }
 

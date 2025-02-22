@@ -19,7 +19,12 @@ import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.ui.misc.drawRainbowBorder
 
 @Composable
-fun ProfilePicture(showImage: Boolean, modifier: Modifier = Modifier) {
+fun ProfilePicture(
+    showImage: Boolean,
+    maleCat: Boolean,
+    niqab: Boolean,
+    modifier: Modifier = Modifier
+) {
 
     Box {
         AnimatedVisibility(
@@ -42,16 +47,46 @@ fun ProfilePicture(showImage: Boolean, modifier: Modifier = Modifier) {
         AnimatedVisibility(
             !showImage, enter = fadeIn(), exit = fadeOut()
         ) {
-            Image(
-                painter = painterResource(if (Datasource.darkTheme) R.drawable.sofia else R.drawable.flutter),
-                contentDescription = null,
-                contentScale = ContentScale.FillHeight,
-                modifier = modifier
-                    .aspectRatio(1f)
-                    .drawRainbowBorder(2.dp, 1200, 10000f)
-                    .clip(CircleShape)
-                    .fillMaxSize(0.8f)
-            )
+            AnimatedVisibility(maleCat, enter = fadeIn(), exit = fadeOut()) {
+                Image(
+                    painter = painterResource(R.drawable.male),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillHeight,
+                    modifier = modifier
+                        .aspectRatio(1f)
+                        .drawRainbowBorder(2.dp, 1200, 10000f)
+                        .clip(CircleShape)
+                        .fillMaxSize(0.8f)
+                )
+            }
+            AnimatedVisibility(!maleCat, enter = fadeIn(), exit = fadeOut()) {
+                AnimatedVisibility(niqab, enter = fadeIn(), exit = fadeOut()) {
+                    Image(
+                        painter = painterResource(R.drawable.niqab),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillHeight,
+                        modifier = modifier
+                            .aspectRatio(1f)
+                            .drawRainbowBorder(2.dp, 1200, 10000f)
+                            .clip(CircleShape)
+                            .fillMaxSize(0.8f)
+                    )
+                }
+
+                AnimatedVisibility(!niqab, enter = fadeIn(), exit = fadeOut()) {
+                    Image(
+                        painter = painterResource(R.drawable.female),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillHeight,
+                        modifier = modifier
+                            .aspectRatio(1f)
+                            .drawRainbowBorder(2.dp, 1200, 10000f)
+                            .clip(CircleShape)
+                            .fillMaxSize(0.8f)
+                    )
+                }
+
+            }
         }
     }
 }

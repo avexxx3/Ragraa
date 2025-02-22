@@ -40,7 +40,7 @@ fun HomeScreen(
             Logo()
 
             Box(modifier = Modifier.weight(1f)) {
-                ProfilePicture(uiState.showImage)
+                ProfilePicture(uiState.showImage, uiState.male, uiState.niqab)
             }
 
             Text(

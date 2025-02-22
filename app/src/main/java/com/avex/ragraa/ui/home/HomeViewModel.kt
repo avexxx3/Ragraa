@@ -30,6 +30,8 @@ class HomeViewModel : ViewModel() {
     private var startupRefresh: Boolean = false
     private var overrideDeviceTheme = false
     private var darkTheme = true
+    private var male = true
+    private var niqab = false
 
     var changeTheme: (String) -> Unit = {}
 
@@ -39,6 +41,15 @@ class HomeViewModel : ViewModel() {
         startupRefresh = sharedPreferences.getBoolean("startupRefresh", false)
         overrideDeviceTheme = Datasource.overrideSystemTheme
         darkTheme = Datasource.darkTheme
+        male = Datasource.male
+        niqab = Datasource.niqab
+        updateUI()
+    }
+
+    fun updateImage() {
+        showImage = Datasource.showImage
+        male = Datasource.male
+        niqab = Datasource.niqab
         updateUI()
     }
 
@@ -73,7 +84,9 @@ class HomeViewModel : ViewModel() {
                 date = Datasource.date,
                 startupRefresh = startupRefresh,
                 overrideTheme = overrideDeviceTheme,
-                darkTheme = darkTheme
+                darkTheme = darkTheme,
+                male = male,
+                niqab = niqab
             )
         }
 
@@ -88,6 +101,18 @@ class HomeViewModel : ViewModel() {
     fun toggleImage() {
         showImage = !showImage
         sharedPreferences.edit().putBoolean("showImage", showImage).apply()
+        updateUI()
+    }
+
+    fun toggleCat() {
+        male = !male
+        sharedPreferences.edit().putBoolean("male", male).apply()
+        updateUI()
+    }
+
+    fun toggleNiqab() {
+        niqab = !niqab
+        sharedPreferences.edit().putBoolean("niqab", niqab).apply()
         updateUI()
     }
 
