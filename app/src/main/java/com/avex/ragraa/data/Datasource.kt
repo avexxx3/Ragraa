@@ -412,16 +412,23 @@ object Datasource {
 
             index++
 
-            if (course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text()
-                    .isEmpty()
+            val intermediateObjectIForgotWhatItRepresents =
+                if (course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")
+                        .isNotEmpty()
+                )
+                    course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0]
+                else
+                    course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-danger")[0]
+
+            if (intermediateObjectIForgotWhatItRepresents.text().isEmpty()
             )
                 continue
 
             val percentage =
-                course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text()
+                intermediateObjectIForgotWhatItRepresents.text()
                     .substring(
                         0,
-                        course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0].text().length - 2
+                        intermediateObjectIForgotWhatItRepresents.text().length - 2
                     ).toFloat()
             val listAttendance: MutableList<Attendance> = mutableListOf()
 
