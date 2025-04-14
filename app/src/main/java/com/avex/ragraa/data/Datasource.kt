@@ -167,7 +167,8 @@ object Datasource {
     private fun combineMarksAndAttendance() {
         if (!marksParsed || !attendanceParsed) return
 
-        val attendancesName = attendanceDatabase.map { it.courseName }
+        val attendancesName =
+            attendanceDatabase.map { it.courseName.substring(0, it.courseName.indexOf('(') - 1) }
         val marksName = marksDatabase.map { it.courseName }
 
         val newCourses: MutableList<Course> = mutableListOf()
