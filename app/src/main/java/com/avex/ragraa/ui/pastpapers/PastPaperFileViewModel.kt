@@ -36,7 +36,7 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
     private val _uiState = MutableStateFlow(file)
     val uiState: StateFlow<PastPaperFile> = _uiState.asStateFlow()
 
-    var isDownloading: Boolean = false
+    private var isDownloading: Boolean = false
     private var isDownloaded: Boolean = false
 
     private val parentDirectory = if (directory.length > 12) directory.substring(13) else directory
@@ -122,6 +122,7 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
             if (file.isFile()) {
                 if (file.path.substring(67) == "${parentDirectory}/${fileName}") {
                     isDownloaded = true
+                    isDownloading = false
                     selfFile = file
                     return true
                 }
