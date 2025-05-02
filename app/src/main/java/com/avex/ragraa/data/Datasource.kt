@@ -278,7 +278,7 @@ object Datasource {
                 var average = 0f
 
                 for (item in listOfMarks) {
-                    if (!(item.average.isNaN() || item.total.isNaN() || item.weightage.isNaN()))
+                    if (!(item.average.isNaN() || item.total.isNaN() || item.weightage.isNaN() || item.obtained.isNaN() || item.average.toInt() == -1))
                         average += item.average / item.total * item.weightage
                 }
 
