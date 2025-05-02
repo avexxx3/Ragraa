@@ -7,14 +7,15 @@ Ragraa is a frontend third-party client for [Flex](https://flexstudent.nu.edu.pk
 
 ## Features
 
-*  Log into flex with minimal hassle, only requiring an isolated captcha
-*  View previously saved data incase of no connection, or simply not wanting to login again
+* Log into flex with minimal input; only a single captcha.
+* Caches data for offline usage and future reference.
 *  Convey the marks and attendance through clean and easy to read UI
-*  Highlight when there has been a change in your marks (after a refresh) and visually guide you to the change
-*  Option to hide profile picture for whatever reason you may have
-*  GPA Calculator to ease your suffering near the end of the semester. Calculates GPA based on MCA for relative subjects, so the actual grade may vary
+* Highlight when there has been a change in your marks (after a refresh).
+* Option to hide profile picture for whatever reasons you may have
+* GPA Calculator to ease your suffering near the end of the semester. (calculates GPA based on MCA
+  for relative subjects, so the actual grade may vary)
 *  View, download and share past papers which are kept upto date with the wonderful people over from [here](https://github.com/saleha-muzammil/Academic-Time-Machine/)
-*  Gather transcript if it exists
+* Display the transcript
 
         
 ## Instructions
@@ -34,18 +35,16 @@ Since the app doesn't have access to Flex API, it cannot login without having so
 
 [Latest release](https://github.com/avexxx3/Ragraa/releases/latest)
 
+## Built upon
 
-## Open-source libraries
-
-- Built using [Kotlin](https://kotlinlang.org/)
+- [Kotlin](https://kotlinlang.org/)
 - [Compose](https://developer.android.com/develop/ui/compose): a modern UI framework for Kotlin
-- [OkHttp](https://github.com/square/okhttp/): HTTP client to scrape data
-- [ObjectBox](https://github.com/objectbox/objectbox-java): SQL Library to store data locally
+- [OkHttp](https://github.com/square/okhttp/): HTTP client
+- [ObjectBox](https://github.com/objectbox/objectbox-java): SQL Library
 - [Jsoup](https://github.com/jhy/jsoup): HTML parser
-- [ComposeRecyclerView](https://github.com/canopas/compose-recyclerview): to optimize performance on vertical lists.
-- [MVIKotlin](https://github.com/arkivanov/MVIKotlin/): Model-View-Intent Architexture
+- [MVIKotlin](https://github.com/arkivanov/MVIKotlin/): Model-View-Intent Architecture.
 - [Material 3](https://m3.material.io/components): Material 3 components.
-
+- [GSON](https://github.com/google/gson): JSON Deserializer.
 
 ## License
 
