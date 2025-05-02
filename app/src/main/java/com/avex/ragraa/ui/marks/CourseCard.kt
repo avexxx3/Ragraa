@@ -39,7 +39,9 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
             animation = tween(1000, easing = LinearEasing), repeatMode = RepeatMode.Restart
         ), label = "shimmer"
     )
-    val primary = MaterialTheme.colorScheme.primaryContainer
+
+    val color =
+        if (course.attendancePercentage < 80) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primaryContainer
 
     Card(modifier = Modifier
         .fillMaxWidth()
@@ -51,9 +53,9 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
 
             val brush = if (course.newMarks) Brush.linearGradient(
                 colors = listOf(
-                    primary, Color(0xFF89FFFD), Color(0xFFEF32D9), Color(0xFF89FFFD), primary
+                    color, Color(0xFF89FFFD), Color(0xFFEF32D9), Color(0xFF89FFFD), color
                 ), start = Offset(offset, 0f), end = Offset(offset + gradientWidth, size.height)
-            ) else Brush.linearGradient(listOf(primary, primary))
+            ) else Brush.linearGradient(listOf(color, color))
 
             onDrawBehind {
                 drawRoundRect(
@@ -62,7 +64,7 @@ fun CourseCard(course: Course, navCourse: () -> Unit, selectCourse: (Course) -> 
             }
         },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(
+            containerColor = color.copy(
                 alpha = if (course.newMarks) 0f else 1f
             )
         ),
