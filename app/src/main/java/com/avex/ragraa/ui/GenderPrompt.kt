@@ -49,12 +49,13 @@ fun GenderPrompt(selected: () -> Unit) {
                     Icon(
                         imageVector = Icons.Filled.NewReleases,
                         contentDescription = null,
-                        modifier = Modifier.padding(end = 4.dp)
+                        modifier = Modifier.padding(end = 4.dp),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         "Welcome",
                         style = MaterialTheme.typography.titleLarge,
-                        color = textColor
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -62,14 +63,14 @@ fun GenderPrompt(selected: () -> Unit) {
                     "Please make sure you select the correct semester. To update the app with new marks, you will have to log in or simply 'Refresh' which constitutes solving the captcha again.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = textColor,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
+                    modifier = Modifier.padding(start = 8.dp)
                 )
 
                 Text(
-                    "Also, would you like to show your image after logging in? It will be lifted straight from Flex.",
+                    "Would you like to show your image after logging in? It will be the one being shown on Flex.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = textColor,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(start = 8.dp, top = 16.dp)
                 )
 
                 Text(
@@ -81,26 +82,27 @@ fun GenderPrompt(selected: () -> Unit) {
 
                 Row(
                     modifier = Modifier
-                        .padding(bottom = 8.dp, end = 4.dp, top = 8.dp)
+                        .padding(end = 4.dp)
+                        .padding(vertical = 12.dp)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     Box(modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = 12.dp)
                         .clickable { Datasource.setGender(true);selected() }) {
                         Text(
                             "Yes",
-                            color = textColor
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                     Box(modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = 12.dp)
                         .clickable { Datasource.setGender(false);selected() }) {
                         Text(
                             "No",
-                            color = textColor
+                            color = MaterialTheme.colorScheme.error
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
