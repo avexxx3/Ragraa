@@ -98,7 +98,7 @@ class PastPaperViewModel(paramDir: PastPaperDirectory = PastPaperDirectory()) : 
 
         val index = mapSHA.indexOf(selfDir.sha)
 
-        if (index != -1) {
+        if (index != -1 && store.boxFor<CachedDirectory>().all.size > index) {
             store.boxFor<CachedDirectory>().remove(store.boxFor<CachedDirectory>().all[index].id)
         }
     }
