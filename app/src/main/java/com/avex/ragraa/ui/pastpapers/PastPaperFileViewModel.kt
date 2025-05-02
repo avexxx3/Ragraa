@@ -19,21 +19,24 @@ import androidx.compose.material.icons.filled.Downloading
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.avex.ragraa.AppCompatActivity
 import com.avex.ragraa.context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
-
 
 class PastPaperFileViewModel(private val file: PastPaperFile, private val directory: String) :
     ViewModel() {
     private val _uiState = MutableStateFlow(file)
     val uiState: StateFlow<PastPaperFile> = _uiState.asStateFlow()
 
-    private var isDownloading: Boolean = false
+    var isDownloading: Boolean = false
     private var isDownloaded: Boolean = false
 
     private val parentDirectory = if (directory.length > 12) directory.substring(13) else directory
@@ -83,8 +86,6 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
 
                 Log.d("Dev", "Finished download for: ${file.name}")
 
-                fileExists()
-
                 updateUI()
             }
         }
@@ -105,6 +106,13 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
         Log.d("Dev", "Starting download for: ${file.name}")
 
         downloadManager.enqueue(request)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            while (!fileExists()) delay(500)
+            updateUI()
+        }
+
+
     }
 
     private fun fileExists(externalFilesDirs: Array<File> = context.getExternalFilesDirs(null)): Boolean {

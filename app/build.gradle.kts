@@ -51,6 +51,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.jsoup.jsoup)
     implementation(libs.okhttp)
