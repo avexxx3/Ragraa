@@ -19,7 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.avex.ragraa.ui.login.Logo
@@ -34,9 +38,17 @@ fun About() {
         verticalArrangement = Arrangement.Center
     ) {
         Logo()
+
+
         Text(
-            "Developed by Armaghan Atiq",
-            color = MaterialTheme.colorScheme.primary,
+            buildAnnotatedString {
+                append("Developed by ")
+
+                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Black
+                )) {
+                    append("Armaghan Atiq")
+                }
+            },
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 32.dp)
@@ -44,8 +56,8 @@ fun About() {
         Text(
             "\nit's been almost a year (circa 2023) thought of making a flex clone and naming it 'Ragraa' as a funny; and it was, albeit for the first few times. ever since then seeing the name or associating with it has filled me with hatred for myself and now the branding is too deep for me to consider changing it now." +
                     "\n\nbuilt for android (kotlin) because i didn't want to make something cross platform just for ios users, and i really really love writing kotlin" +
-                    "\n\ni don't have alot to say about myself so this is just to fill the space up a bit more. also if you are a recruiter somewhere and are seeing this please give me an internship i can't afford to be homeless" +
-                    "\n\nthe code is open source and linked below so if you have anything you'd like to add, feel free. i will not apologize for the mess of a codebase i've written and wish you luck in understanding it",
+                    "\n\ni don't want to say much about myself so this is just to fill the space up a bit more. also if you are a recruiter somewhere and seeing this please please consider me for an internship in machine learning i will prove to be useful trust me" +
+                    "\n\nthe code is open source and linked below so if you have anything you'd like to add, feel free. the codebase wont be too difficult to understand and i would say a bit intuitive if you have knowledge of how the structure of these applications generally goes.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
