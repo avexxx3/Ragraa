@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +53,7 @@ import com.avex.ragraa.About
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.sharedPreferences
+import com.avex.ragraa.ui.admitcard.AdmitCard
 import com.avex.ragraa.ui.calculator.CalculatorScreen
 import com.avex.ragraa.ui.calculator.CalculatorViewModel
 import com.avex.ragraa.ui.calculator.EditCourse
@@ -247,7 +249,15 @@ fun FlexApp(
                     NavBarHeader(R.string.past_papers) { navBar() }
                     PastPaperFolder { navController.navigate(Screens.Home.Title) }
                 }
+            }
 
+            composable(Screens.AdmitCard.Title) {
+                CurrentScreen = Screens.AdmitCard
+
+                Column {
+                    NavBarHeader(R.string.admit_card) { navBar() }
+                    AdmitCard()
+                }
             }
 
             composable(Screens.About.Title) {
@@ -283,5 +293,6 @@ enum class Screens(val Title: String, val stringRes: Int, val icon: ImageVector)
     Calculator("calculator", R.string.calculator, Icons.Filled.Grade),
     Transcript("transcript", R.string.transcript, Icons.AutoMirrored.Filled.Notes),
     PastPapers("pastpapers", R.string.past_papers, Icons.Filled.Map),
+    AdmitCard("admitcard", R.string.admit_card, Icons.Filled.Badge),
     About("about", R.string.about, Icons.Filled.Info)
 }

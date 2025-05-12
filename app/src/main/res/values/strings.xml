@@ -48,4 +48,10 @@
     <string name="done">Done</string>
     <string name="override_system_theme">Override system theme</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="admit_card">Admit Card</string>
+    <string name="sessional_1">Sessional-I</string>
+    <string name="sessional_2">Sessional-II</string>
+    <string name="final_exam">Final</string>
+    <string name="download_admit_card">Download Admit Card</string>
+    <string name="select_exam_type">Select Exam Type</string>
 </resources>

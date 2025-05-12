@@ -1,5 +1,6 @@
 package com.avex.ragraa.network
 
+import com.avex.ragraa.context
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.Datasource.marksResponse
 import com.avex.ragraa.data.Datasource.saveImage
@@ -20,6 +21,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import android.media.MediaScannerConnection
+import android.os.Environment
+import java.io.File
 
 
 object RagraaApi {
@@ -227,5 +231,97 @@ object RagraaApi {
     private fun createNonPersistentCookie(): Cookie {
         return Cookie.Builder().domain("flexstudent.nu.edu.pk").path("/").name("ASP.NET_SessionId")
             .value(sessionID).httpOnly().build()
+    }
+
+    fun downloadAdmitCard(examType: String, callback: (Boolean, String) -> Unit) {
+        if (sessionID.isEmpty()) {
+            callback(false, "Error: You must log in first")
+            return
+        }
+
+        if (!(examType == "Sessional-I" || examType == "Sessional-II" || examType == "Final")) {
+            callback(false, "Error: Invalid exam type")
+            return
+        }
+
+        val url = "https://flexstudent.nu.edu.pk/Student/AdmitCardByRollNo?cardtype=${examType}&type=pdf"
+        
+        // Create a FormBody with no parameters
+        val requestBody = okhttp3.FormBody.Builder().build()
+        
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+        val client = OkHttpClient().newBuilder().cookieJar(object : CookieJar {
+            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
+            override fun loadForRequest(url: HttpUrl): List<Cookie> {
+                return listOf(createNonPersistentCookie())
+            }
+        })
+        .connectTimeout(1, TimeUnit.MINUTES)
+        .writeTimeout(5, TimeUnit.MINUTES)
+        .readTimeout(5, TimeUnit.MINUTES)
+        .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                callback(false, "Error: Failed to connect to flex: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    callback(false, "Error: Server returned code ${response.code}. ${response.message}")
+                    return
+                }
+
+                // Check if the response body is empty
+                if (response.body == null) {
+                    callback(false, "Error: Server returned an empty response")
+                    return
+                }
+
+                // Check if the response is a PDF (content type check)
+                val contentType = response.header("Content-Type")
+                if (contentType?.contains("pdf", ignoreCase = true) != true && 
+                    contentType?.contains("octet-stream", ignoreCase = true) != true) {
+                    // If not a PDF, try to read the response as text to show the error
+                    try {
+                        val errorText = response.body?.string() ?: "Unknown error"
+                        callback(false, "Error: Server did not return a PDF. ${errorText.take(100)}")
+                    } catch (e: Exception) {
+                        callback(false, "Error: Server did not return a PDF")
+                    }
+                    return
+                }
+
+                val fileName = "Admit_Card_${examType}.pdf"
+                
+                try {
+                    // Save PDF to the Downloads directory
+                    val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    val file = File(downloadsDir, fileName)
+                    
+                    response.body?.byteStream()?.use { input ->
+                        file.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    
+                    // Notify media scanner to make the file visible in Downloads
+                    MediaScannerConnection.scanFile(
+                        context,
+                        arrayOf(file.absolutePath),
+                        arrayOf("application/pdf"),
+                        null
+                    )
+                    
+                    callback(true, "Successfully downloaded admit card to Downloads folder")
+                } catch (e: Exception) {
+                    callback(false, "Error: Failed to save file: ${e.message}")
+                }
+            }
+        })
     }
 }

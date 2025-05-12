@@ -89,6 +89,20 @@ fun HomeScreen(
                 )
             }
 
+            Row(Modifier.padding(vertical = 8.dp)) {
+                ClickableCard(
+                    Screen = Screens.AdmitCard,
+                    onClick = { viewModel.navController.navigate(Screens.AdmitCard.Title) },
+                    modifier = Modifier.fillMaxWidth(0.5f)
+                )
+
+                ClickableCard(
+                    Screen = Screens.Transcript,
+                    onClick = { viewModel.navController.navigate(Screens.Transcript.Title) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
         }
     }
 }
