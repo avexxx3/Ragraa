@@ -56,7 +56,7 @@ fun About() {
         Text(
             "\nit's been almost a year (circa 2023) thought of making a flex clone and naming it 'Ragraa' as a funny; and it was, albeit for the first few times. ever since then seeing the name or associating with it has filled me with hatred for myself and now the branding is too deep for me to consider changing it now." +
                     "\n\nbuilt for android (kotlin) because i didn't want to make something cross platform just for ios users, and i really really love writing kotlin" +
-                    "\n\ni don't want to say much about myself so this is just to fill the space up a bit more. also if you are a recruiter somewhere and seeing this please please consider me for an internship in machine learning i will prove to be useful trust me" +
+                    "\n\ni don't want to say much about myself so this is just to fill the space up a bit more. also if you are a recruiter somewhere and seeing this please please consider me for a position in machine learning i will prove to be a valuable asset" +
                     "\n\nthe code is open source and linked below so if you have anything you'd like to add, feel free. the codebase wont be too difficult to understand and i would say a bit intuitive if you have knowledge of how the structure of these applications generally goes.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
