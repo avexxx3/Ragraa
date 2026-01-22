@@ -8,6 +8,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -22,7 +26,9 @@ import com.avex.ragraa.data.dataclasses.Course
 
 @Composable
 fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
-    LazyColumn(
+    var recompose by remember { mutableStateOf(0) }
+
+        LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
@@ -55,8 +61,8 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
 
             for (courseItem in course.marks) {
                 if (courseItem.listOfMarks.isNotEmpty() || courseItem.name.contains("Total")) CourseItem(
-                    courseItem
-                )
+                    courseItem, recompose
+                ) {course.updateTotal(); recompose++}
             }
         }
     }

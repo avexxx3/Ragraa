@@ -37,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -58,7 +57,7 @@ import java.text.NumberFormat
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun CourseItem(courseItem: Section) {
+fun CourseItem(courseItem: Section, recompose: Int, update: () -> Unit) {
     val isExpanded = remember { mutableStateOf(courseItem.new) }
 
     val roundness by animateFloatAsState(
@@ -82,75 +81,76 @@ fun CourseItem(courseItem: Section) {
         )
         val primary = MaterialTheme.colorScheme.primaryContainer
 
-
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(
-                    alpha = if (courseItem.new) 0f else 1f
-                )
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp)
-                .drawWithCache {
-                    val offset = size.width * progressAnimated
-                    val gradientWidth = size.width
-
-                    val brush = if (courseItem.new) Brush.linearGradient(
-                        colors = listOf(
-                            primary,
-                            Color(0xFF89FFFD),
-                            Color(0xFFEF32D9),
-                            Color(0xFF89FFFD),
-                            primary
-                        ),
-                        start = Offset(offset, 0f),
-                        end = Offset(offset + gradientWidth, size.height)
-                    ) else Brush.linearGradient(listOf(primary, primary))
-
-                    onDrawBehind {
-                        drawRoundRect(
-                            brush = brush,
-                            blendMode = BlendMode.SrcIn,
-                            cornerRadius = CornerRadius(if (courseItem.new) 0f else 24f)
-                        )
-                    }
-                }
-                .clickable { isExpanded.value = !isExpanded.value },
-            shape = if (courseItem.new) RoundedCornerShape(
-                0f
-            ) else RoundedCornerShape(
-                topStart = 24f, topEnd = 24f, bottomStart = roundness, bottomEnd = roundness
-            ),
-            elevation = CardDefaults.cardElevation(if (courseItem.new) 0.dp else dimensionResource(R.dimen.elevation))
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = courseItem.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    textAlign = TextAlign.Center,
-                    color = if (courseItem.new) sweetie_pie else MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.padding(end = 8.dp),
-                )
-
-                Icon(
-                    imageVector = if (isExpanded.value) Icons.AutoMirrored.Outlined.KeyboardArrowRight else Icons.Outlined.KeyboardArrowDown,
-                    tint = if (courseItem.new) sweetie_pie else MaterialTheme.colorScheme.onPrimaryContainer,
-                    contentDescription = null
-                )
-
-                Spacer(Modifier.weight(1f))
-            }
-        }
-
-
-        var recompose by remember { mutableStateOf(0) }
         key(recompose) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(
+                        alpha = if (courseItem.new) 0f else 1f
+                    )
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .drawWithCache {
+                        val offset = size.width * progressAnimated
+                        val gradientWidth = size.width
+
+                        val brush = if (courseItem.new) Brush.linearGradient(
+                            colors = listOf(
+                                primary,
+                                Color(0xFF89FFFD),
+                                Color(0xFFEF32D9),
+                                Color(0xFF89FFFD),
+                                primary
+                            ),
+                            start = Offset(offset, 0f),
+                            end = Offset(offset + gradientWidth, size.height)
+                        ) else Brush.linearGradient(listOf(primary, primary))
+
+                        onDrawBehind {
+                            drawRoundRect(
+                                brush = brush,
+                                blendMode = BlendMode.SrcIn,
+                                cornerRadius = CornerRadius(if (courseItem.new) 0f else 24f)
+                            )
+                        }
+                    }
+                    .clickable { isExpanded.value = !isExpanded.value },
+                shape = if (courseItem.new) RoundedCornerShape(
+                    0f
+                ) else RoundedCornerShape(
+                    topStart = 24f, topEnd = 24f, bottomStart = roundness, bottomEnd = roundness
+                ),
+                elevation = CardDefaults.cardElevation(
+                    if (courseItem.new) 0.dp else dimensionResource(
+                        R.dimen.elevation
+                    )
+                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
+
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = courseItem.name,
+                        style = MaterialTheme.typography.headlineLarge,
+                        textAlign = TextAlign.Center,
+                        color = if (courseItem.new) sweetie_pie else MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+
+                    Icon(
+                        imageVector = if (isExpanded.value) Icons.AutoMirrored.Outlined.KeyboardArrowRight else Icons.Outlined.KeyboardArrowDown,
+                        tint = if (courseItem.new) sweetie_pie else MaterialTheme.colorScheme.onPrimaryContainer,
+                        contentDescription = null
+                    )
+
+                    Spacer(Modifier.weight(1f))
+                }
+            }
+
             if (isExpanded.value) {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
@@ -281,14 +281,14 @@ fun CourseItem(courseItem: Section) {
                                 Icon(
                                     Icons.Filled.KeyboardArrowDown,
                                     contentDescription = null,
-                                    modifier = Modifier.clickable { courseItem.decrement(); recompose++ },
+                                    modifier = Modifier.clickable { courseItem.decrement(); update() },
                                     tint = if (courseItem.bestOf != 1) LocalContentColor.current else Color.Gray
                                 )
                                 Text(courseItem.bestOf.toString())
                                 Icon(
                                     Icons.Filled.KeyboardArrowUp,
                                     contentDescription = null,
-                                    modifier = Modifier.clickable { courseItem.increment(); recompose++ },
+                                    modifier = Modifier.clickable { courseItem.increment(); update() },
                                     if (courseItem.bestOf != courseItem.listOfMarks.size) LocalContentColor.current else Color.Gray
                                 )
                             }
