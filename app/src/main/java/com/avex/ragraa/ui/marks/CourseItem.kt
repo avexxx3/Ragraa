@@ -137,13 +137,13 @@ fun CourseItem(courseItem: Section, recompose: Int, update: () -> Unit) {
                         text = courseItem.name,
                         style = MaterialTheme.typography.headlineLarge,
                         textAlign = TextAlign.Center,
-                        color = if (courseItem.new) sweetie_pie else MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.padding(end = 8.dp),
                     )
 
                     Icon(
                         imageVector = if (isExpanded.value) Icons.AutoMirrored.Outlined.KeyboardArrowRight else Icons.Outlined.KeyboardArrowDown,
-                        tint = if (courseItem.new) sweetie_pie else MaterialTheme.colorScheme.onPrimaryContainer,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         contentDescription = null
                     )
 
