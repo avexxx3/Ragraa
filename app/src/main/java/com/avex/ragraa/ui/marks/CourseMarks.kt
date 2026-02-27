@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.avex.ragraa.R
 import com.avex.ragraa.data.dataclasses.Marks
@@ -44,11 +45,12 @@ fun CourseMarks(marks: Marks) {
                     Text(
                         formatMarks(marks.obtained),
                         color = if (marks.new) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
-                        style = style
+                        style = style,
+                        fontWeight = FontWeight.Bold
                     )
 
                     Text(
-                        "/${formatMarks(marks.total)}", color = Color.Gray, style = style
+                        "/${formatMarks(marks.total)}", color = if (marks.new) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer, style = style
                     )
                 }
             }
