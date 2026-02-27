@@ -23,7 +23,18 @@ open class MarksViewModel : ViewModel() {
         }
     }
 
+    fun cascadeUpdate() {
+        if(currentCourse != null) {
+            for(item in currentCourse!!.marks)
+                item.new = false
+
+        }
+    }
     fun showCourse(course: Course?) {
+        if(course != null)
+            course.newMarks = false
+
+
         currentCourse = course
         updateUI()
     }

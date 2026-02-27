@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,11 +29,17 @@ fun MarksScreen(
     viewModel: MarksViewModel, newNavController: NavHostController = rememberNavController()
 ) {
 
+    LaunchedEffect(Unit) {
+        viewModel.cascadeUpdate()
+    }
+
     BackHandler {
         viewModel.navController.navigate("home")
     }
 
     val uiState = viewModel.uiState.collectAsState().value
+
+
 
     NavHost(
         navController = newNavController,

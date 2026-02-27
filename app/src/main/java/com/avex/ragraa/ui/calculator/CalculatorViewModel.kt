@@ -53,39 +53,33 @@ class CalculatorViewModel : ViewModel() {
             // then it'll be preferred over the data from the marks
             // Otherwise data is filled from the marks uploaded on Flex
 
-            if (Datasource.courses[marks.indexOf(course)].marks.last().average.isNaN())
-                continue
+            var mca = "0"
+            var obtained = "0"
 
-            if (index == -1) {
-                courses.add(
-                    CalculatorCourse(
-                        name = marksCourse.name.substring(7),
-                        credits = "0",
-                        mca = Datasource.courses[marks.indexOf(course)].marks.last().average.roundToInt()
-                            .toString(),
-                        obtained = Datasource.courses[marks.indexOf(course)].marks.last().obtained.roundToInt()
-                            .toString(),
-                        gpa = 0f,
-                        grade = "",
-                        isRelative = false,
-                        locked = false
-                    )
-                )
-            } else courses.add(
-                CalculatorCourse(
-                    name = marksCourse.name.substring(7),
-                    credits = transcriptCourse?.creditHours.toString(),
-                    mca = Datasource.courses[marks.indexOf(course)].marks.last().average.roundToInt()
-                        .toString(),
-                    obtained = Datasource.courses[marks.indexOf(course)].marks.last().obtained.roundToInt()
-                        .toString(),
-                    gpa = if (locked) transcriptCourse!!.gpa else 0f,
-                    grade = if (locked) transcriptCourse!!.grade else "",
-                    isRelative = transcriptCourse!!.isRelative,
-                    locked = locked
-                )
-            )
+
+            if (marksCourse.marks.isNotEmpty()) {
+                if (marksCourse.marks.last().average.isNaN())
+                    continue
+
+                mca = Datasource.courses[marks.indexOf(course)].marks.last().average.roundToInt()
+                    .toString()
+                obtained =
+                    Datasource.courses[marks.indexOf(course)].marks.last().obtained.roundToInt()
+                        .toString()
+            }
+
+            courses.add(CalculatorCourse(
+                name = marksCourse.name.substring(7),
+                credits = if (index != -1) transcriptCourse?.creditHours.toString() else "0",
+                mca = mca,
+                obtained = obtained,
+                gpa = if (locked) transcriptCourse!!.gpa else 0f,
+                grade = if (locked) transcriptCourse!!.grade else "",
+                isRelative = if (locked) transcriptCourse!!.isRelative else false,
+                locked = locked
+            ))
         }
+
 
         calculateGPA()
         updateUI()

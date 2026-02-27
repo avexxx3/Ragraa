@@ -168,12 +168,13 @@ object Datasource {
         if (!marksParsed || !attendanceParsed) return
 
         val attendancesName =
-            attendanceDatabase.map { it.courseName}
+            attendanceDatabase.map { it.courseName }
         val marksName = marksDatabase.map { it.courseName }
 
         val newCourses: MutableList<Course> = mutableListOf()
 
         for (marks in marksName) {
+            println("Marks of " + marks)
             val indexMarks = marksName.indexOf(marks)
             val indexAttendance = attendancesName.indexOf(marks)
 
@@ -200,8 +201,28 @@ object Datasource {
             )
         }
 
+        for (attendance in attendancesName) {
+            println("Attendance of  " + attendance)
+
+            val indexAttendance = attendancesName.indexOf(attendance)
+            val indexMarks = marksName.indexOf(attendance)
+            if (indexMarks == -1)
+                newCourses.add(
+                    Course(
+                        name = attendance,
+                        marks = listOf(),
+                        newMarks = false,
+                        grandTotalExists = false,
+                        attendance = attendanceDatabase[indexAttendance].attendance,
+                        attendancePercentage = attendanceDatabase[indexAttendance].percentage,
+                        attendanceAbsents = attendanceDatabase[indexAttendance].absents
+                    )
+                )
+        }
+
 
         courses = newCourses
+        updateHomeUI()
         updateHomeUI()
     }
 
@@ -378,11 +399,11 @@ object Datasource {
 
                 for (marks in section.listOfMarks) {
                     val newMarks = marks.copy(weightage = 0f)
-                    if (!originalMarks.contains(newMarks)) {
-                        course.new = true
-                        section.new = true
-                        marks.new = true
-                    }
+                    //if (!originalMarks.contains(newMarks)) {
+                    course.new = true
+                    section.new = true
+                    marks.new = true
+                    //}
                 }
             }
         }
@@ -403,6 +424,8 @@ object Datasource {
     }
 
     fun parseAttendance() {
+        attendanceDatabase.clear()
+
         val htmlFile = Jsoup.parse(attendanceResponse).body()
 
         val courses = htmlFile.getElementsByAttributeValue("role", "tabpanel")
