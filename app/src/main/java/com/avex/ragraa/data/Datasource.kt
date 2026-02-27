@@ -399,11 +399,11 @@ object Datasource {
 
                 for (marks in section.listOfMarks) {
                     val newMarks = marks.copy(weightage = 0f)
-                    //if (!originalMarks.contains(newMarks)) {
-                    course.new = true
-                    section.new = true
-                    marks.new = true
-                    //}
+                    if (!originalMarks.contains(newMarks)) {
+                        course.new = true
+                        section.new = true
+                        marks.new = true
+                    }
                 }
             }
         }
