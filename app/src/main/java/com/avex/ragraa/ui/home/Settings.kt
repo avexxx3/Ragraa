@@ -11,8 +11,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,9 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
+import com.avex.ragraa.data.CaptchaSolver
 
 @Composable
 fun Settings(viewModel: HomeViewModel) {
@@ -80,6 +88,36 @@ fun Settings(viewModel: HomeViewModel) {
                         uiState.darkTheme
                     ) { viewModel.toggleDark() }
                 }
+
+                OutlinedTextField(
+                    value = CaptchaSolver.key,
+                    onValueChange = { CaptchaSolver.setKey(it) },
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = dimensionResource(id = R.dimen.padding_small)
+                        ),
+                    singleLine = true,
+                    label = {
+                        Text(
+                            text = "2Captcha Key",
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    },
+                    leadingIcon = { Icon(imageVector = Icons.Filled.VpnKey, contentDescription = null) },
+                    shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                    )
+                )
             }
         }
     }

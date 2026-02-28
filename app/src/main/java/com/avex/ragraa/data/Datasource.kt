@@ -44,6 +44,8 @@ object Datasource {
     var showImage: Boolean = true
     var date: String = ""
 
+    var captchaKey: String = ""
+
     var overrideSystemTheme: Boolean = false
     var darkTheme: Boolean = true
 
@@ -114,6 +116,8 @@ object Datasource {
         semId = sharedPreferences.getString("semId", "251").toString()
 
         niqab = sharedPreferences.getBoolean("niqab", false)
+
+        captchaKey = sharedPreferences.getString("captchaKey", "").toString()
 
         if (rollNo.isEmpty()) return
 

@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.network.captchaLoaded
-import com.avex.ragraa.ui.Screens
 
 @Composable
 fun LoginScreen(
@@ -183,6 +182,15 @@ fun LoginScreen(
             textAlign = TextAlign.Center
         )
 
+        if (statusList.all { it.isEmpty() } && !uiState.showButtons) {
+            Text(
+                text = "Attempting to solve automatically.\nWill be redirected if not.",
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(4.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
         if (uiState.showButtons && !uiState.isCompleted) Button(
             modifier = Modifier
                 .padding(
@@ -190,7 +198,7 @@ fun LoginScreen(
                 )
                 .fillMaxWidth(),
             onClick = {
-                viewModel.navController.navigate(Screens.Web.Title)
+                viewModel.login()
             },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
             elevation = ButtonDefaults.buttonElevation(dimensionResource(R.dimen.elevation))

@@ -2,6 +2,7 @@ package com.avex.ragraa.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.avex.ragraa.data.CaptchaSolver
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.dataclasses.LoginRequest
 import com.avex.ragraa.network.RagraaApi
@@ -41,7 +42,7 @@ class LoginViewModel : ViewModel() {
         updateUI()
     }
 
-    public var updateCalc: () -> Unit = {}
+    var updateCalc: () -> Unit = {}
     fun resetData() {
         status = mutableListOf("", "", "", "", "")
         updateCalc()
@@ -49,6 +50,16 @@ class LoginViewModel : ViewModel() {
         response = 0
         isCompleted = false
         updateUI()
+    }
+
+    fun login() {
+        showButtons = false
+
+        CaptchaSolver.solveCaptcha().onSuccess {
+            updateCaptchaToken(it)
+        }.onFailure {
+            navController.navigate(Screens.Web.Title)
+        }
     }
 
     //Login to flex and save the session ID.
