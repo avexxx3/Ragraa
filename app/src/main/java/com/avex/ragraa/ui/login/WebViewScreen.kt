@@ -28,8 +28,7 @@ import com.avex.ragraa.network.CustomWebViewClient
 fun WebViewScreen(
     updateCaptchaToken: (String) -> Unit,
     navLogin: () -> Unit,
-    updateLoading: (Boolean) -> Unit,
-    loading: Boolean
+    updateLoading: (Boolean) -> Unit
 ) {
     LaunchedEffect(context) {
         updateLoading(true)
@@ -76,16 +75,12 @@ fun WebViewScreen(
                     "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.39 Mobile Safari/537.36"
             }
         }) { webView ->
-            if (loading) {
-                webView.loadUrl(url)
-            } else {
                 val captchaSnippet =
                     "<html>\n    <head>\n        <script src=\"https://www.google.com/recaptcha/api.js?onload=onloadCallback\"></script>\n    </head>\n    <body bgColor=\"$backgroundHex\">\n    <div id=\"captcha\" style=\"display:flex;justify-content:center;align-items:center;overflow:hidden;padding:100px;\"> </div>\n    </body>\n    <script type=\"text/javascript\">\n        function onloadCallback()\n        {\n            grecaptcha.render(\"captcha\", {\n                \"sitekey\" : \"6LeMxrMZAAAAAJEK1UwUc0C-ScFUyJy07f8YN70S\",\n                \"callback\" : function(response) {\n                    console.log(\"koubilgicaptchatoken:\"+response)\n                }\n            })\n        }\n    </script>\n</html>"
 
                 webView.loadDataWithBaseURL(url, captchaSnippet, "text/html", "UTF-8", null).apply {
                     webView.settings.blockNetworkImage = false
                 }
-            }
         }
     }
 }
