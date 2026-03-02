@@ -178,7 +178,6 @@ object Datasource {
         val newCourses: MutableList<Course> = mutableListOf()
 
         for (marks in marksName) {
-            println("Marks of " + marks)
             val indexMarks = marksName.indexOf(marks)
             val indexAttendance = attendancesName.indexOf(marks)
 
@@ -206,8 +205,6 @@ object Datasource {
         }
 
         for (attendance in attendancesName) {
-            println("Attendance of  " + attendance)
-
             val indexAttendance = attendancesName.indexOf(attendance)
             val indexMarks = marksName.indexOf(attendance)
             if (indexMarks == -1)
