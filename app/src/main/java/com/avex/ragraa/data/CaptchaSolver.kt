@@ -3,6 +3,8 @@ package com.avex.ragraa.data
 import com.avex.ragraa.sharedPreferences
 import com.twocaptcha.TwoCaptcha
 import com.twocaptcha.captcha.ReCaptcha
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 object CaptchaSolver {
@@ -10,32 +12,35 @@ object CaptchaSolver {
     var key = ""
 
     init {
-        setKey(Datasource.captchaKey)
+        setCKey(Datasource.captchaKey)
     }
 
-    fun setKey(key: String) {
+    fun setCKey(key: String) {
         solver.setApiKey(key)
         this.key = key
         sharedPreferences.edit().putString("captchaKey", key).apply()
     }
 
-    fun solveCaptcha(): Result<String> {
+    suspend fun solveCaptcha(): Result<String> {
         if (key.isEmpty())
             return Result.failure(Exception("Key is empty"))
 
-        val captcha = ReCaptcha()
-        captcha.setSiteKey("6LeMxrMZAAAAAJEK1UwUc0C-ScFUyJy07f8YN70S")
-        captcha.setUrl("https://flexstudent.nu.edu.pk/Login")
-        captcha.setInvisible(true)
-        captcha.setAction("verify")
-        captcha.setProxy("HTTPS", "login:password@IP_address:PORT")
+        return withContext(Dispatchers.IO) {
+            val captcha = ReCaptcha().apply {
+                setSiteKey("6LeMxrMZAAAAAJEK1UwUc0C-ScFUyJy07f8YN70S")
+                setUrl("https://flexstudent.nu.edu.pk/Login")
+                setInvisible(true)
+                setAction("verify")
+                setProxy("HTTPS", "login:password@IP_address:PORT")
+            }
 
-
-        try {
-            solver.solve(captcha)
-            return Result.success(captcha.getCode())
-        } catch (e: Exception) {
-            return Result.failure(e)
+            try {
+                // This blocking call now happens off the Main thread
+                solver.solve(captcha)
+                Result.success(captcha.getCode())
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
     }
 }

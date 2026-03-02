@@ -1,6 +1,7 @@
 package com.avex.ragraa.ui.login
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.avex.ragraa.data.CaptchaSolver
 import com.avex.ragraa.data.Datasource
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 
 class LoginViewModel : ViewModel() {
@@ -54,11 +56,19 @@ class LoginViewModel : ViewModel() {
 
     fun login() {
         showButtons = false
+        updateUI()
 
-        CaptchaSolver.solveCaptcha().onSuccess {
-            updateCaptchaToken(it)
-        }.onFailure {
-            navController.navigate(Screens.Web.Title)
+        viewModelScope.launch {
+            val a = CaptchaSolver.solveCaptcha()
+                println(a)
+                a.onSuccess {
+                updateCaptchaToken(it)
+            }.onFailure {
+                navController.navigate(Screens.Web.Title)
+            }
+
+            showButtons = true
+            updateUI()
         }
     }
 
