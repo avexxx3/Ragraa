@@ -7,6 +7,7 @@ import android.os.Vibrator
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.avex.ragraa.context
+import com.avex.ragraa.data.CaptchaSolver
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.network.captchaLoaded
 import com.avex.ragraa.sharedPreferences
@@ -32,6 +33,7 @@ class HomeViewModel : ViewModel() {
     private var darkTheme = true
     private var male = true
     private var niqab = false
+    private var captchaKey = ""
 
     var changeTheme: (String) -> Unit = {}
 
@@ -43,6 +45,7 @@ class HomeViewModel : ViewModel() {
         darkTheme = Datasource.darkTheme
         male = Datasource.male
         niqab = Datasource.niqab
+        captchaKey = Datasource.captchaKey
         updateUI()
     }
 
@@ -86,11 +89,18 @@ class HomeViewModel : ViewModel() {
                 overrideTheme = overrideDeviceTheme,
                 darkTheme = darkTheme,
                 male = male,
-                niqab = niqab
+                niqab = niqab,
+                key = captchaKey
             )
         }
 
         if (overrideDeviceTheme) changeTheme(if (darkTheme) "dark" else "light") else changeTheme("no")
+    }
+
+    fun updateCaptchaKey(key: String) {
+        captchaKey = key
+        CaptchaSolver.setCKey(key)
+        updateUI()
     }
 
     fun toggleSettings() {

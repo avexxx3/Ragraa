@@ -206,8 +206,7 @@ fun FlexApp(
                     WebViewScreen(
                         updateCaptchaToken = { loginViewModel.updateCaptchaToken(it) },
                         navLogin = { navController.navigate(Screens.Login.Title) },
-                        updateLoading = { showLoading = it },
-                        loading = showLoading
+                        updateLoading = { showLoading = it }
                     )
 
                     AnimatedVisibility(

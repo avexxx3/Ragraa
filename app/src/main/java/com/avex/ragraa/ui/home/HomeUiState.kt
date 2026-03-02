@@ -15,5 +15,6 @@ data class HomeUiState(
     val overrideTheme: Boolean = false,
     val darkTheme: Boolean = true,
     val male: Boolean = true,
-    val niqab: Boolean = false
+    val niqab: Boolean = false,
+    val key: String = ""
 )

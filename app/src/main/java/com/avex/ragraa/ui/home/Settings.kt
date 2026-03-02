@@ -90,8 +90,8 @@ fun Settings(viewModel: HomeViewModel) {
                 }
 
                 OutlinedTextField(
-                    value = CaptchaSolver.key,
-                    onValueChange = { CaptchaSolver.setKey(it) },
+                    value = uiState.key,
+                    onValueChange = { viewModel.updateCaptchaKey(it) },
                     textStyle = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
