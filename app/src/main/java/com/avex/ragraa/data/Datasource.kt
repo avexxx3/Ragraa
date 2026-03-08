@@ -55,6 +55,9 @@ object Datasource {
 
     var courses: MutableList<Course> = mutableListOf()
 
+    // tracks new additions for background notif system
+    var newAdditions: MutableSet<Pair<String, String>> = mutableSetOf()
+
     private var marksDatabase: MutableList<CourseMarks> = mutableListOf()
     private var attendanceDatabase: MutableList<CourseAttendance> = mutableListOf()
 
@@ -369,6 +372,8 @@ object Datasource {
         }
 
         val databaseCourseNames = marksDatabase.map { it.courseName }
+        newAdditions = mutableSetOf() // CourseName, Marks
+
 
         for (course in newDatabase) {
             val index: Int = databaseCourseNames.indexOf(course.courseName)
@@ -379,6 +384,7 @@ object Datasource {
                     section.new = true
                     for (marks in section.listOfMarks) marks.new = true
                 }
+                newAdditions.add(Pair(course.courseName, "ALL"))
                 continue
             }
 
@@ -389,6 +395,7 @@ object Datasource {
                 if (index2 == -1) {
                     course.new = true
                     section.new = true
+                    newAdditions.add(Pair(course.courseName, section.name))
                     for (marks in section.listOfMarks) {
                         marks.new = true
                     }
@@ -396,11 +403,12 @@ object Datasource {
                 }
 
                 val originalMarks =
-                    marksDatabase[index].courseMarks[index2].listOfMarks.map { it.copy(weightage = 0f) }
+                    marksDatabase[index].courseMarks[index2].listOfMarks.map { it.copy(weightage = 0f, average = 0f, minimum = 0f, maximum = 0f) }
 
                 for (marks in section.listOfMarks) {
-                    val newMarks = marks.copy(weightage = 0f)
+                    val newMarks = marks.copy(weightage = 0f, average = 0f, minimum = 0f, maximum = 0f)
                     if (!originalMarks.contains(newMarks)) {
+                        newAdditions.add(Pair(course.courseName, section.name))
                         course.new = true
                         section.new = true
                         marks.new = true
