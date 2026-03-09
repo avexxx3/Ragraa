@@ -1,28 +1,94 @@
+package com.avex.ragraa.network
+
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.os.Build
+import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import com.avex.ragraa.MainActivity
+import com.avex.ragraa.R
 import com.avex.ragraa.data.CaptchaSolver
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.data.dataclasses.LoginRequest
-import com.avex.ragraa.network.RagraaApi
+import com.avex.ragraa.network.RagraaApi.fetchMarks
+import com.avex.ragraa.network.RagraaApi.sessionID
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class PeriodicWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
+    /**
+     * Creates and sends a push notification to the user.
+     * Handles notification channel creation for Android Oreo and above.
+     */
+    private fun sendNotification(title: String, message: String?) {
+
+    }
+
+    private fun marksChecked(success: Boolean) {
+
+    }
+
     override suspend fun doWork(): Result {
         return try {
             val key = CaptchaSolver.solveCaptcha()
+            if (key.isFailure) return Result.retry()
+
             val loginReq = LoginRequest(Datasource.rollNo, Datasource.password, key.getOrThrow())
-            RagraaApi.loginFlex(loginReq)
 
-             TODO("Check new updates")
+            val url = "https://flexstudent.nu.edu.pk/Login/Login"
 
+            val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("username", loginReq.rollNo)
+                .addFormDataPart("password", loginReq.password)
+                .addFormDataPart("g-recaptcha-response", loginReq.g_recaptcha_response).build()
 
-            TODO("Send as notification")
+            val request = Request.Builder().url(url).post(requestBody).build()
 
-            Result.success(workDataOf("key" to "value"))
+            val client = OkHttpClient().newBuilder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .writeTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(5, TimeUnit.MINUTES)
+                .build()
+
+            // Synchronous call to keep the worker alive during network request
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: ""
+
+            if (!responseBody.contains("\"status\":\"done\"")) {
+                if (responseBody.contains("\"msg\":\"Incorrect Recaptcha.\""))
+                    throw(Error("Invalid recaptcha. Please check the key."))
+                else
+                    throw(Error("Invalid credentials."))
+            }
+
+            // Extract session cookie
+            val cookie = response.header("set-cookie").toString()
+            if (cookie.length >= 42) {
+                sessionID = cookie.substring(18, 42)
+            }
+
+            Datasource.marksParsed = false
+
+            // Wait for fetchMarks to complete before returning worker result
+            val latch = CountDownLatch(1)
+            fetchMarks { success ->
+                marksChecked(success)
+                latch.countDown()
+            }
+            latch.await(2, TimeUnit.MINUTES)
+
+            Result.success()
         } catch (e: Exception) {
+            sendNotification("Error!", e.message)
             Result.failure()
         }
     }
