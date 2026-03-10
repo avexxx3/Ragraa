@@ -34,7 +34,38 @@ class PeriodicWorker(appContext: Context, workerParams: WorkerParameters) :
     }
 
     private fun marksChecked(success: Boolean) {
+        if (!success) return
 
+        if(Datasource.newAdditions.isEmpty())
+            return
+
+        var message = "New marks added for"
+
+        if (Datasource.newAdditions.size == 1) {
+            message += " ${Datasource.newAdditions.first().first}'s ${Datasource.newAdditions.first().second}"
+        }
+        else {
+            message += ":"
+            val courses = Datasource.newAdditions.groupBy { it.first }
+            val size = courses.size
+            var counter = 0
+
+            for(course in courses) {
+                message += "\n${course.key}'s "
+                for(section in course.value) {
+                    message += section.second
+                    if(section != course.value.last())
+                        message += ", "
+                }
+
+                if(++counter != size)
+                    message += ","
+            }
+
+            message += '.'
+        }
+
+        sendNotification("New Marks Uploaded!", message)
     }
 
     override suspend fun doWork(): Result {
