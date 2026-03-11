@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit
 import android.media.MediaScannerConnection
 import android.os.Environment
 import java.io.File
+import androidx.core.content.edit
 
 
 object RagraaApi {
@@ -71,7 +72,7 @@ object RagraaApi {
         })
     }
 
-    private fun fetchMarks() {
+    fun fetchMarks(backgroundCheck: (Boolean) -> Unit = {}) {
         updateStatus(Pair("Fetching marks..", 3))
 
         val url = "https://flexstudent.nu.edu.pk/Student/StudentMarks?semid=20${Datasource.semId}"
@@ -90,6 +91,7 @@ object RagraaApi {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
+                backgroundCheck(false)
                 updateStatus(Pair("Error: Failed to connect to flex", 0))
             }
 
@@ -106,22 +108,22 @@ object RagraaApi {
                     "dd MMM, HH:mm", Locale.getDefault()
                 ).format(Calendar.getInstance().time)
 
-                sharedPreferences.edit().putString("date", Datasource.date).apply()
+                sharedPreferences.edit { putString("date", Datasource.date) }
 
-                if (Jsoup.parse(marksResponse).body().getElementsByClass("GrandtotalColumn")
-                        .isNotEmpty() || Datasource.transcriptResponse.isEmpty()
+                if ((Jsoup.parse(marksResponse).body().getElementsByClass("GrandtotalColumn")
+                        .isNotEmpty() || Datasource.transcriptResponse.isEmpty()) && backgroundCheck == {}
                 ) {
                     val menuItems = Jsoup.parse(marksResponse).body()
                         .getElementsByClass("m-menu__item  m-menu__item--submenu").html()
                     val transcriptItem =
-                        menuItems.substring(menuItems.indexOf("/Student/Transcript"))
-                    val transcriptURL = transcriptItem.substring(0, transcriptItem.indexOf('\"'))
+                        menuItems.substringAfter("/Student/Transcript")
+                    val transcriptURL = transcriptItem.substringBefore('\"')
                     fetchTranscript(transcriptURL)
                 }
 
-                updateStatus(Pair("Fetched marks successfully", 3))
-
                 Datasource.parseMarks()
+                backgroundCheck(true)
+                updateStatus(Pair("Fetched marks successfully", 3))
             }
         })
     }
