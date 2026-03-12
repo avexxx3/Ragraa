@@ -30,7 +30,41 @@ class PeriodicWorker(appContext: Context, workerParams: WorkerParameters) :
      * Handles notification channel creation for Android Oreo and above.
      */
     private fun sendNotification(title: String, message: String?) {
+        val channelId = "flex_updates"
+        val notificationManager =
+            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        // Create Notification Channel for Android O+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Flex Updates"
+            val descriptionText = "Notifications for new marks and attendance"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId, name, importance).apply {
+                description = descriptionText
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Intent to open the app when notification is clicked
+        val intent = Intent(applicationContext, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            applicationContext, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val builder = NotificationCompat.Builder(applicationContext, channelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message)) // Support long messages
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        // Use a unique ID based on time to avoid overwriting previous notifications
+        notificationManager.notify(System.currentTimeMillis().toInt(), builder.build())
     }
 
     private fun marksChecked(success: Boolean) {
