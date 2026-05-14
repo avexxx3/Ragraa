@@ -51,7 +51,9 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
             item {
                 Text(
                     text = String.format(Locale.getDefault(), "%.2f", uiState.overallGpa),
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(top = 4.dp)
                 )
 

@@ -34,10 +34,11 @@ fun CourseDetails(course: Course, showAttendance: (() -> Unit)? = null) {
         item {
             Text(
                 text = course.name.substring(7),
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(24.dp)
             )
 
             if (showAttendance != null) Button(

@@ -106,6 +106,7 @@ class HomeViewModel : ViewModel() {
 
     fun updateCaptchaKey(key: String) {
         captchaKey = key
+        Datasource.captchaKey = key
         CaptchaSolver.setCKey(key)
         updateUI()
     }

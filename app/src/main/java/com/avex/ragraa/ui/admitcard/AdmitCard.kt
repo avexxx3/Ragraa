@@ -53,7 +53,9 @@ fun AdmitCard(
 
             Text(
                 text = stringResource(R.string.admit_card),
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 32.dp)
             )

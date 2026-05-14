@@ -37,8 +37,10 @@ fun TranscriptScreen(
         item {
             Text(
                 "${stringResource(R.string.cgpa)}: ${"%.2f".format(uiState.transcript.cgpa)}",
-                Modifier.padding(bottom = 16.dp),
-                style = MaterialTheme.typography.displayMedium
+                Modifier.padding(vertical = 24.dp),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
             )
 
             for (semester in uiState.transcript.semesters) {
