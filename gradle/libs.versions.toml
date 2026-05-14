@@ -1,6 +1,7 @@
 [versions]
 agp = "8.3.2"
 biometric = "1.1.0"
+firebaseBom = "33.1.2"
 gson = "2.11.0"
 jsoupVersion = "1.14.3"
 kotlin = "1.9.21"
@@ -21,6 +22,7 @@ material = "1.6.8"
 objectboxGradlePlugin = "3.8.0"
 appcompat = "1.7.0"
 uiTextGoogleFonts = "1.6.8"
+workRuntimeKtx = "2.7.1"
 xcaptchaJava = "1.3.2"
 
 [libraries]
@@ -30,6 +32,9 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jsoup-jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
