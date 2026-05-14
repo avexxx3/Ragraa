@@ -13,6 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,15 +33,21 @@ fun MarksScreen(
     viewModel: MarksViewModel, newNavController: NavHostController = rememberNavController()
 ) {
 
-    LaunchedEffect(Unit) {
-        viewModel.cascadeUpdate()
-    }
-
     BackHandler {
         viewModel.navController.navigate("home")
     }
 
     val uiState = viewModel.uiState.collectAsState().value
+
+    LaunchedEffect(uiState.currentCourse) {
+        if (uiState.currentCourse != null) {
+            newNavController.navigate("course") {
+                launchSingleTop = true
+            }
+        } else {
+            newNavController.popBackStack("marks", inclusive = false)
+        }
+    }
 
 
 
@@ -80,7 +90,21 @@ fun MarksScreen(
         }, exitTransition = {
             slideOutHorizontally(targetOffsetX = { it })
         }) {
-            CourseDetails(course = uiState.currentCourse!!) { viewModel.showAttendance() }
+            BackHandler {
+                viewModel.showCourse(null)
+            }
+            
+            // Persist the course data during the exit transition to avoid NPE/blank screen
+            var lastValidCourse by remember { mutableStateOf(uiState.currentCourse) }
+            if (uiState.currentCourse != null) {
+                lastValidCourse = uiState.currentCourse
+            }
+            
+            val displayCourse = uiState.currentCourse ?: lastValidCourse
+
+            displayCourse?.let {
+                CourseDetails(course = it) { viewModel.showAttendance() }
+            }
         }
     }
 }

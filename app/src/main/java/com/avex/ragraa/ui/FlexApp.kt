@@ -3,7 +3,6 @@ package com.avex.ragraa.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -61,10 +60,8 @@ import com.avex.ragraa.ui.home.HomeScreen
 import com.avex.ragraa.ui.home.HomeViewModel
 import com.avex.ragraa.ui.home.Settings
 import com.avex.ragraa.ui.home.SettingsButton
-import com.avex.ragraa.ui.login.LoadingScreen
 import com.avex.ragraa.ui.login.LoginScreen
 import com.avex.ragraa.ui.login.LoginViewModel
-import com.avex.ragraa.ui.login.WebViewScreen
 import com.avex.ragraa.ui.marks.AttendancePopup
 import com.avex.ragraa.ui.marks.MarksScreen
 import com.avex.ragraa.ui.marks.MarksViewModel
@@ -104,7 +101,7 @@ fun FlexApp(
     var CurrentScreen: Screens by remember { mutableStateOf(Datasource.initScreen) }
 
     ModalNavigationDrawer(drawerState = drawerState,
-        gesturesEnabled = (CurrentScreen != Screens.Web && CurrentScreen != Screens.Login) || (Datasource.rollNo.isNotEmpty() && loginViewModel.uiState.collectAsState().value.showButtons && !loginViewModel.uiState.collectAsState().value.isCompleted && CurrentScreen == Screens.Login),
+        gesturesEnabled = (CurrentScreen != Screens.Login) || (Datasource.rollNo.isNotEmpty() && loginViewModel.uiState.collectAsState().value.showButtons && !loginViewModel.uiState.collectAsState().value.isCompleted && CurrentScreen == Screens.Login),
         drawerContent = {
             ModalDrawerSheet(drawerShape = NavShape(0.dp, 0.7f)) {
                 Image(
@@ -116,13 +113,12 @@ fun FlexApp(
                 val listOfItems = Screens.entries.toTypedArray()
 
                 for (screenItem in listOfItems) {
-                    if (screenItem != Screens.Web)
                     NavigationDrawerItem(
                         screenItem.stringRes, screenItem.icon, CurrentScreen.Title, screenItem.Title
                     ) {
-                        scope.launch { drawerState.apply { close() } }; navController.navigate(
-                        screenItem.Title
-                    )
+                        scope.launch { drawerState.apply { close() } }
+                        if (screenItem == Screens.Marks) marksViewModel.showCourse(null)
+                        navController.navigate(screenItem.Title)
                     }
                 }
             }
@@ -150,7 +146,7 @@ fun FlexApp(
             navController, if (sharedPreferences.getBoolean(
                     "startupRefresh", false
                 )
-            ) Screens.Web.Title else CurrentScreen.Title,
+            ) Screens.Login.Title else CurrentScreen.Title,
             modifier = Modifier.safeDrawingPadding()
         ) {
 
@@ -159,7 +155,15 @@ fun FlexApp(
                 Column {
                     NavBarHeader(R.string.home,
                         trailingIcon = { SettingsButton { homeViewModel.toggleSettings() } }) { navBar() }
-                    HomeScreen(viewModel = homeViewModel)
+                    HomeScreen(viewModel = homeViewModel) { courseName ->
+                        if (courseName.isEmpty()) {
+                            marksViewModel.showCourse(null)
+                        } else {
+                            val course = Datasource.courses.find { it.name == courseName }
+                            marksViewModel.showCourse(course)
+                        }
+                        navController.navigate(Screens.Marks.Title)
+                    }
                 }
                 AnimatedVisibility(
                     homeViewModel.uiState.collectAsState().value.showSettings,
@@ -197,28 +201,6 @@ fun FlexApp(
                 }
             }
 
-            composable(Screens.Web.Title) {
-                CurrentScreen = Screens.Web
-
-                var showLoading by remember { mutableStateOf(true) }
-
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    WebViewScreen(
-                        updateCaptchaToken = { loginViewModel.updateCaptchaToken(it) },
-                        navLogin = { navController.navigate(Screens.Login.Title) },
-                        updateLoading = { showLoading = it }
-                    )
-
-                    AnimatedVisibility(
-                        visible = showLoading,
-                        enter = fadeIn(),
-                        exit = slideOutHorizontally { -it }
-                    ) {
-                        LoadingScreen()
-                    }
-                }
-            }
-
             composable(Screens.Calculator.Title) {
                 CurrentScreen = Screens.Calculator
                 Column {
@@ -243,7 +225,6 @@ fun FlexApp(
 
             composable(Screens.PastPapers.Title) {
                 CurrentScreen = Screens.PastPapers
-
                 Column {
                     NavBarHeader(R.string.past_papers) { navBar() }
                     PastPaperFolder { navController.navigate(Screens.Home.Title) }
@@ -272,7 +253,7 @@ fun FlexApp(
 
     //Shows the update prompt only when a user isn't on any of the below mentioned screens,
     // so as to not disturb while inputting something
-    if (!listOf(Screens.Web, Screens.Login, Screens.Calculator).contains(CurrentScreen)) Updater()
+    if (!listOf(Screens.Login, Screens.Calculator).contains(CurrentScreen)) Updater()
 
     var promptKey by remember { mutableStateOf(false) }
 
@@ -288,7 +269,7 @@ enum class Screens(val Title: String, val stringRes: Int, val icon: ImageVector)
     Home("home", R.string.home, Icons.Filled.Home),
     Login("login", R.string.login, Icons.AutoMirrored.Filled.Login),
     Marks("marks", R.string.marks, Icons.Filled.Percent),
-    Web("web", R.string.refresh, Icons.Filled.Refresh),
+    Refresh("login", R.string.refresh, Icons.Filled.Refresh),
     Calculator("calculator", R.string.calculator, Icons.Filled.Grade),
     Transcript("transcript", R.string.transcript, Icons.AutoMirrored.Filled.Notes),
     PastPapers("pastpapers", R.string.past_papers, Icons.Filled.Map),
