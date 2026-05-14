@@ -54,8 +54,9 @@ object RagraaApi {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (!response.body?.string().toString().contains("\"status\":\"done\"")) {
-                    if (response.body?.string().toString().contains("\"msg\":\"Incorrect Recaptcha.\""))
+                val responseString = response.body?.string().toString()
+                if (!responseString.contains("\"status\":\"done\"")) {
+                    if (responseString.contains("\"msg\":\"Incorrect Recaptcha.\""))
                         updateStatus(Pair("Error: Invalid captcha.", 0))
                     else
                         updateStatus(Pair("Error: Invalid credentials", 0))
@@ -65,18 +66,24 @@ object RagraaApi {
                 updateStatus(Pair("Logged in successfully", 0))
                 sessionID = response.header("set-cookie").toString().substring(18, 42)
 
+                val sameUser = loginRequest.rollNo == Datasource.rollNo
+
+                if (!sameUser) Datasource.bitmap = null
+
                 Datasource.rollNo = loginRequest.rollNo
                 Datasource.password = loginRequest.password
                 Datasource.marksParsed = false
                 Datasource.attendanceParsed = false
-                fetchImage(loginRequest.rollNo)
+                Datasource.transcriptResponse = ""
+
+                if (!sameUser || Datasource.bitmap == null) fetchImage(loginRequest.rollNo)
                 fetchAttendance()
                 fetchMarks()
             }
         })
     }
 
-    fun fetchMarks(backgroundCheck: (Boolean) -> Unit = {}) {
+    fun fetchMarks(backgroundCheck: ((Boolean) -> Unit)? = null) {
         updateStatus(Pair("Fetching marks..", 3))
 
         val url = "https://flexstudent.nu.edu.pk/Student/StudentMarks?semid=20${Datasource.semId}"
@@ -95,7 +102,7 @@ object RagraaApi {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                backgroundCheck(false)
+                backgroundCheck?.invoke(false)
                 updateStatus(Pair("Error: Failed to connect to flex", 0))
             }
 
@@ -115,18 +122,16 @@ object RagraaApi {
                 sharedPreferences.edit { putString("date", Datasource.date) }
 
                 if ((Jsoup.parse(marksResponse).body().getElementsByClass("GrandtotalColumn")
-                        .isNotEmpty() || Datasource.transcriptResponse.isEmpty()) && backgroundCheck == {}
+                        .isNotEmpty() || Datasource.transcriptResponse.isEmpty()) && backgroundCheck == null
                 ) {
-                    val menuItems = Jsoup.parse(marksResponse).body()
-                        .getElementsByClass("m-menu__item  m-menu__item--submenu").html()
-                    val transcriptItem =
-                        menuItems.substringAfter("/Student/Transcript")
-                    val transcriptURL = transcriptItem.substringBefore('\"')
+                    val doc = Jsoup.parse(marksResponse)
+                    val transcriptLink = doc.select("a[href*=/Student/Transcript]").firstOrNull()
+                    val transcriptURL = transcriptLink?.attr("href") ?: "/Student/Transcript"
                     fetchTranscript(transcriptURL)
                 }
 
                 Datasource.parseMarks()
-                backgroundCheck(true)
+                backgroundCheck?.invoke(true)
                 updateStatus(Pair("Fetched marks successfully", 3))
             }
         })

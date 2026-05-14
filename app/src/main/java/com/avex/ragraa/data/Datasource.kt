@@ -56,7 +56,7 @@ object Datasource {
     var courses: MutableList<Course> = mutableListOf()
 
     // tracks new additions for background notif system
-    var newAdditions: MutableSet<Pair<String, String>> = mutableSetOf()
+    var newAdditions: MutableSet<Triple<String, String, String>> = mutableSetOf()
 
     private var marksDatabase: MutableList<CourseMarks> = mutableListOf()
     private var attendanceDatabase: MutableList<CourseAttendance> = mutableListOf()
@@ -251,51 +251,52 @@ object Datasource {
             var projectedAvg = 0f
             var grandTotalExists = false
 
-            for ((i, courseWork) in course.getElementsByClass("mb-0").withIndex()) {
-                if (i == course.getElementsByClass("mb-0").size - 1) {
-                    if (course.getElementsByClass("sum_table table m-table m-table--head-bg-info table-bordered table-striped table-responsive")[i].getElementsByClass(
-                            "GrandtotalColumn"
-                        ).isNotEmpty()
-                    ) grandTotalExists = true
+            val mb0 = course.getElementsByClass("mb-0")
+            val tables = course.getElementsByClass("sum_table table m-table m-table--head-bg-info table-bordered table-striped table-responsive")
+            val obtMarksElements = course.getElementsByClass("text-center totalColObtMarks")
+            val weightageElements = course.getElementsByClass("text-center totalColweightage")
 
+            for ((i, courseWork) in mb0.withIndex()) {
+                if (i == mb0.size - 1) {
+                    if (tables.getOrNull(i)?.getElementsByClass("GrandtotalColumn")?.isNotEmpty() == true) grandTotalExists = true
                     continue
                 }
+
+                val currentTable = tables.getOrNull(i) ?: continue
 
                 val listOfMarks: MutableList<Marks> = mutableListOf()
                 var number = 1
 
-                for (courseWorkMerit in course.getElementsByClass("sum_table table m-table m-table--head-bg-info table-bordered table-striped table-responsive")[i].getElementsByClass(
-                    "calculationrow"
-                )) {
+                for (courseWorkMerit in currentTable.getElementsByClass("calculationrow")) {
                     val temp: MutableList<Float> = mutableListOf()
 
                     for ((v, individualItem) in courseWorkMerit.getElementsByClass("text-center")
                         .withIndex()) {
                         if (v == 0) continue
 
-                        val thing: Float = when (individualItem.text()) {
-                            "", "-" -> (-1).toFloat()
-                            else -> individualItem.text().toFloat()
+                        val thing: Float = when (val text = individualItem.text()) {
+                            "", "-" -> -1f
+                            else -> text.toFloatOrNull() ?: -1f
                         }
 
                         temp.add(thing)
                     }
 
-                    totalWeightage += temp[0]
+                    if (temp.isNotEmpty()) {
+                        totalWeightage += temp[0]
 
-
-
-                    listOfMarks.add(
-                        Marks(
-                            number,
-                            temp[0],
-                            temp[1],
-                            temp[2],
-                            temp[3],
-                            temp[5],
-                            temp[6],
+                        listOfMarks.add(
+                            Marks(
+                                number,
+                                temp[0],
+                                temp.getOrNull(1) ?: 0f,
+                                temp.getOrNull(2) ?: 0f,
+                                temp.getOrNull(3) ?: 0f,
+                                temp.getOrNull(5) ?: 0f,
+                                temp.getOrNull(6) ?: 0f,
+                            )
                         )
-                    )
+                    }
 
                     number++
                 }
@@ -307,10 +308,8 @@ object Datasource {
                         average += item.average / item.total * item.weightage
                 }
 
-                val obtained =
-                    course.getElementsByClass("text-center totalColObtMarks")[i].text().toFloat()
-                val total =
-                    course.getElementsByClass("text-center totalColweightage")[i].text().toFloat()
+                val obtained = obtMarksElements.getOrNull(i)?.text()?.toFloatOrNull() ?: 0f
+                val total = weightageElements.getOrNull(i)?.text()?.toFloatOrNull() ?: 0f
 
                 projectedAvg += if (average.isNaN()) 0f else average
                 projectedTotal += total
@@ -346,7 +345,7 @@ object Datasource {
 
             newDatabase.add(
                 CourseMarks(
-                    course.getElementsByTag("h5")[0].text(),
+                    course.getElementsByTag("h5").firstOrNull()?.text() ?: "Unknown",
                     listOfItems,
                     grandTotalExists = grandTotalExists
                 )
@@ -372,7 +371,7 @@ object Datasource {
         }
 
         val databaseCourseNames = marksDatabase.map { it.courseName }
-        newAdditions = mutableSetOf() // CourseName, Marks
+        newAdditions = mutableSetOf() // CourseName, Section, Marks
 
 
         for (course in newDatabase) {
@@ -384,7 +383,7 @@ object Datasource {
                     section.new = true
                     for (marks in section.listOfMarks) marks.new = true
                 }
-                newAdditions.add(Pair(course.courseName, "ALL"))
+                newAdditions.add(Triple(course.courseName, "ALL", ""))
                 continue
             }
 
@@ -395,7 +394,7 @@ object Datasource {
                 if (index2 == -1) {
                     course.new = true
                     section.new = true
-                    newAdditions.add(Pair(course.courseName, section.name))
+                    newAdditions.add(Triple(course.courseName, section.name, "${section.obtained}/${section.total}"))
                     for (marks in section.listOfMarks) {
                         marks.new = true
                     }
@@ -408,7 +407,7 @@ object Datasource {
                 for (marks in section.listOfMarks) {
                     val newMarks = marks.copy(weightage = 0f, average = 0f, minimum = 0f, maximum = 0f)
                     if (!originalMarks.contains(newMarks)) {
-                        newAdditions.add(Pair(course.courseName, section.name))
+                        newAdditions.add(Triple(course.courseName, section.name, "${marks.obtained}/${marks.total}"))
                         course.new = true
                         section.new = true
                         marks.new = true
@@ -439,53 +438,45 @@ object Datasource {
 
         val courses = htmlFile.getElementsByAttributeValue("role", "tabpanel")
 
-        var index = 0
         for (course in courses) {
-            val courseName = course.getElementsByClass("col-md-6")[0].text()
+            val courseName = course.getElementsByClass("col-md-6").firstOrNull()?.text() ?: "Unknown"
 
-            index++
-
-            val intermediateObjectIForgotWhatItRepresents =
+            val intermediateObject =
                 if (course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")
                         .isNotEmpty()
                 )
                     course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-success")[0]
                 else
-                    course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-danger")[0]
+                    course.getElementsByClass("progress-bar progress-bar-striped progress-bar-animated bg-danger").firstOrNull()
 
-            if (intermediateObjectIForgotWhatItRepresents.text().isEmpty()
-            )
+            if (intermediateObject == null || intermediateObject.text().isEmpty())
                 continue
 
-            val percentage =
-                intermediateObjectIForgotWhatItRepresents.text()
-                    .substring(
-                        0,
-                        intermediateObjectIForgotWhatItRepresents.text().length - 2
-                    ).toFloat()
+            val percentageStr = intermediateObject.text()
+            val percentage = if (percentageStr.length >= 2) {
+                percentageStr.substring(0, percentageStr.length - 2).toFloatOrNull() ?: 0f
+            } else 0f
+
             val listAttendance: MutableList<Attendance> = mutableListOf()
 
-            val courseDetails =
-                course.getElementsByClass("table table-bordered table-responsive m-table m-table--border-info m-table--head-bg-info")[0].getElementsByClass(
-                    "text-center"
-                )
+            val table = course.getElementsByClass("table table-bordered table-responsive m-table m-table--border-info m-table--head-bg-info").firstOrNull()
+            val courseDetails = table?.getElementsByClass("text-center") ?: listOf()
 
             var date: String? = null
             var presence: Char? = null
             var absent = 0
 
-
-
             for (textCenter in courseDetails) {
-                if (textCenter.text().contains('-')) date = textCenter.text()
+                val text = textCenter.text()
+                if (text.contains('-')) date = text
 
-                if (textCenter.text().length > 1)
+                if (text.length > 1)
                     continue
 
-                if (textCenter.text()[0] == 'P' || textCenter.text()[0] == 'A' || textCenter.text()[0] == 'L') {
-                    presence = textCenter.text()[0]
+                if (text.isNotEmpty() && (text[0] == 'P' || text[0] == 'A' || text[0] == 'L')) {
+                    presence = text[0]
                 }
-                if (textCenter.text()[0] == 'A') absent++
+                if (text.isNotEmpty() && text[0] == 'A') absent++
 
                 if (date != null && presence != null) {
                     listAttendance.add(Attendance(date, presence))
@@ -510,37 +501,49 @@ object Datasource {
         val semesterList: MutableList<Semester> = mutableListOf()
         var cgpa = 0f
 
-        for (semester in htmlFile.getElementsByClass("col-md-6")) {
+        val semesters = htmlFile.getElementsByClass("col-md-6")
+
+        for (semester in semesters) {
             val courseList: MutableList<TranscriptCourse> = mutableListOf()
+            val semesterName = semester.select("h5").text().trim()
 
-            val semesterName = semester.getElementsByTag("h5").text()
+            for (row in semester.select("tbody tr")) {
+                val tds = row.select("td")
+                if (tds.size < 6) continue
 
-            for (course in semester.getElementsByTag("tr")) {
-                if (course.getElementsByTag("th").isNotEmpty()) continue
+                val grade = tds[4].text().trim()
+                val isRelative = tds[0].select("a").isNotEmpty() || tds[0].attr("style").contains("underline")
 
-                val grade = course.getElementsByTag("td")[4].text()
-
-                val tempCourse = TranscriptCourse(
-                    courseID = course.getElementsByTag("td")[0].text(),
-                    courseName = course.getElementsByTag("td")[1].text(),
-                    creditHours = course.getElementsByTag("td")[3].text().toInt(),
-                    grade = if (grade == "I") "" else grade,
-                    gpa = course.getElementsByTag("td")[5].text().toFloat(),
-                    isRelative = course.html().contains("underline")
+                courseList.add(
+                    TranscriptCourse(
+                        courseID = tds[0].text().trim(),
+                        courseName = tds[1].text().trim(),
+                        creditHours = tds[3].text().trim().toIntOrNull() ?: 0,
+                        grade = if (grade == "I") "" else grade,
+                        gpa = tds[5].text().trim().toFloatOrNull() ?: 0f,
+                        isRelative = isRelative
+                    )
                 )
-
-                courseList.add(tempCourse)
             }
 
-            val dataList = semester.getElementsByClass("pull-right")[0].html()
+            var sgpa = 0f
+            val pullRight = semester.select(".pull-right").firstOrNull()
+            if (pullRight != null) {
+                val text = pullRight.text().replace(" ", "")
 
-            val cData = dataList.substring(dataList.indexOf("CGPA"))
-            cgpa = cData.substring(5, cData.indexOf('<')).toFloat()
+                if (text.contains("CGPA:")) {
+                    val valStr = text.substringAfter("CGPA:").takeWhile { it.isDigit() || it == '.' }
+                    cgpa = valStr.toFloatOrNull() ?: cgpa
+                }
+                if (text.contains("SGPA:")) {
+                    val valStr = text.substringAfter("SGPA:").takeWhile { it.isDigit() || it == '.' }
+                    sgpa = valStr.toFloatOrNull() ?: 0f
+                }
+            }
 
-            val sData = dataList.substring(dataList.indexOf("SGPA"))
-            val sgpa = sData.substring(5, sData.indexOf('<')).toFloat()
-
-            semesterList.add(Semester(sgpa, semesterName, courseList))
+            if (courseList.isNotEmpty() || semesterName.isNotEmpty()) {
+                semesterList.add(Semester(sgpa, semesterName, courseList))
+            }
         }
 
         transcriptDatabase = Transcript(cgpa, semesterList)
