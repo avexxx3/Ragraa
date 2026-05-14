@@ -77,8 +77,6 @@ class LoginViewModel : ViewModel() {
 
         viewModelScope.launch {
             loginFlex()
-            showButtons = true
-            updateUI()
         }
     }
 
@@ -97,6 +95,11 @@ class LoginViewModel : ViewModel() {
     //This will only move to the next screen if status fetches marks successfully
     private fun updateStatus(newStatus: String, index: Int) {
         status[index] = newStatus
+
+        if (status[0].contains("captcha", ignoreCase = true)) {
+            captchaToken = ""
+            captchaSolved = false
+        }
 
         if ((status[4].isEmpty() && status[index].contains("Fetched marks successfully") || status[index].contains(
                 "Fetched attendance successfully"

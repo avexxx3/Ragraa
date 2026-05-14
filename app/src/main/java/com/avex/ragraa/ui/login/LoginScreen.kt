@@ -228,7 +228,7 @@ fun LoginScreen(
             textAlign = TextAlign.Center
         )
 
-        if (uiState.captchaSolved && !uiState.isCompleted) {
+        if (uiState.captchaSolved && !uiState.isCompleted && uiState.showButtons) {
             Button(
                 modifier = Modifier
                     .padding(horizontal = 32.dp, vertical = 16.dp)

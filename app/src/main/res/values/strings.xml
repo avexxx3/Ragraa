@@ -54,4 +54,12 @@
     <string name="final_exam">Final</string>
     <string name="download_admit_card">Download Admit Card</string>
     <string name="select_exam_type">Select Exam Type</string>
+    <string name="new_additions">New additions</string>
+    <string name="onboarding_welcome_title">Welcome to Ragraa</string>
+    <string name="onboarding_welcome_desc">Your streamlined companion for university life. Track marks, attendance, and more with ease.</string>
+    <string name="onboarding_captcha_title">Automated Solving</string>
+    <string name="onboarding_captcha_desc">Ragraa can solve CAPTCHAs automatically using 2Captcha. If you have an API key, enter it here. This is optional.</string>
+    <string name="onboarding_semester_title">Current Semester</string>
+    <string name="onboarding_semester_desc">Please select your current semester to fetch the correct data.</string>
+    <string name="onboarding_finish">Let\'s Go!</string>
 </resources>

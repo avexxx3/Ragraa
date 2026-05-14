@@ -68,6 +68,7 @@ import com.avex.ragraa.ui.marks.MarksViewModel
 import com.avex.ragraa.ui.misc.NavBarHeader
 import com.avex.ragraa.ui.misc.NavShape
 import com.avex.ragraa.ui.misc.NavigationDrawerItem
+import com.avex.ragraa.ui.Onboarding
 import com.avex.ragraa.ui.pastpapers.PastPaperFolder
 import com.avex.ragraa.ui.theme.sweetie_pie
 import com.avex.ragraa.ui.transcript.TranscriptScreen
@@ -258,8 +259,9 @@ fun FlexApp(
     var promptKey by remember { mutableStateOf(false) }
 
     key(promptKey) {
-        if (Datasource.firstTime) GenderPrompt {
+        if (Datasource.firstTime) Onboarding {
             promptKey = !promptKey; homeViewModel.updateImage()
+            navController.navigate(Screens.Login.Title)
         }
     }
 
@@ -269,7 +271,6 @@ enum class Screens(val Title: String, val stringRes: Int, val icon: ImageVector)
     Home("home", R.string.home, Icons.Filled.Home),
     Login("login", R.string.login, Icons.AutoMirrored.Filled.Login),
     Marks("marks", R.string.marks, Icons.Filled.Percent),
-    Refresh("login", R.string.refresh, Icons.Filled.Refresh),
     Calculator("calculator", R.string.calculator, Icons.Filled.Grade),
     Transcript("transcript", R.string.transcript, Icons.AutoMirrored.Filled.Notes),
     PastPapers("pastpapers", R.string.past_papers, Icons.Filled.Map),
