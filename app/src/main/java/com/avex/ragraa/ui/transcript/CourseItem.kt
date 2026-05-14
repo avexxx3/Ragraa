@@ -1,14 +1,17 @@
 package com.avex.ragraa.ui.transcript
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.dataclasses.TranscriptCourse
@@ -20,15 +23,24 @@ fun CourseItem(course: TranscriptCourse) {
     val textColor = MaterialTheme.colorScheme.onSecondaryContainer
     val textStyle = MaterialTheme.typography.titleMedium
 
-    Text(
-        course.courseName,
-        style = MaterialTheme.typography.headlineSmall,
-        textAlign = TextAlign.Center,
-        color = textColor,
-        modifier = Modifier
-            .padding(horizontal = 36.dp)
-            .padding(top = 8.dp)
-    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            course.courseID,
+            style = MaterialTheme.typography.labelLarge,
+            color = textColor.copy(alpha = 0.7f),
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(
+            course.courseName,
+            style = MaterialTheme.typography.headlineSmall.copy(
+                textDecoration = if (course.isRelative) TextDecoration.Underline else TextDecoration.None
+            ),
+            textAlign = TextAlign.Center,
+            color = textColor,
+            modifier = Modifier
+                .padding(horizontal = 36.dp)
+        )
+    }
     Row(Modifier.padding(bottom = 8.dp, top = 4.dp)) {
         Spacer(Modifier.weight(1f))
         Text(

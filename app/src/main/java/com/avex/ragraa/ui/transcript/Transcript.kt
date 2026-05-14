@@ -36,7 +36,7 @@ fun TranscriptScreen(
     ) {
         item {
             Text(
-                "${stringResource(R.string.cgpa)}: ${uiState.transcript.cgpa}",
+                "${stringResource(R.string.cgpa)}: ${"%.2f".format(uiState.transcript.cgpa)}",
                 Modifier.padding(bottom = 16.dp),
                 style = MaterialTheme.typography.displayMedium
             )

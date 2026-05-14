@@ -78,7 +78,7 @@ fun SemesterItem(semester: Semester) {
                 Spacer(Modifier.weight(1f))
 
                 Text(
-                    text = "${stringResource(R.string.sgpa)}: ${semester.sgpa}",
+                    text = "${stringResource(R.string.sgpa)}: ${"%.2f".format(semester.sgpa)}",
                     style = textStyle,
                     textAlign = TextAlign.Center,
                     color = textColor,
