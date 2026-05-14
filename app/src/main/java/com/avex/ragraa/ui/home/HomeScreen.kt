@@ -96,10 +96,9 @@ fun HomeScreen(
                     )
 
                     ClickableCard(
-                        Screen = Screens.Refresh,
-                        onClick = {
-                            viewModel.refresh()
-                        },
+                        Screen = Screens.Calculator,
+                        onClick =  {viewModel.navController.navigate(Screens.Calculator.Title) }
+                        ,
                         modifier = Modifier.weight(1f)
                     )
                 }
