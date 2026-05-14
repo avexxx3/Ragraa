@@ -4,34 +4,25 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.VpnKey
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
-import com.avex.ragraa.data.CaptchaSolver
 
 @Composable
 fun Settings(viewModel: HomeViewModel) {
@@ -42,64 +33,87 @@ fun Settings(viewModel: HomeViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
     Box(modifier = Modifier
-        .background(Color(0, 0, 0, 230))
+        .background(Color.Black.copy(alpha = 0.8f))
         .fillMaxSize()
         .clickable { viewModel.toggleSettings() }) {
-        Card(modifier = Modifier
-            .align(Alignment.Center)
-            .fillMaxWidth()
-            .padding(20.dp)
-            .clickable {}) {
-            Column(modifier = Modifier
-                .padding(vertical = 4.dp)
-                .animateContentSize()) {
+        Card(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(24.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { },
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(12.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .animateContentSize()
+            ) {
+                Text(
+                    text = "Settings",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
                 SettingItem(
-                    R.string.refresh_on_startup,
-                    uiState.startupRefresh
+                    icon = Icons.Default.Refresh,
+                    text = R.string.refresh_on_startup,
+                    checked = uiState.startupRefresh
                 ) { viewModel.toggleStartupRefresh() }
 
                 SettingItem(
-                    R.string.show_profile_picture,
-                    uiState.showImage
+                    icon = Icons.Default.AccountCircle,
+                    text = R.string.show_profile_picture,
+                    checked = uiState.showImage
                 ) { viewModel.toggleImage() }
 
-                if (!uiState.showImage)
+                if (!uiState.showImage) {
                     SettingItem(
-                        R.string.male_cat,
-                        uiState.male
+                        icon = Icons.Default.Face,
+                        text = R.string.male_cat,
+                        checked = uiState.male
                     ) { viewModel.toggleCat() }
 
-                if (!uiState.male)
-                    SettingItem(
-                        R.string.niqa_cat,
-                        uiState.niqab
-                    ) { viewModel.toggleNiqab() }
+                    if (!uiState.male) {
+                        SettingItem(
+                            icon = Icons.Default.FilterVintage,
+                            text = R.string.niqa_cat,
+                            checked = uiState.niqab
+                        ) { viewModel.toggleNiqab() }
+                    }
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.outlineVariant)
 
                 SettingItem(
-                    R.string.override_system_theme,
-                    uiState.overrideTheme
+                    icon = Icons.Default.Palette,
+                    text = R.string.override_system_theme,
+                    checked = uiState.overrideTheme
                 ) {
                     viewModel.toggleOverride()
                 }
 
                 if (uiState.overrideTheme) {
                     SettingItem(
-                        R.string.dark_theme,
-                        uiState.darkTheme
+                        icon = if (uiState.darkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
+                        text = R.string.dark_theme,
+                        checked = uiState.darkTheme
                     ) { viewModel.toggleDark() }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
                     value = uiState.key,
                     onValueChange = { viewModel.updateCaptchaKey(it) },
                     textStyle = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = dimensionResource(id = R.dimen.padding_small)
-                        ),
+                    modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     label = {
                         Text(
@@ -107,15 +121,11 @@ fun Settings(viewModel: HomeViewModel) {
                             style = MaterialTheme.typography.labelLarge
                         )
                     },
-                    leadingIcon = { Icon(imageVector = Icons.Filled.VpnKey, contentDescription = null) },
-                    shape = CutCornerShape(topEnd = 10.dp, bottomStart = 10.dp),
+                    leadingIcon = { Icon(imageVector = Icons.Default.Key, contentDescription = null) },
+                    shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        focusedLabelColor = MaterialTheme.colorScheme.primary,
-                        focusedTextColor = MaterialTheme.colorScheme.primary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
                     )
                 )
             }
@@ -124,24 +134,32 @@ fun Settings(viewModel: HomeViewModel) {
 }
 
 @Composable
-fun SettingItem(text: Int, checked: Boolean, onClick: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+fun SettingItem(icon: ImageVector, text: Int, checked: Boolean, onClick: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
+            .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clickable { onClick() }) {
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() }
+            .padding(vertical = 8.dp, horizontal = 8.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
         Text(
-            stringResource(text),
-            Modifier
-                .padding(start = 12.dp)
-                .clickable { onClick() }
-                .weight(1f),
-            style = MaterialTheme.typography.titleLarge
+            text = stringResource(text),
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium
         )
         Switch(
             checked = checked,
-            onCheckedChange = { onClick() },
-            modifier = Modifier.padding(end = 12.dp)
+            onCheckedChange = { onClick() }
         )
     }
 }
