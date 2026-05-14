@@ -76,7 +76,9 @@ class PeriodicWorker(appContext: Context, workerParams: WorkerParameters) :
         var message = "New marks added for"
 
         if (Datasource.newAdditions.size == 1) {
-            message += " ${Datasource.newAdditions.first().first}'s ${Datasource.newAdditions.first().second}"
+            val addition = Datasource.newAdditions.first()
+            message += " ${addition.first}'s ${addition.second}"
+            if (addition.third.isNotEmpty()) message += " (${addition.third})"
         }
         else {
             message += ":"
@@ -88,6 +90,7 @@ class PeriodicWorker(appContext: Context, workerParams: WorkerParameters) :
                 message += "\n${course.key}'s "
                 for(section in course.value) {
                     message += section.second
+                    if (section.third.isNotEmpty()) message += " (${section.third})"
                     if(section != course.value.last())
                         message += ", "
                 }

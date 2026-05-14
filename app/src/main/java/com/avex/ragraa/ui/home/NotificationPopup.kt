@@ -1,12 +1,10 @@
 package com.avex.ragraa.ui.home
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,7 +25,11 @@ import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 
 @Composable
-fun NotificationPopup(newAdditions: Set<Pair<String, String>>, dismiss: () -> Unit) {
+fun NotificationPopup(
+    newAdditions: Set<Triple<String, String, String>>,
+    dismiss: () -> Unit,
+    onAdditionClick: (String) -> Unit
+) {
     Box(
         modifier = Modifier
             .background(Color(0, 0, 0, 180))
@@ -57,16 +59,30 @@ fun NotificationPopup(newAdditions: Set<Pair<String, String>>, dismiss: () -> Un
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     items(newAdditions.toList()) { addition ->
-                        Column(modifier = Modifier.padding(vertical = 4.dp)) {
+                        Column(modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onAdditionClick(addition.first) }
+                            .padding(vertical = 8.dp)
+                        ) {
                             Text(
                                 text = addition.first,
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
-                            Text(
-                                text = addition.second,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = addition.second,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (addition.third.isNotEmpty()) {
+                                    Text(
+                                        text = addition.third,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
                         }
                     }
                 }

@@ -16,5 +16,7 @@ data class HomeUiState(
     val darkTheme: Boolean = true,
     val male: Boolean = true,
     val niqab: Boolean = false,
-    val key: String = ""
+    val key: String = "",
+    val newAdditions: Set<Triple<String, String, String>> = emptySet(),
+    val showNotification: Boolean = false
 )

@@ -34,6 +34,7 @@ class HomeViewModel : ViewModel() {
     private var male = true
     private var niqab = false
     private var captchaKey = ""
+    private var showNotification = false
 
     var changeTheme: (String) -> Unit = {}
 
@@ -61,7 +62,7 @@ class HomeViewModel : ViewModel() {
             navController.navigate(Screens.Login.Title)
         } else {
             captchaLoaded = false
-            navController.navigate(Screens.Web.Title)
+            navController.navigate(Screens.Login.Title)
         }
     }
 
@@ -73,6 +74,10 @@ class HomeViewModel : ViewModel() {
                     break
                 }
             }
+        }
+
+        if (Datasource.newAdditions.isNotEmpty()) {
+            showNotification = true
         }
 
         _uiState.update {
@@ -90,7 +95,9 @@ class HomeViewModel : ViewModel() {
                 darkTheme = darkTheme,
                 male = male,
                 niqab = niqab,
-                key = captchaKey
+                key = captchaKey,
+                newAdditions = Datasource.newAdditions,
+                showNotification = showNotification
             )
         }
 
@@ -154,6 +161,12 @@ class HomeViewModel : ViewModel() {
         startupRefresh = !startupRefresh
         sharedPreferences.getString("semId", "241").toString()
         sharedPreferences.edit().putBoolean("startupRefresh", startupRefresh).apply()
+        updateUI()
+    }
+
+    fun dismissNotification() {
+        showNotification = false
+        Datasource.newAdditions = mutableSetOf()
         updateUI()
     }
 }
