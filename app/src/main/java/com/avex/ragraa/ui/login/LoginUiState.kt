@@ -10,5 +10,7 @@ data class LoginUiState(
     val isCompleted: Boolean = false,
     val rememberLogin: Boolean = true,
     val expanded: Boolean = false,
-    val passwordVisible: Boolean = false
+    val passwordVisible: Boolean = false,
+    val captchaToken: String = "",
+    val captchaSolved: Boolean = false
 )

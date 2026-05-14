@@ -32,6 +32,8 @@ class LoginViewModel : ViewModel() {
     private var expanded: Boolean = false
     private var passwordVisible: Boolean = false
     private var showButtons: Boolean = true
+    private var captchaToken: String = ""
+    private var captchaSolved: Boolean = false
 
     init {
         Datasource.cacheData()
@@ -42,6 +44,19 @@ class LoginViewModel : ViewModel() {
         Datasource.updateLoginUI = { updateUI() }
         RagraaApi.updateStatus = { updateStatus(it.first, it.second) }
         updateUI()
+        
+        autoSolve()
+    }
+
+    private fun autoSolve() {
+        if (captchaToken.isNotEmpty()) return
+        
+        viewModelScope.launch {
+            val a = CaptchaSolver.solveCaptcha()
+            a.onSuccess {
+                updateCaptchaToken(it)
+            }
+        }
     }
 
     var updateCalc: () -> Unit = {}
@@ -51,6 +66,8 @@ class LoginViewModel : ViewModel() {
         showButtons = true
         response = 0
         isCompleted = false
+        captchaToken = ""
+        captchaSolved = false
         updateUI()
     }
 
@@ -59,14 +76,7 @@ class LoginViewModel : ViewModel() {
         updateUI()
 
         viewModelScope.launch {
-            val a = CaptchaSolver.solveCaptcha()
-                println(a)
-                a.onSuccess {
-                updateCaptchaToken(it)
-            }.onFailure {
-                navController.navigate(Screens.Web.Title)
-            }
-
+            loginFlex()
             showButtons = true
             updateUI()
         }
@@ -109,11 +119,11 @@ class LoginViewModel : ViewModel() {
     }
 
     //Used to update the token retrieved from CustomChromeWebClient
-    //Navigates back to home screen after fetching it successfully
     fun updateCaptchaToken(newToken: String) {
+        captchaToken = newToken
+        captchaSolved = true
         loginRequest.g_recaptcha_response = newToken
-        navController.navigate(Screens.Login.Title)
-        loginFlex()
+        updateUI()
     }
 
     //Update ui with updated state
@@ -129,7 +139,9 @@ class LoginViewModel : ViewModel() {
                 isCompleted = isCompleted,
                 rememberLogin = rememberLogin,
                 expanded = expanded,
-                passwordVisible = passwordVisible
+                passwordVisible = passwordVisible,
+                captchaToken = captchaToken,
+                captchaSolved = captchaSolved
             )
         }
     }
