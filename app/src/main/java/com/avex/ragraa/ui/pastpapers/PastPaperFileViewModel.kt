@@ -39,8 +39,6 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
     private var isDownloading: Boolean = false
     private var isDownloaded: Boolean = false
 
-    private val parentDirectory = if (directory.length > 12) directory.substring(13) else directory
-
     private lateinit var selfFile: File
 
     init {
@@ -115,24 +113,30 @@ class PastPaperFileViewModel(private val file: PastPaperFile, private val direct
 
     }
 
-    private fun fileExists(externalFilesDirs: Array<File> = context.getExternalFilesDirs(null)): Boolean {
+    private fun fileExists(): Boolean {
         val fileName = file.name
-
-        for (file in externalFilesDirs) {
-            if (file.isFile()) {
-                if (file.path.substring(67) == "${parentDirectory}/${fileName}") {
-                    isDownloaded = true
-                    isDownloading = false
-                    selfFile = file
-                    return true
-                }
-            } else if (fileExists(file.listFiles()!!)) return true
+        val dir = File(context.getExternalFilesDir(null), directory)
+        val file = File(dir, fileName)
+        
+        if (file.exists()) {
+            isDownloaded = true
+            isDownloading = false
+            selfFile = file
+            return true
         }
-
+        
+        isDownloaded = false
         return false
     }
 
     private fun openDownloadedFile() {
+        if (!::selfFile.isInitialized) {
+            if (!fileExists()) {
+                openUrl()
+                return
+            }
+        }
+
         val uri = FileProvider.getUriForFile(
             context, context.applicationContext.packageName + ".provider", selfFile
         )
