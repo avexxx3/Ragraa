@@ -4,8 +4,12 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -14,8 +18,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -23,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.avex.ragraa.R
 import com.avex.ragraa.data.Datasource
 import com.avex.ragraa.sharedPreferences
+import com.avex.ragraa.ui.theme.sweetie_pie
 import com.avex.ragraa.ui.login.Logo
 import java.util.Calendar
 
@@ -119,22 +127,53 @@ fun GenderStep(male: Boolean, niqab: Boolean, onMaleChange: (Boolean) -> Unit, o
         onNext = onNext
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = male, onClick = { onMaleChange(true) })
-                Text("Male Style", Modifier.clickable { onMaleChange(true) })
-                Spacer(Modifier.width(16.dp))
-                RadioButton(selected = !male, onClick = { onMaleChange(false) })
-                Text("Female Style", Modifier.clickable { onMaleChange(false) })
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ProfileImageOption(
+                    imageRes = R.drawable.male,
+                    isSelected = male,
+                    onClick = { onMaleChange(true) }
+                )
+                ProfileImageOption(
+                    imageRes = if (niqab) R.drawable.niqab else R.drawable.female,
+                    isSelected = !male,
+                    onClick = { onMaleChange(false) }
+                )
             }
             
             if (!male) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(16.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = niqab, onCheckedChange = onNiqabChange)
                     Text("Niqab Style", Modifier.clickable { onNiqabChange(!niqab) })
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ProfileImageOption(imageRes: Int, isSelected: Boolean, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(100.dp)
+            .clip(CircleShape)
+            .border(
+                width = 3.dp,
+                color = if (isSelected) sweetie_pie else Color.Transparent,
+                shape = CircleShape
+            )
+            .clickable { onClick() }
+    ) {
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
     }
 }
 
